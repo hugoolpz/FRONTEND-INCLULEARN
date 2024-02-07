@@ -1,0 +1,97 @@
+.bg-image-logo {
+  background-image: url(src/assets/fondo-grafismos-inicio.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-image-forms {
+  background-image: url(src/assets/fondo-grafismos-forms.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@font-face {
+  font-family: AdventPro-Regular;
+  src: url(./fonts/AdventPro-Regular.ttf);
+}
+
+.adventPro-regular {
+  font-family: "AdventPro-Regular";
+}
+
+@font-face {
+  font-family: AdventPro-SemiBold;
+  src: url(./fonts/AdventPro-SemiBold.ttf);
+}
+
+.adventPro-semiBold {
+  font-family: "AdventPro-semiBold";
+}
+
+@font-face {
+  font-family: AlumniSans-Regular;
+  src: url(./fonts/AlumniSans-Regular.ttf);
+}
+
+.alumniSans-regular {
+  font-family: "AlumniSans-Regular";
+}
+
+@font-face {
+  font-family: AlumniSans-Light;
+  src: url(./fonts/AlumniSans-Light.ttf);
+}
+
+.alumniSans-light {
+  font-family: "AlumniSans-Light";
+}
+
+.text-azul-oscuro {
+  color: #121a5e !important;
+}
+.bg-azul-oscuro {
+  background: #121a5e !important;
+}
+
+.text-naranja {
+  color: #f3840e !important;
+}
+.bg-naranja {
+  background: #f3840e !important;
+}
+
+.text-naranja-claro {
+  color: #eca85f !important;
+}
+.bg-naranja-claro {
+  background: #eca85f !important;
+}
+
+.text-morado {
+  color: #824b86 !important;
+}
+.bg-morado {
+  background: #824b86 !important;
+}
+
+.tarjeta-funcion-plat {
+  display: block;
+  margin: auto;
+  width: 100%;
+  height: 475px;
+  max-width: 350px;
+  transition: 0.75s all;
+}
+
+.tarjeta-funcion-plat:hover {
+  transform: scale(1.1);
+  transition: 0.75s all;
+}
+
+.anim-dur-1s {
+  --animate-duration: 1s;
+}
+
+.anim-delay-2s {
+  --animate-delay: 2.5s;
+}
