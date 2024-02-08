@@ -1,8 +1,9 @@
 <template>
     <q-page padding>
-        <div class="row q-mt-xl q-pt-xl">
+        <div class="row q-mt-xl q-pt-lg">
             <div class="col">
-                <q-card class="tarjeta-funcion-plat bg-image-logo" @mouseover="grupos = true" @mouseleave="grupos = false">
+                <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer" v-ripple @mouseover="grupos = true"
+                    @mouseleave="grupos = false" @click="">
                     <q-slide-transition appear duration="250">
                         <q-card-section v-show="grupos">
                             <q-list>
@@ -56,7 +57,7 @@
                 </q-card>
             </div>
             <div class="col">
-                <q-card class="tarjeta-funcion-plat bg-image-logo">
+                <q-card class="tarjeta-funcion-plat bg-image-logo" v-ripple>
                     <div class="text-h4 text-white q-my-sm q-ml-md adventPro-semiBold absolute-bottom text-left">
                         CALENDARIO
                     </div>

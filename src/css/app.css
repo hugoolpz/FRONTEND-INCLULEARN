@@ -78,13 +78,13 @@
   display: block;
   margin: auto;
   width: 100%;
-  height: 475px;
+  height: 500px;
   max-width: 350px;
   transition: 0.75s all;
 }
 
 .tarjeta-funcion-plat:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: 0.75s all;
 }
 

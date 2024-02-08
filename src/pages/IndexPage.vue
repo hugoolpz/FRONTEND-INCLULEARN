@@ -54,93 +54,21 @@
 
     <transition appear enter-from-class="animated fadeOut" enter-to-class="animated fadeIn"
       enter-active-class="anim-dur-1s">
-      <div class="row flex-center q-mt-xl" v-if="formAbierto && formRegistro" key="form">
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-y-md">
-          <div class="text-h4 text-azul-oscuro adventPro-semiBold" align="center">
-            REGÍSTRATE
-          </div>
-          <div class="row flex-center">
-            <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text" label="Nombre"
-              style="width: 200px" />
-            <q-space class="q-mx-sm" />
-            <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text"
-              label="Apellidos" style="width: 360px" />
-          </div>
-          <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text" label="Correo"
-            style="max-width: 600px" />
-          <div class="row">
-            <div class="col-3 flex flex-start">
-              <q-avatar size="130px">
-                <img style="border: 1px solid #824b86;" alt="foto de perfil"
-                  src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png" />
-              </q-avatar>
-            </div>
-            <div class="col q-gutter-md">
-              <div class="row">
-                <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text"
-                  label="Seudónimo" style="width: 231px" />
-                <q-space class="q-mx-sm" />
-                <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text"
-                  label="Fecha de nacimiento" style="width: 184px" />
-              </div>
-              <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text"
-                label="Contraseña" />
-            </div>
-          </div>
-          <q-space />
-          <div align="center" class="q-pt-lg">
-            <q-btn label="CREAR CUENTA" rounded type="submit" size="lg" style="width: 300px" color="morado"
-              class="adventPro-regular text-weight-bold" />
-          </div>
-          <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
-            ¿Ya tienes cuenta?
-            <span class="cursor-pointer" @click="abrirInicioSesion">
-              INICIA SESIÓN
-            </span>
-          </div>
-        </q-form>
-      </div>
+      <registro-component v-if="formAbierto && formRegistro"
+        @abrir-inicio-sesion="abrirInicioSesion"></registro-component>
     </transition>
 
     <transition appear enter-from-class="animated fadeOut" enter-to-class="animated fadeIn"
       enter-active-class="anim-dur-1s">
-      <div class="row flex-center q-mt-xl q-pt-xl" v-if="formAbierto && formInicio" key="form">
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-y-md">
-          <div class="text-h4 text-azul-oscuro adventPro-semiBold" align="center">
-            INICIA SESIÓN
-          </div>
-          <div class="row q-gutter-x-md">
-            <div class="col-2 flex flex-center">
-              <q-avatar size="130px">
-                <img class="rounded-borders" style="border: 1px solid #824b86;" alt="foto de perfil"
-                  src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png" />
-              </q-avatar>
-            </div>
-            <div class="col-6 q-gutter-md">
-              <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text" label="Correo"
-                style="width: 425px" />
-              <q-input outlined rounded color="morado" class="adventPro-regular" v-model="text" type="text"
-                label="Contraseña" style="width: 425px" />
-            </div>
-          </div>
-          <div align="center" class="q-pt-lg">
-            <q-btn label="INICIAR SESIÓN" rounded type="submit" size="lg" style="width: 300px" color="morado"
-              class="adventPro-regular text-weight-bold" />
-          </div>
-          <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
-            ¿No tienes cuenta?
-            <span class="cursor-pointer" @click="abrirRegistro">
-              REGÍSTRATE
-            </span>
-          </div>
-        </q-form>
-      </div>
+      <inicio-sesion-component v-if="formAbierto && formInicio" @abrir-registro="abrirRegistro"></inicio-sesion-component>
     </transition>
   </q-page>
 </template>
 
 <script setup>
 document.body.style.overflow = "hidden"
+import InicioSesionComponent from "src/components/InicioSesionComponent.vue";
+import RegistroComponent from "src/components/RegistroComponent.vue";
 import { ref } from "vue";
 const formAbierto = ref(false);
 const formRegistro = ref(false);
@@ -157,4 +85,6 @@ function abrirInicioSesion() {
   formAbierto.value = true;
   formInicio.value = true;
 }
+
+console.log(window.localStorage)
 </script>
