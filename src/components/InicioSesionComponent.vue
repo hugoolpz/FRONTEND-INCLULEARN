@@ -12,13 +12,12 @@
                     </q-avatar>
                 </div>
                 <div class="col-6 q-gutter-md">
-                    <q-input outlined rounded color="morado" class="adventPro-regular" v-model="correo" type="text"
-                        label="Correo" style="width: 425px" />
-                    <q-input outlined rounded color="morado" class="adventPro-regular" v-model="contra" type="password"
-                        label="Contraseña" style="width: 425px" />
+                    <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="correo"
+                        type="text" label="Correo" style="width: 425px" :error="correoErroneo" />
+                    <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="contra"
+                        type="password" label="Contraseña" style="width: 425px" :error="contraErronea" />
                 </div>
             </div>
-            <q-space class="q-mt-md" />
             <div class="column flex-center">
                 <GoogleLogin :callback="callback" prompt />
                 <q-space class="q-mt-md" />
@@ -46,6 +45,8 @@ import { GoogleLogin, decodeCredential } from "vue3-google-login";
 //Variables form
 const correo = ref("")
 const contra = ref("")
+const correoErroneo = ref(false)
+const contraErronea = ref(false)
 
 //URL de la API REST
 const urlApi = api
@@ -64,11 +65,59 @@ const localStorage = window.localStorage
 
 const callback = (response) => {
     const datosGoogle = decodeCredential(response.credential)
-    correo.value = datosGoogle.email
+    iniciarSesionConGoogle(datosGoogle)
 }
 
 //Funciones
+function iniciarSesionConGoogle(datosGoogle) {
+    fetch(`${urlApi}/usuarios`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            "nombre": datosGoogle.given_name,
+            "apellidos": datosGoogle.family_name,
+            "correo": datosGoogle.email,
+            "rol": "Alumno",
+            "url_foto": "./"
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            if (!datos.exito) {
+                $q.notify({
+                    message: "¡Hubo un error al intentar iniciar sesión con Google!",
+                    color: "negative",
+                    position: "top",
+                    timeout: 500,
+                    progress: true,
+                    icon: "fas fa-circle-exclamation",
+                });
+            } else {
+                $q.notify({
+                    message: "Llevándote hacia la plataforma educativa...",
+                    color: "morado",
+                    position: "top",
+                    timeout: 1000,
+                    progress: true,
+                    spinner: QSpinnerGears,
+                });
+
+                localStorage.clear()
+                localStorage.setItem("infoUsuario", datos.usuario)
+                localStorage.setItem("tokenPrivado", datos.token)
+
+                setTimeout(function () {
+                    router.push({ path: "/plataformaEducativa" })
+                }, 2000)
+            }
+        })
+}
+
 function iniciarSesion() {
+    correoErroneo.value = false
+    contraErronea.value = false
     fetch(`${urlApi}/auth`, {
         method: "POST",
         headers: {
@@ -82,14 +131,11 @@ function iniciarSesion() {
         .then(respuesta => respuesta.json())
         .then(datos => {
             if (!datos.exito) {
-                $q.notify({
-                    message: "¡Hubo un error al intentar iniciar sesión!",
-                    color: "negative",
-                    position: "top",
-                    timeout: 500,
-                    progress: true,
-                    icon: "fas fa-circle-exclamation",
-                });
+                if (datos.error == "Contraseña incorrecta") {
+                    contraErronea.value = true
+                } else {
+                    correoErroneo.value = true
+                }
             } else {
                 $q.notify({
                     message: "Llevándote hacia la plataforma educativa...",

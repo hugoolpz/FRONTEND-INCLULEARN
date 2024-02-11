@@ -52,7 +52,6 @@
             </div>
             <q-space class="q-mt-md" />
             <div class="column flex-center">
-                <GoogleLogin :callback="callback" prompt />
                 <q-space class="q-mt-md" />
                 <q-btn label="CREAR CUENTA" rounded type="submit" size="lg" style="width: 300px" color="morado"
                     class="adventPro-regular text-weight-bold" />
@@ -71,7 +70,6 @@
 import { ref } from 'vue';
 import api from 'src/boot/httpSingleton';
 import { useQuasar } from 'quasar'
-import { GoogleLogin, decodeCredential } from "vue3-google-login";
 
 //Variables form
 const nombre = ref("")
@@ -90,13 +88,6 @@ const $q = useQuasar()
 
 //Emits
 const emits = defineEmits(['abrirInicioSesion'])
-
-const callback = (response) => {
-    const datosGoogle = decodeCredential(response.credential)
-    nombre.value = datosGoogle.given_name
-    apellidos.value = datosGoogle.family_name
-    correo.value = datosGoogle.email
-}
 
 //Funciones
 function registrarse() {
