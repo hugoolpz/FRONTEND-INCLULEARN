@@ -1,18 +1,18 @@
 <template>
     <div class="row flex-center q-mt-md" key="form">
         <q-form @submit="registrarse" class="q-gutter-y-md">
-            <div class="text-h4 text-azul-oscuro adventPro-semiBold" align="center">
-                REGÍSTRATE
+            <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
+                {{ $t('etqReg2') }}
             </div>
             <div class="row flex-center">
                 <q-input outlined rounded color="morado" class="adventPro-regular" v-model="nombre" type="text"
-                    label="Nombre" style="width: 200px" />
+                    :label="$t('labNombre')" style="width: 200px" />
                 <q-space class="q-mx-sm" />
                 <q-input outlined rounded color="morado" class="adventPro-regular" v-model="apellidos" type="text"
-                    label="Apellidos" style="width: 360px" />
+                    :label="$t('labApellidos')" style="width: 360px" />
             </div>
-            <q-input outlined rounded color="morado" class="adventPro-regular" v-model="correo" type="text" label="Correo"
-                style="max-width: 600px" />
+            <q-input outlined rounded color="morado" class="adventPro-regular" v-model="correo" type="text"
+                :label="$t('labCorreo')" style="max-width: 600px" />
             <div class="row">
                 <div class="col-3 flex flex-start">
                     <q-avatar size="130px">
@@ -23,14 +23,14 @@
                 <div class="col q-gutter-md">
                     <div class="row">
                         <q-file outlined rounded color="morado" class="adventPro-regular" v-model="fotoPerfil" type="file"
-                            label="Foto de perfil" style="width: 231px" @update:model-value="console.log(fotoPerfil)">
+                            :label="$t('labFoto')" style="width: 231px" @update:model-value="console.log(fotoPerfil)">
                             <template v-slot:append>
                                 <q-icon name="fas fa-file-arrow-up" class="cursor-pointer" />
                             </template>
                         </q-file>
                         <q-space class="q-mx-sm" />
                         <q-input outlined rounded v-model="fecha" class="adventPro-regular" type="text"
-                            label="Fecha de nacimiento" color="morado" style="width: 184px">
+                            :label="$t('labFecha')" color="morado" style="width: 184px">
                             <template v-slot:append>
                                 <q-icon name="fas fa-calendar-days" class="cursor-pointer">
                                     <q-popup-proxy cover transition-show="scale" transition-hide="scale"
@@ -47,19 +47,19 @@
                         </q-input>
                     </div>
                     <q-input outlined rounded color="morado" class="adventPro-regular" v-model="contra" type="password"
-                        label="Contraseña" />
+                        :label="$t('labContra')" />
                 </div>
             </div>
             <q-space class="q-mt-md" />
             <div class="column flex-center">
                 <q-space class="q-mt-md" />
-                <q-btn label="CREAR CUENTA" rounded type="submit" size="lg" style="width: 300px" color="morado"
+                <q-btn :label="$t('etqCrearCuenta')" rounded type="submit" size="lg" style="width: 300px" color="morado"
                     class="adventPro-regular text-weight-bold" />
             </div>
             <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
-                ¿Ya tienes cuenta?
-                <span class="cursor-pointer" @click="$emit('abrirInicioSesion')">
-                    INICIA SESIÓN
+                {{ $t('etqHaciaInic') }}
+                <span class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirInicioSesion')">
+                    {{ $t('etqInic2') }}
                 </span>
             </div>
         </q-form>

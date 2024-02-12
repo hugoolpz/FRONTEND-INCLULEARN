@@ -1,8 +1,8 @@
 <template>
     <div class="row flex-center q-mt-xl q-pt-xl" key="form">
         <q-form @submit="iniciarSesion" class="q-gutter-y-md">
-            <div class="text-h4 text-azul-oscuro adventPro-semiBold" align="center">
-                INICIA SESIÓN
+            <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
+                {{ $t('etqReg2') }}
             </div>
             <div class="row q-gutter-x-md">
                 <div class="col-2 flex flex-center">
@@ -13,21 +13,27 @@
                 </div>
                 <div class="col-6 q-gutter-md">
                     <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="correo"
-                        type="text" label="Correo" style="width: 425px" :error="correoErroneo" />
+                        type="text" :label="$t('labCorreo')" style="width: 425px" :error="correoErroneo" />
                     <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="contra"
-                        type="password" label="Contraseña" style="width: 425px" :error="contraErronea" />
+                        type="password" :label="$t('labContra')" style="width: 425px" :error="contraErronea" />
                 </div>
             </div>
             <div class="column flex-center">
-                <GoogleLogin :callback="callback" prompt />
+                <GoogleLogin :callback="callback">
+                    <div class="text-h6 text-azul-oscuro adventPro-regular cursor-pointer hover-underline-animation"
+                        align="center">
+                        {{ $t('etqInicGoogle') }}
+                        <q-icon name="img:src\assets\icons\google.svg" size="25px" />
+                    </div>
+                </GoogleLogin>
                 <q-space class="q-mt-md" />
-                <q-btn label="INICIAR SESIÓN" rounded type="submit" size="lg" style="width: 300px" color="morado"
+                <q-btn :label="$t('etqInic1')" rounded type="submit" size="lg" style="width: 300px" color="morado"
                     class="adventPro-regular text-weight-bold" />
             </div>
             <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
-                ¿No tienes cuenta?
-                <span class="cursor-pointer" @click="$emit('abrirRegistro')">
-                    REGÍSTRATE
+                {{ $t('etqHaciaReg') }}
+                <span class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirRegistro')">
+                    {{ $t('etqReg2') }}
                 </span>
             </div>
         </q-form>

@@ -20,7 +20,7 @@
         <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
           enter-active-class="anim-dur-1s">
           <div style="font-size: 40px;" class="text-morado text-left text-h4 q-ml-sm alumniSans-light">
-            PLATAFORMA EDUCATIVA ADAPTADA PARA TODOS
+            {{ $t('subtInicio') }}
           </div>
         </transition>
         <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
@@ -28,11 +28,7 @@
           <div>
             <div class="text-azul-oscuro text-h5 q-ml-sm text-justify alumniSans-regular"
               style="max-width: 530px; line-height: 1.2em">
-              Aquí, creamos un mundo de aprendizaje donde la diversidad es
-              celebrada y la accesibilidad es la norma. Imagina un espacio
-              educativo que se adapta a cada individuo, sin importar sus
-              habilidades, y que fomenta la conexión global entre estudiantes y
-              educadores.
+              {{ $t('resInicio') }}
             </div>
           </div>
         </transition>
@@ -42,11 +38,11 @@
         <div class="col q-gutter-y-xl q-mt-xl q-pt-xl">
           <div class="column flex-center">
             <q-btn color="naranja-claro" class="adventPro-regular" style="width: 300px; font-size: 28px" rounded size="xl"
-              icon="mdi-plus" label="REGISTRARSE" @click="abrirRegistro" />
+              icon="mdi-plus" :label="$t('etqReg1')" @click="abrirRegistro" />
           </div>
           <div class="column flex-center">
             <q-btn color="naranja-claro" class="adventPro-regular" rounded style="width: 300px; font-size: 28px" size="xl"
-              icon="mdi-login" label="INICIAR SESIÓN" @click="abrirInicioSesion" />
+              icon="mdi-login" :label="$t('etqInic1')" @click="abrirInicioSesion" />
           </div>
         </div>
       </transition>
@@ -70,10 +66,13 @@ document.body.style.overflow = "hidden"
 import InicioSesionComponent from "src/components/InicioSesionComponent.vue";
 import RegistroComponent from "src/components/RegistroComponent.vue";
 import { ref } from "vue";
+
+//Forms
 const formAbierto = ref(false);
 const formRegistro = ref(false);
 const formInicio = ref(false);
 
+//Funciones
 function abrirRegistro() {
   formInicio.value = false;
   formAbierto.value = true;
@@ -85,6 +84,4 @@ function abrirInicioSesion() {
   formAbierto.value = true;
   formInicio.value = true;
 }
-
-console.log(window.localStorage)
 </script>

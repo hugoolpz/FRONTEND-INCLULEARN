@@ -46,6 +46,19 @@
   font-family: "AlumniSans-Light";
 }
 
+@font-face {
+  font-family: OpenDyslexic-Regular;
+  src: url(./fonts/OpenDyslexic-Regular.woff);
+}
+
+.openDyslexic-regular {
+  font-family: "OpenDyslexic-Regular" !important;
+}
+
+.filtro-epilepsia {
+  filter: grayscale(80%) !important;
+}
+
 .text-azul-oscuro {
   color: #121a5e !important;
 }
@@ -94,4 +107,45 @@
 
 .anim-delay-2s {
   --animate-delay: 2.5s;
+}
+
+.hover-underline-animation {
+  display: inline-block;
+  position: relative;
+  color: #824b86;
+}
+
+.hover-underline-animation::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #824b86;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+#enfoque {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 110px;
+  z-index: 0;
+  border: 1px solid black;
+}
+
+#linea-central {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
 }
