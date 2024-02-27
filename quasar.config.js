@@ -19,7 +19,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ["i18n", "httpSingleton", "main"],
+    boot: ["i18n", "httpSingleton", "main", "qcalendar"],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ["app.css"],
@@ -38,11 +38,15 @@ module.exports = configure(function (/* ctx */) {
       "material-icons", // optional, you are not bound to it
     ],
 
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
+      // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
     build: {
       target: {
         browser: ["es2019", "edge88", "firefox78", "chrome87", "safari13.1"],
         node: "node16",
+        transpile: true,
+        transpileDependencies: [
+          /quasar-ui-qcalendar[\\/]src/
+        ]
       },
 
       vueRouterMode: "history", // available values: 'hash', 'history'

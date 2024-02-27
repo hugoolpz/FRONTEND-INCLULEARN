@@ -1,9 +1,7 @@
 <template>
   <q-layout>
-    <div class="fullscreen" :style="{ display: modoTDAH ? 'block' : 'none', backgroundColor: 'rgba(0, 0, 0, 0.05)' }">
-      <div id="enfoque" :style="{ display: modoTDAH ? 'block' : 'none', backgroundColor: 'rgba(255, 255, 255, 0.5)' }">
-        <div id="linea-central" :style="{ backgroundColor: modoTDAH ? 'black' : 'white' }"></div>
-      </div>
+    <div id="enfoque" :style="{ display: modoTDAH ? 'block' : 'none'}">
+      <div id="linea-central"></div>
     </div>
 
     <div class="absolute-top-right q-pa-md" style="z-index: 1;">
@@ -36,7 +34,7 @@
 
     <q-drawer v-model="menuIzq" :width="400" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <div style="height: 80px" class="bg-morado"></div>
+        <div style="height: 80px;" class="bg-morado text-h3 text-white flex flex-center alumniSans-regular">Ajustes de accesibilidad</div>
         <q-list class="q-mt-sm" separator="">
           <list-item-access :titulo-ajuste="$t('titAjDislexia')" :subt-ajuste="$t('subtAjDislexia')" icono="fas fa-font"
             @al-activar="ajusteDislexia()"></list-item-access>
@@ -108,18 +106,13 @@ function ajusteEpilepsia() {
 
 watch(modoTDAH, (nuevoValor) => {
   const enfoqueElemento = document.getElementById('enfoque');
-  if (nuevoValor) {
-    document.addEventListener('mousemove', moverEnfoque);
-  } else {
-    document.removeEventListener('mousemove', moverEnfoque);
-    document.body.style.backgroundColor = ''; // Restablecer el color de fondo original
-  }
   enfoqueElemento.style.display = nuevoValor ? 'block' : 'none';
+  document.addEventListener('mousemove', moverEnfoque);
 });
 
 function moverEnfoque(event) {
   const enfoqueElemento = document.getElementById('enfoque');
-  enfoqueElemento.style.top = (event.pageY - 25) + 'px';
+  enfoqueElemento.style.top = (event.pageY - enfoqueElemento.offsetHeight / 30) + 'px';
 }
 
 </script>

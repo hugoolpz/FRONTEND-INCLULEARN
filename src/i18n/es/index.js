@@ -21,4 +21,6 @@ export default {
   subtAjDislexia: "Cambiaremos la fuente a una más legible",
   titAjEpilepsia: "Configuración para epilepsia",
   subtAjEpilepsia: "Cambiaremos el tono a uno más adecuado",
+  titAjTDAH: "Configuración para TDAH",
+  subtAjTDAH: "Centraremos tu lectura de manera adecuada"
 };

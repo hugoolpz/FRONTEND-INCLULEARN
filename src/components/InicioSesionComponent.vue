@@ -2,7 +2,7 @@
     <div class="row flex-center q-mt-xl q-pt-xl" key="form">
         <q-form @submit="iniciarSesion" class="q-gutter-y-md">
             <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
-                {{ $t('etqReg2') }}
+                {{ $t('etqInic1') }}
             </div>
             <div class="row q-gutter-x-md">
                 <div class="col-2 flex flex-center">
@@ -150,15 +150,6 @@ function iniciarSesion() {
                     timeout: 1000,
                     progress: true,
                     spinner: QSpinnerGears,
-                });
-
-                $q.notify({
-                    message: "¡Has iniciado sesión correctamente!",
-                    color: "positive",
-                    position: "top",
-                    timeout: 500,
-                    progress: true,
-                    icon: "fas fa-circle-check",
                 });
 
                 localStorage.clear()

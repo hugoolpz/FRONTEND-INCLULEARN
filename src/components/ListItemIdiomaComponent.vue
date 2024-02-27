@@ -7,7 +7,7 @@
             </q-avatar>
         </q-item-section>
         <q-item-section>
-            <q-item-label>{{ tituloLabel }}</q-item-label>
+            <q-item-label class="alumniSans-regular text-h6">{{ tituloLabel }}</q-item-label>
         </q-item-section>
     </q-item>
 </template>

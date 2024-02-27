@@ -2,7 +2,7 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/PrincipalLayout.vue"),
-    children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    children: [{path: "", component: () => import("pages/IndexPage.vue")}],
   },
   {
     path: "/plataformaEducativa",
@@ -11,6 +11,16 @@ const routes = [
       {
         path: "",
         component: () => import("pages/PlataformaEducativaPage.vue"),
+      },
+    ],
+  },
+  {
+    path: "/calendario",
+    component: () => import("layouts/CalendarioLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("pages/Calendario.vue"),
       },
     ],
   },
