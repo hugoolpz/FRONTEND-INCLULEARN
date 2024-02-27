@@ -1,63 +1,169 @@
 <template>
-<q-page>
-  <div class="row">
-    <div style="max-width: 1920px; width: 100%;">
-      <q-calendar-month
-        ref="calendar"
-        v-model="selectedDate"
-        animated
-        bordered
-        focusable
-        hoverable
-        no-active-date
-        :day-min-height="110"
-        :day-height="0"
-        locale="es-ES"
-        @change="onChange"
-        @moved="onMoved"
-        @click-date="onClickDate"
-        @click-day="onClickDay"
-        @click-workweek="onClickWorkweek"
-        @click-head-workweek="onClickHeadWorkweek"
-        @click-head-day="onClickHeadDay"
-      >
-        <template #day="{ scope: { timestamp } }">
-          <template
-            v-for="event in eventsMap[timestamp.date]"
-            :key="event.id"
-          >
-            <div
-              :class="badgeClasses(event, 'day')"
-              :style="badgeStyles(event, 'day')"
-              class="my-event"
+  <q-page>
+    <div class="row">
+      <div style="max-width: 1920px; width: 100%;">
+        <div class="row justify-center">
+          <div style="display: flex;width: 100%; max-height: 1080px;">
+            <q-calendar
+              ref="calendar"
+              v-model="selectedDate"
+              v-model:model-resources="resources"
+              v-model:model-title="titleTasks"
+              v-model:model-tasks="parsedTasks"
+              v-model:model-footer="footerTasks"
+              :mode="selectedCalendar"
+              resource-key="id"
+              resource-label="name"
+              :view="selectedView"
+              :day-min-height="70"
+              animated
+              bordered
+              :task-width="240"
+              :min-weekday-length="2"
+              @change="onChange"
             >
-              <div class="title q-calendar__ellipsis">
-                {{ event.title + (event.time ? ' - ' + event.time : '') }}
-                <q-tooltip>{{ event.title + (event.time ? ' - ' + event.time : '') }}</q-tooltip>
-              </div>
-            </div>
-          </template>
-        </template>
-      </q-calendar-month>
+              <template
+                v-if="selectedCalendar === 'task'"
+                #title-task="{ scope }"
+              >
+                <div class="summary ellipsis">
+                  <div class="title ellipsis">{{ scope.title.label }}</div>
+                </div>
+              </template>
+
+              <template
+                v-if="selectedCalendar === 'task'"
+                #head-tasks="{ /* scope */ }"
+              >
+                <div
+                  class="header ellipsis"
+                  style="font-weight: 600"
+                >
+                  <div class="issue ellipsis">Issue</div>
+                  <div class="key">Key</div>
+                  <div class="logged">Logged</div>
+                </div>
+              </template>
+
+              <template
+                v-if="selectedCalendar === 'task'"
+                #task="{ scope }"
+              >
+                <template
+                  v-for="task in getTasks(scope.start, scope.end, scope.task)"
+                  :key="task.key"
+                >
+                  <div class="header ellipsis">
+                    <div class="issue ellipsis">
+                  <span
+                    v-if="scope.task.icon === 'done'"
+                    class="done"
+                  ><Done/></span>
+                      <span
+                        v-else-if="scope.task.icon === 'pending'"
+                        class="pending"
+                      ><Pending/></span>
+                      <span
+                        v-else-if="scope.task.icon === 'blocking'"
+                        class="blocking"
+                      ><Blocking/></span>
+                      {{ scope.task.title }}
+                    </div>
+                    <div class="key">{{ scope.task.key }}</div>
+                    <div class="logged">{{ sum(scope.start, scope.end, scope.task) }}</div>
+                  </div>
+                </template>
+              </template>
+
+              <template
+                v-if="selectedCalendar === 'task'"
+                #day="{ scope: { timestamp, task } }"
+              >
+                <template
+                  v-for="time in getLogged(timestamp.date, task.logged)"
+                  :key="time"
+                >
+                  <div class="logged-time">{{ time.logged }}</div>
+                </template>
+              </template>
+
+              <!-- eslint-disable-next-line vue/valid-v-slot -->
+              <template
+                v-if="selectedCalendar === 'agenda'"
+                #day="{ scope: { timestamp } }"
+              >
+                <template
+                  v-for="a in getAgenda(timestamp)"
+                  :key="timestamp.date + a.time"
+                >
+                  <div
+                    :label="a.time"
+                    class="justify-start q-ma-sm shadow-5 bg-grey-6"
+                    style="margin-top: 25px;"
+                  >
+                    <div
+                      v-if="a.avatar"
+                      class="row justify-center"
+                      style="margin-top: 30px; width: 100%;"
+                    >
+                      <q-avatar style="margin-top: -50px; margin-bottom: 10px; font-size: 60px;">
+                        <img
+                          :src="a.avatar"
+                          style="border: #9e9e9e solid 5px;"
+                        >
+                      </q-avatar>
+                    </div>
+                    <div class="col-12 q-px-sm">
+                      <strong>{{ a.time }}</strong>
+                    </div>
+                    <div
+                      v-if="a.desc"
+                      class="col-12 q-px-sm"
+                      style="font-size: 10px;"
+                    >
+                      {{ a.desc }}
+                    </div>
+                  </div>
+                </template>
+              </template>
+
+              <template
+                v-if="selectedCalendar === 'task'"
+                #footer-task="{ scope: { start, end, footer } }"
+              >
+                <div class="summary ellipsis">
+                  <div class="title ellipsis">{{ footer.title }}</div>
+                  <div class="total">{{ totals(start, end) }}</div>
+                </div>
+              </template>
+
+              <template
+                v-if="selectedCalendar === 'task'"
+                #footer-day="{ scope: { timestamp } }"
+              >
+                <div class="logged-time">{{ getLoggedSummary(timestamp.date) }}</div>
+              </template>
+            </q-calendar>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</q-page>
+  </q-page>
 </template>
 
 <script setup>
 import {
-  QCalendarMonth,
-  PARSE_DATE, // regex for parsing out date
-  addToDate,
-  parseTimestamp,
+  QCalendar,
   today,
-  isBetweenDates
+  padNumber,
+  isBetweenDates,
+  parsed
 } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
+import '@quasar/quasar-ui-qcalendar/src/QCalendar.sass'
 
-import { ref, reactive, computed } from 'vue'
+import {ref, reactive, computed} from 'vue'
 import Holidays from 'date-holidays'
 
 const countries = new Holidays().getCountries()
@@ -220,7 +326,7 @@ const countryCodes = {
 
 const countriesList = computed(() => {
   return Object.keys(countries).map(key => {
-    return { label: countries[key], value: key }
+    return {label: countries[key], value: key}
   })
 })
 
@@ -233,7 +339,7 @@ const locale = computed(() => {
 
 const formattedMonth = computed(() => {
   const date = new Date(selectedDate.value)
-  return new Intl.DateTimeFormat(locale.value, { month: 'long', timeZone: 'UTC' }).format(date) + ' ' + date.getFullYear()
+  return new Intl.DateTimeFormat(locale.value, {month: 'long', timeZone: 'UTC'}).format(date) + ' ' + date.getFullYear()
 })
 
 const holidaysMap = computed(() => {
@@ -282,7 +388,7 @@ const eventsMap = computed(() => {
           let timestamp = parseTimestamp(event.date)
           let days = event.days
           do {
-            timestamp = addToDate(timestamp, { day: 1 })
+            timestamp = addToDate(timestamp, {day: 1})
             if (!map[timestamp.date]) {
               map[timestamp.date] = []
             }
@@ -296,7 +402,7 @@ const eventsMap = computed(() => {
 
 function badgeClasses(event, type) {
   return {
-    [ `text-white bg-${ event.bgcolor }` ]: true,
+    [`text-white bg-${event.bgcolor}`]: true,
     'rounded-border': true
   }
 }
