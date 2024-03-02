@@ -15,17 +15,17 @@
         </template>
         <q-list>
           <q-scroll-area style="width: 160px; height: 112px;">
-            <list-item-idioma titulo-label='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
+            <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
               @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
-            <list-item-idioma titulo-label='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
+            <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
               @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
-            <list-item-idioma titulo-label='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
+            <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
               @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
-            <list-item-idioma titulo-label='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
+            <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
               @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
-            <list-item-idioma titulo-label='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
+            <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
               @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
-            <list-item-idioma titulo-label='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
+            <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
               @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
           </q-scroll-area>
         </q-list>

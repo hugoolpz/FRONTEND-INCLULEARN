@@ -71,11 +71,13 @@ const localStorage = window.localStorage
 
 const callback = (response) => {
     const datosGoogle = decodeCredential(response.credential)
+  console.log(datosGoogle.email)
     iniciarSesionConGoogle(datosGoogle)
 }
 
 //Funciones
 function iniciarSesionConGoogle(datosGoogle) {
+
     fetch(`${urlApi}/usuarios`, {
         method: "POST",
         headers: {
@@ -91,6 +93,7 @@ function iniciarSesionConGoogle(datosGoogle) {
     })
         .then(respuesta => respuesta.json())
         .then(datos => {
+          console.log(datos)
             if (!datos.exito) {
                 $q.notify({
                     message: "¡Hubo un error al intentar iniciar sesión con Google!",
