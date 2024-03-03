@@ -29,6 +29,6 @@
 <script setup>
 import {ref} from "vue";
 
-const fechaHora = ref()
+const fechaHora = defineModel()
 const props = defineProps(["label"])
 </script>

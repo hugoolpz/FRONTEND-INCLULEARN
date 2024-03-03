@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { QIconPicker } from '@quasar/quasar-ui-qiconpicker/src/index'
 
 // Definir el estado reactivo
-const value = ref('');
+const value = defineModel();
 const showIconPicker = ref(false);
 const pagination = ref({
   itemsPerPage: 35,

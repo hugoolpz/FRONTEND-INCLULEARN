@@ -18,7 +18,6 @@
           <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
             <template
               v-for="event in getEvents(timestamp.date)"
-              :key="event.id"
             >
               <div
                 v-if="event.time !== undefined"
@@ -46,7 +45,7 @@
 
       <q-card-section>
         <q-form
-          @submit="onSubmit"
+          @submit="crearEvento"
           @reset="onReset"
           class="q-gutter-md"
         >
@@ -69,10 +68,10 @@
             color="naranja-claro"
             :rules="[ val => val && val.length > 0 || 'El evento debe tener detalles']"
           />
-          <input-fecha-hora-component v-bind:fechaHora="fechaInicio" label="Fecha de inicio"></input-fecha-hora-component>
-          <input-fecha-hora-component v-bind:fechaHora="fechaFin" label="Fecha de fin"></input-fecha-hora-component>
-          <input-iconos-component v-bind:icono="iconoElegido"></input-iconos-component>
-          <input-color-component v-bind:hex="colorEvento"></input-color-component>
+          <input-fecha-hora-component v-model="fechaInicio" label="Fecha de inicio"></input-fecha-hora-component>
+          <input-fecha-hora-component v-model="fechaFin" label="Fecha de fin"></input-fecha-hora-component>
+          <input-iconos-component v-model="iconoElegido"></input-iconos-component>
+          <input-color-component v-model="colorEvento"></input-color-component>
           <div align="right">
             <q-btn label="Crear" type="submit" color="naranja"/>
             <q-btn label="Cancelar" type="reset" color="naranja-claro" flat class="q-ml-sm" v-close-popup/>
@@ -88,7 +87,7 @@ import { QCalendarDay, today } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarDay.sass'
-import {computed, ref} from "vue";
+import {computed, reactive, ref} from "vue";
 import {addToDate, isBetweenDates, parseTime, parseTimestamp} from "@quasar/quasar-ui-qcalendar";
 import InputFechaHoraComponent from "components/InputFechaHoraComponent.vue";
 import InputIconosComponent from "components/InputIconosComponent.vue";
@@ -98,52 +97,11 @@ const crearMarca = defineModel()
 const fechaSeleccionada = ref(today())
 const titulo = ref("")
 const detalles = ref("")
-const fechaInicio = ref(today())
-const fechaFin = ref(today())
+const fechaInicio = ref('')
+const fechaFin = ref('')
 const iconoElegido = ref("")
 const colorEvento = ref("")
-const events = [
-  {
-    id: 1,
-    title: 'Meeting',
-    details: 'Time to pitch my idea to the company',
-    date: '2024-03-01',
-    time: '09:00',
-    duration: 120,
-    bgcolor: 'red',
-    icon: 'fas fa-handshake'
-  },
-  {
-    id: 2,
-    title: 'Lunch',
-    details: 'Company is paying!',
-    date: today(),
-    time: '12:00',
-    duration: 60,
-    bgcolor: 'teal',
-    icon: 'fas fa-hamburger'
-  },
-  {
-    id: 3,
-    title: 'Conference',
-    details: 'Teaching Javascript 101',
-    date: today(),
-    time: '13:00',
-    duration: 240,
-    bgcolor: 'blue',
-    icon: 'fas fa-chalkboard-teacher'
-  },
-  {
-    id: 4,
-    title: 'Girlfriend',
-    details: 'Meet GF for dinner at Swanky Restaurant',
-    date: today(),
-    time: '19:00',
-    duration: 180,
-    bgcolor: 'teal-2',
-    icon: 'fas fa-utensils'
-  }
-]
+const events = reactive([])
 
 const eventsMap = computed(() => {
   const map = {}
@@ -192,21 +150,58 @@ function getEvents(dt) {
 function badgeClasses(event, type) {
   const isHeader = type === 'header'
   return {
-    [`text-white bg-${event.bgcolor}`]: true,
+    [`text-white`]: true,
     'full-width': !isHeader && (!event.side || event.side === 'full'),
     'left-side': !isHeader && event.side === 'left',
     'right-side': !isHeader && event.side === 'right',
-    'rounded-border': true
+    'rounded-border': true,
   }
 }
+
 function badgeStyles(event, type, timeStartPos = undefined, timeDurationHeight = undefined) {
-  const s = {}
+  const s = {};
   if (timeStartPos && timeDurationHeight) {
-    s.top = timeStartPos(event.time) + 'px'
-    s.height = timeDurationHeight(event.duration) + 'px'
+    s.top = timeStartPos(event.time) + 'px';
+    s.height = timeDurationHeight(event.duration) + 'px';
   }
-  s['align-items'] = 'flex-start'
-  return s
+  // Agrega el estilo de backgroundColor con el valor del color hexadecimal
+  s.backgroundColor = event.bgcolor;
+  s['align-items'] = 'flex-start';
+  return s;
+}
+
+
+function crearEvento() {
+  const fechaInicioSeparada = fechaInicio.value.split(' ');
+  const fechaInicioSoloFecha = fechaInicioSeparada[0];
+  const horaInicio = fechaInicioSeparada[1];
+
+  const fechaInicioObj = new Date(fechaInicio.value);
+  const fechaFinObj = new Date(fechaFin.value);
+  const duracionMinutos = (fechaFinObj.getTime() - fechaInicioObj.getTime()) / (1000 * 60);
+
+  if (!esColorHexadecimal(colorEvento.value)){
+    colorEvento.value = '#1976D2'
+  }
+
+  const eventoCreado = {
+    title: titulo.value,
+    details: detalles.value,
+    date: fechaInicioSoloFecha,
+    time: horaInicio,
+    duration: duracionMinutos,
+    bgcolor: colorEvento.value,
+    icon: iconoElegido.value
+  }
+
+  console.log(eventoCreado)
+  events.push(eventoCreado)
+  console.log(events)
+}
+
+function esColorHexadecimal(valor) {
+  const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+  return regex.test(valor);
 }
 </script>
 
@@ -226,43 +221,4 @@ function badgeStyles(event, type, timeStartPos = undefined, timeDurationHeight =
   justify-content: center
   align-items: center
   height: 100%
-
-.text-white
-  color: white
-
-.bg-blue
-  background: blue
-
-.bg-green
-  background: green
-
-.bg-orange
-  background: orange
-
-.bg-red
-  background: red
-
-.bg-teal
-  background: teal
-
-.bg-grey
-  background: grey
-
-.bg-purple
-  background: purple
-
-.full-width
-  left: 0
-  width: calc(100% - 2px)
-
-.left-side
-  left: 0
-  width: calc(50% - 3px)
-
-.right-side
-  left: 50%
-  width: calc(50% - 3px)
-
-.rounded-border
-  border-radius: 2px
 </style>

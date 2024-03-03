@@ -13,6 +13,6 @@
 <script setup>
 import {ref, watch} from "vue";
 
-const hex = ref('')
+const hex = defineModel()
 const mostrarSelector = ref(false);
 </script>
