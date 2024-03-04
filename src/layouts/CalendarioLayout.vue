@@ -2,7 +2,6 @@
   <q-layout view="hHh lpR fFf">
     <q-header elevated class="bg-naranja text-white">
       <q-toolbar>
-        <q-btn icon="fas fa-list" flat round @click="menuCalendario = !menuCalendario"/>
         <q-toolbar-title>
           Tu calendario
         </q-toolbar-title>
@@ -34,35 +33,26 @@
       </q-toolbar>
     </q-header>
     <q-page-container>
-      <router-view v-model="crearMarca"/>
+      <router-view />
     </q-page-container>
-    <q-drawer v-model="menuCalendario" show-if-above :width="300" :breakpoint="300" bordered>
-      <div class="column flex-center q-gutter-md q-my-xs">
-        <q-btn rounded color="naranja" label="Crear" icon="fas fa-plus" @click="crearMarca = true"></q-btn>
-        <div style="display: flex; max-width: 280px; width: 100%;">
-          <q-calendar-month
-            v-model="fechaSeleccionada"
-            mini-mode
-            locale="es"
-            animated
-            bordered
-            hoverable
-          />
-        </div>
-      </div>
-    </q-drawer>
   </q-layout>
 </template>
 
 <script setup>
 import ListItemIdioma from "components/ListItemIdiomaComponent.vue";
-import { QCalendarMonth, today } from '@quasar/quasar-ui-qcalendar/src/index.js'
+import { today } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
 import {ref} from "vue";
-
+import {useI18n} from "vue-i18n";
+import { DatePicker } from "qalendar";
 const crearMarca = ref(false)
 const menuCalendario = ref(true)
 const fechaSeleccionada = ref(today())
+const idioma = ref(false)
+const { locale } = useI18n()
+function cambiarIdioma(idioma) {
+  locale.value = idioma
+}
 </script>

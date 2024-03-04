@@ -20,7 +20,7 @@ const routes = [
     children: [
       {
         path: "",
-        component: () => import("pages/Calendario.vue"),
+        component: () => import("pages/TuCalendarioPage.vue"),
       },
     ],
   },

@@ -15,6 +15,7 @@
     "@quasar/quasar-ui-qcalendar": "^4.0.0-beta.19",
     "date-holidays": "^3.23.8",
     "pinia": "^2.0.11",
+    "qalendar": "^3.8.1",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-country-flag-next": "^2.3.2",

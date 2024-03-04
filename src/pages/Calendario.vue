@@ -9,11 +9,12 @@
           animated
           bordered
           hoverable
+          clickable
           hour24-format
           :interval-minutes="15"
-          :interval-start="24"
-          :interval-count="68"
-          :interval-height="28"
+          :interval-count="96"
+          @click-time="onClickTime"
+          @click-interval="onClickInterval"
         >
           <template #day-body="{ scope: { timestamp, timeStartPos, timeDurationHeight } }">
             <template
@@ -202,6 +203,16 @@ function crearEvento() {
 function esColorHexadecimal(valor) {
   const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
   return regex.test(valor);
+}
+
+function onClickInterval (data) {
+  console.log('onClickInterval', data)
+}
+
+function onClickTime (data) {
+  console.log('onClickTime', data)
+  crearMarca.value = true;
+  fechaInicio.value = data.scope.timestamp.date + " " + data.scope.timestamp.time
 }
 </script>
 

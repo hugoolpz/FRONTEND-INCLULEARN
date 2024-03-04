@@ -87,6 +87,71 @@
   background: #824b86 !important;
 }
 
+.text-amarillo-cal {
+  color: rgb(244, 180, 0) !important;
+}
+
+.bg-amarillo-cal {
+  background: rgb(244, 180, 0) !important;
+}
+
+.text-azul-cal {
+  color: rgb(38, 132, 255) !important;
+}
+
+.bg-azul-cal {
+  background: rgb(38, 132, 255) !important;
+}
+
+.text-verde-cal {
+  color: rgb(51, 182, 121) !important;
+}
+
+.bg-verde-cal {
+  background: rgb(51, 182, 121) !important;
+}
+
+.text-rojo-cal {
+  color: rgb(255, 84, 86) !important;
+}
+
+.bg-rojo-cal {
+  background: rgb(255, 84, 86) !important;
+}
+
+.text-rosa-cal {
+  color: rgb(239, 139, 239) !important;
+}
+
+.bg-rosa-cal {
+  background: rgb(239, 139, 239) !important;
+}
+
+.text-purpura-cal {
+  color: rgb(157, 114, 245) !important;
+}
+
+.bg-purpura-cal {
+  background: rgb(157, 114, 245) !important;
+}
+
+.text-turquesa-cal {
+  color: rgb(64, 190, 190) !important;
+}
+
+.bg-turquesa-cal {
+  background: rgb(64, 190, 190) !important;
+}
+
+.text-cafe-cal {
+  color: rgb(169, 99, 30) !important;
+}
+
+.bg-cafe-cal {
+  background: rgb(169, 99, 30) !important;
+}
+
+
 .tarjeta-funcion-plat {
   display: block;
   margin: auto;
