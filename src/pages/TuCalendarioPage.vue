@@ -6,8 +6,10 @@ import InputIconosComponent from "components/InputIconosComponent.vue";
 import InputFechaHoraComponent from "components/InputFechaHoraComponent.vue";
 import InputColorComponent from "components/InputColorComponent.vue";
 import ChipCalendarioComponent from "components/ChipCalendarioComponent.vue";
+import {useQuasar} from "quasar";
 
 const crearMarca = defineModel()
+const $q = useQuasar()
 const fechaSeleccionada = ref(today())
 const titulo = ref("")
 const detalles = ref("")
@@ -24,6 +26,16 @@ function alClickarIntervalo(data){
 
 function cambiarColorEvento(color){
   colorEvento.value = color
+
+  if (color == "turquoise"){
+    color = "turquesa-cal"
+  }
+
+  $q.notify({
+    message: "Este es el color de tu evento",
+    color: color,
+    position: "top",
+  });
 }
 
 function crearEvento() {
@@ -46,8 +58,8 @@ function crearEvento() {
 
 const eventos = reactive([
   {
-    title: "Advanced algebra",
-    time: {start: today() + " 13:00", end: today() + " 13:35"},
+    title: "Tarea interfaces",
+    time: {start: "2024-03-04 23:59", end: "2024-03-05 01:00"},
     color: "brown",
     isEditable: true,
     id: "753944708f0f",
@@ -55,8 +67,8 @@ const eventos = reactive([
     disableResize: true,
   },
   {
-    title: "Ralph on holiday",
-    time: {start: "2024-03-06 10:15", end: "2024-03-06 10:40"},
+    title: "Tarea de Cloud",
+    time: {start: "2024-03-06 10:00", end: "2024-03-06 10:30"},
     color: "green",
     isEditable: true,
     id: "5602b6f589fc",
