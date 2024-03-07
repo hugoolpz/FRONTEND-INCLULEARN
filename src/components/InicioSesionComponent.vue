@@ -77,7 +77,6 @@ const callback = (response) => {
 
 //Funciones
 function iniciarSesionConGoogle(datosGoogle) {
-
     fetch(`${urlApi}/usuarios`, {
         method: "POST",
         headers: {
@@ -114,7 +113,7 @@ function iniciarSesionConGoogle(datosGoogle) {
                 });
 
                 localStorage.clear()
-                localStorage.setItem("infoUsuario", datos.usuario)
+                localStorage.setItem("infoUsuario", JSON.parse(datos.usuario))
                 localStorage.setItem("tokenPrivado", datos.token)
 
                 setTimeout(function () {
@@ -156,7 +155,7 @@ function iniciarSesion() {
                 });
 
                 localStorage.clear()
-                localStorage.setItem("infoUsuario", datos.usuario)
+                localStorage.setItem("infoUsuario", JSON.stringify(datos.usuario))
                 localStorage.setItem("tokenPrivado", datos.token)
 
                 setTimeout(function () {

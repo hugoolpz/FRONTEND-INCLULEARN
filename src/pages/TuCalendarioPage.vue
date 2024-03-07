@@ -1,108 +1,3 @@
-<script setup>
-import {Qalendar} from "qalendar";
-import {today} from "@quasar/quasar-ui-qcalendar";
-import {reactive, ref} from "vue";
-import InputIconosComponent from "components/InputIconosComponent.vue";
-import InputFechaHoraComponent from "components/InputFechaHoraComponent.vue";
-import InputColorComponent from "components/InputColorComponent.vue";
-import ChipCalendarioComponent from "components/ChipCalendarioComponent.vue";
-import {useQuasar} from "quasar";
-
-const crearMarca = defineModel()
-const $q = useQuasar()
-const fechaSeleccionada = ref(today())
-const titulo = ref("")
-const detalles = ref("")
-const fechaInicio = ref('')
-const fechaFin = ref('')
-const colorEvento = ref("blue")
-const componentKey = ref(0);
-function alClickarIntervalo(data){
-  console.log('alClickarIntervalo', data)
-  crearMarca.value = true;
-  fechaInicio.value = data.intervalStart
-  fechaFin.value = data.intervalEnd
-}
-
-function cambiarColorEvento(color){
-  colorEvento.value = color
-
-  if (color == "turquoise"){
-    color = "turquesa-cal"
-  }
-
-  $q.notify({
-    message: "Este es el color de tu evento",
-    color: color,
-    position: "top",
-  });
-}
-
-function crearEvento() {
-  const eventoCreado = {
-    title: titulo.value,
-    description: detalles.value,
-    color: colorEvento,
-    time: {
-      start: fechaInicio.value,
-      end: fechaFin.value
-    },
-    isEditable: true,
-    disableResize: true,
-  }
-
-  eventos.push(eventoCreado)
-  crearMarca.value = false
-  componentKey.value += 1
-}
-
-const eventos = reactive([
-  {
-    title: "Tarea interfaces",
-    time: {start: "2024-03-04 23:59", end: "2024-03-05 01:00"},
-    color: "brown",
-    isEditable: true,
-    id: "753944708f0f",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores assumenda corporis doloremque et expedita molestias necessitatibus quam quas temporibus veritatis. Deserunt excepturi illum nobis perferendis praesentium repudiandae saepe sapiente voluptatem!",
-    disableResize: true,
-  },
-  {
-    title: "Tarea de Cloud",
-    time: {start: "2024-03-06 10:00", end: "2024-03-06 10:30"},
-    color: "green",
-    isEditable: true,
-    id: "5602b6f589fc",
-    disableResize: true,
-  }])
-
-const config = {
-  week: {
-    // Takes the value 'sunday' or 'monday'
-    // However, if startsOn is set to 'sunday' and nDays to 5, the week displayed will be Monday - Friday
-    startsOn: 'monday',
-    // Takes the values 5 or 7.
-    nDays: 7,
-  },
-  month: {
-    // Hide leading and trailing dates in the month view (defaults to true when not set)
-    showTrailingAndLeadingDates: true,
-  },
-  dayIntervals: {
-    length: 15, // Length in minutes of each interval. Accepts values 15, 30 and 60 (the latter is the default)
-    height: 50, // The height of each interval
-    displayClickableInterval: true, // Needs to be set explicitly to true, if you want to display clickable intervals
-  },
-  // Takes any valid locale that the browser understands. However, not all locales have been thorougly tested in Qalendar
-  // If no locale is set, the preferred browser locale will be used
-  // if not set, the mode defaults to 'week'. The three available options are 'month', 'week' and 'day'
-  // Please note, that only day and month modes are available for the calendar in mobile-sized wrappers (~700px wide or less, depending on your root font-size)
-  defaultMode: 'week',
-  // The silent flag can be added, to disable the development warnings. This will also bring a slight performance boost
-  isSilent: true,
-  showCurrentTime: true, // Display a line indicating the current time
-}
-</script>
-
 <template>
   <q-page>
     <Qalendar
@@ -111,7 +6,9 @@ const config = {
       :config="config"
       :selected-date="new Date(today())"
       @event-was-dragged=""
-      @interval-was-clicked="alClickarIntervalo"
+      @datetime-was-clicked="alClickarIntervalo"
+      @edit-event="editarEvento"
+      @delete-event="eliminarEvento"
       class="cursor-pointer"
     />
     <q-dialog v-model="crearMarca">
@@ -173,3 +70,232 @@ const config = {
 <style>
 @import "qalendar/dist/style.css";
 </style>
+
+<script setup>
+import {Qalendar} from "qalendar";
+import {today} from "@quasar/quasar-ui-qcalendar";
+import {onMounted, reactive, ref} from "vue";
+import InputIconosComponent from "components/InputIconosComponent.vue";
+import InputFechaHoraComponent from "components/InputFechaHoraComponent.vue";
+import InputColorComponent from "components/InputColorComponent.vue";
+import ChipCalendarioComponent from "components/ChipCalendarioComponent.vue";
+import {QSpinnerGears, useQuasar} from "quasar";
+import api from "boot/httpSingleton";
+
+const crearMarca = ref(false)
+const $q = useQuasar()
+const titulo = ref("")
+const detalles = ref("")
+const fechaInicio = ref('')
+const fechaFin = ref('')
+const colorEvento = ref("blue")
+const componentKey = ref(0);
+const localStorage = window.localStorage
+const infoUsuario = JSON.parse(localStorage.infoUsuario)
+const urlApi = api
+const eventos = ref([])
+
+onMounted(() => {
+  actualizarEventos()
+})
+function alClickarIntervalo(data){
+  crearMarca.value = true;
+  fechaInicio.value = data
+}
+
+function cambiarColorEvento(color){
+  colorEvento.value = color
+
+  if (color == "turquoise"){
+    color = "turquesa-cal"
+  }
+
+  $q.notify({
+    message: "Este es el color de tu evento",
+    color: color,
+    position: "top",
+  });
+}
+
+function crearEvento() {
+  fetch(`${urlApi}/marcasTiempo`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+    body: JSON.stringify({
+      "titulo": titulo.value,
+      "detalles": detalles.value,
+      "tiempoInicio": fechaInicio.value,
+      "tiempoFin": fechaFin.value,
+      "color": colorEvento.value
+    })
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar crear el evento!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+            'token-privado': localStorage.tokenPrivado
+          },
+          body: JSON.stringify({
+            "marcas_tiempo": datos.datos._id
+          })
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            if (!datos.exito) {
+              $q.notify({
+                message: "¡Hubo un error al intentar crear el evento!",
+                color: "negative",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-exclamation",
+              });
+              //TODO: Borrar el evento previamente creado
+            } else {
+              $q.notify({
+                message: "¡Evento guardado con éxito!",
+                color: "positive",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-check",
+              });
+              actualizarEventos()
+            }
+          })
+      }
+    })
+  crearMarca.value = false
+}
+
+function editarEvento(data){
+  console.log(data)
+}
+
+function eliminarEvento(data){
+  fetch(`${urlApi}/marcasTiempo/${data}`, {
+    method: "DELETE",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar eliminar el evento!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        fetch(`${urlApi}/usuarios/pull/${infoUsuario._id}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+            'token-privado': localStorage.tokenPrivado
+          },
+          body: JSON.stringify({
+            "marcas_tiempo": datos.datos._id
+          })
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            if (!datos.exito) {
+              $q.notify({
+                message: "¡Hubo un error al intentar eliminar el evento!",
+                color: "negative",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-exclamation",
+              });
+              //TODO: Borrar el evento previamente creado
+            } else {
+              $q.notify({
+                message: "¡Evento eliminado con éxito!",
+                color: "positive",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-check",
+              });
+              actualizarEventos()
+            }
+          })
+        //TODO: Borrar el evento borrado de la cuenta del usuario
+      }
+    })
+}
+
+function actualizarEventos() {
+  eventos.value.length = 0
+  fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    }
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito){
+        $q.notify({
+          message: "¡Hubo un error al intentar obtener tus eventos!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        datos.datos.marcas_tiempo.forEach((marca) => {
+          let eventoCreado = {
+            id: marca._id,
+            title: marca.titulo,
+            description: marca.detalles,
+            color: marca.color,
+            time: {
+              start: marca.tiempoInicio,
+              end: marca.tiempoFin
+            },
+            isEditable: true,
+          }
+          eventos.value.push(eventoCreado)
+        })
+        componentKey.value += 1
+      }
+    })
+}
+
+const config = {
+  week: {
+    startsOn: 'monday',
+    nDays: 7,
+  },
+  month: {
+    showTrailingAndLeadingDates: true,
+  },
+  defaultMode: 'week',
+  isSilent: true,
+  showCurrentTime: true,
+}
+</script>
