@@ -47,6 +47,7 @@ import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
 import {ref} from "vue";
 import {useI18n} from "vue-i18n";
 import { DatePicker } from "qalendar";
+document.body.style.overflow = "scroll"
 const crearMarca = ref(false)
 const menuCalendario = ref(true)
 const fechaSeleccionada = ref(today())

@@ -5,7 +5,8 @@
       :events="eventos"
       :config="config"
       :selected-date="new Date(today())"
-      @event-was-dragged=""
+      @event-was-dragged="moverEventoManualmente"
+      @event-was-resized="moverEventoManualmente"
       @datetime-was-clicked="alClickarIntervalo"
       @edit-event="editarEvento"
       @delete-event="eliminarEvento"
@@ -64,6 +65,65 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="actMarca">
+      <q-card style="max-width: 400px; width: 100%">
+        <q-toolbar class="bg-naranja">
+          <q-toolbar-title class="text-white">Actualizar evento</q-toolbar-title>
+          <q-btn flat round dense icon="fas fa-xmark" color="white" v-close-popup />
+        </q-toolbar>
+
+        <q-card-section>
+          <q-form
+            @submit="actualizarEventoElegido"
+            @reset="onReset"
+            class="q-gutter-md"
+          >
+            <q-input
+              filled
+              class="no-padding hidden"
+              v-model="idEvento"
+            />
+            <q-input
+              filled
+              class="no-padding"
+              v-model="titulo"
+              label="Título"
+              lazy-rules
+              color="naranja-claro"
+              :rules="[ val => val && val.length > 0 || 'El evento debe tener título']"
+            />
+            <q-input
+              filled
+              class="no-padding"
+              v-model="detalles"
+              label="Detalles"
+              lazy-rules
+              autogrow
+              color="naranja-claro"
+              :rules="[ val => val && val.length > 0 || 'El evento debe tener detalles']"
+            />
+            <input-fecha-hora-component v-model="fechaInicio" label="Fecha de inicio"></input-fecha-hora-component>
+            <input-fecha-hora-component v-model="fechaFin" label="Fecha de fin"></input-fecha-hora-component>
+            <div class="text-body1 text-underline">Elige el color de tu evento:</div>
+            <div class="row flex-center q-mb-lg">
+              <div class="col-auto"><chip-calendario-component color="azul-cal" contenido="Azul" @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="amarillo-cal" contenido="Amarillo" @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="verde-cal" contenido="Verde" @al-clickar="cambiarColorEvento('green')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="rojo-cal" contenido="Rojo" @al-clickar="cambiarColorEvento('red')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="rosa-cal" contenido="Rosa" @al-clickar="cambiarColorEvento('pink')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="purpura-cal" contenido="Púrpura" @al-clickar="cambiarColorEvento('purple')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="turquesa-cal" contenido="Turquesa" @al-clickar="cambiarColorEvento('turquoise')"></chip-calendario-component></div>
+              <div class="col-auto"><chip-calendario-component color="cafe-cal" contenido="Café" @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component></div>
+            </div>
+            <div align="right">
+              <q-btn label="Actualizar" type="submit" color="naranja"/>
+              <q-btn label="Cancelar" type="reset" color="naranja-claro" flat class="q-ml-sm" v-close-popup/>
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -83,12 +143,16 @@ import {QSpinnerGears, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
 
 const crearMarca = ref(false)
+const actMarca = ref(false)
 const $q = useQuasar()
 const titulo = ref("")
 const detalles = ref("")
 const fechaInicio = ref('')
 const fechaFin = ref('')
 const colorEvento = ref("blue")
+const idEvento = ref("")
+
+
 const componentKey = ref(0);
 const localStorage = window.localStorage
 const infoUsuario = JSON.parse(localStorage.infoUsuario)
@@ -184,7 +248,112 @@ function crearEvento() {
 }
 
 function editarEvento(data){
-  console.log(data)
+  fetch(`${urlApi}/marcasTiempo/${data}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar traer la información el evento!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        idEvento.value = datos.datos._id
+        titulo.value = datos.datos.titulo
+        detalles.value = datos.datos.detalles
+        fechaInicio.value = datos.datos.tiempoInicio
+        fechaFin.value = datos.datos.tiempoFin
+        colorEvento.value = datos.datos.color
+        actMarca.value = true
+      }
+    })
+}
+
+function actualizarEventoElegido(){
+  fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+    body: JSON.stringify({
+      "titulo": titulo.value,
+      "detalles": detalles.value,
+      "tiempoInicio": fechaInicio.value,
+      "tiempoFin": fechaFin.value,
+      "color": colorEvento.value
+    })
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar editar el evento!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        $q.notify({
+          message: "¡Evento editado con éxito!",
+          color: "positive",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-check",
+        });
+        actMarca.value = false
+        actualizarEventos()
+      }
+    })
+}
+
+function moverEventoManualmente(data){
+  fetch(`${urlApi}/marcasTiempo/${data.id}`, {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+    body: JSON.stringify({
+      "tiempoInicio": data.time.start,
+      "tiempoFin": data.time.end,
+    })
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡No se pudo cambiar el tamaño del evento, lo cambios no se guardarán!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        $q.notify({
+          message: "¡Evento editado con éxito!",
+          color: "positive",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-check",
+        });
+        actualizarEventos()
+      }
+    })
 }
 
 function eliminarEvento(data){
@@ -228,7 +397,6 @@ function eliminarEvento(data){
                 progress: true,
                 icon: "fas fa-circle-exclamation",
               });
-              //TODO: Borrar el evento previamente creado
             } else {
               $q.notify({
                 message: "¡Evento eliminado con éxito!",
@@ -241,7 +409,6 @@ function eliminarEvento(data){
               actualizarEventos()
             }
           })
-        //TODO: Borrar el evento borrado de la cuenta del usuario
       }
     })
 }
