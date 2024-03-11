@@ -5,12 +5,12 @@
     </div>
 
     <div class="absolute-top-right q-pa-md" style="z-index: 1;">
-      <q-btn size="xl" padding="5px" flat round color="naranja" icon="img:src\assets\icons\person.svg"
+      <q-btn size="lg" padding="5px" flat round color="naranja" icon="fas fa-universal-access"
         @click="abrirMenuAccess()" />
-      <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none">
+      <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none" auto-close>
         <template v-slot:label>
           <div class="row absolute-center">
-            <q-icon size="lg" name="img:src\assets\icons\globe.svg" />
+            <q-icon size="md" name="fas fa-globe" />
           </div>
         </template>
         <q-list>
@@ -92,6 +92,8 @@ function ajusteDislexia() {
       elemento.classList.remove('openDyslexic-regular');
     });
   }
+
+  window.localStorage.setItem("dislexia", modoDislexia.value)
 }
 
 function ajusteEpilepsia() {
@@ -102,12 +104,15 @@ function ajusteEpilepsia() {
   } else {
     document.querySelector('html').classList.remove('filtro-epilepsia');
   }
+
+  window.localStorage.setItem("epilepsia", modoEpilepsia.value)
 }
 
 watch(modoTDAH, (nuevoValor) => {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.display = nuevoValor ? 'block' : 'none';
   document.addEventListener('mousemove', moverEnfoque);
+  window.localStorage.setItem("tdah", nuevoValor)
 });
 
 function moverEnfoque(event) {

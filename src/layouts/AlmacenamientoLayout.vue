@@ -15,7 +15,7 @@
           @click="$router.push('/plataformaEducativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          Tu calendario
+          Tu almacenamiento
         </q-toolbar-title>
         <q-btn flat round icon="fas fa-universal-access"
                @click="abrirMenuAccess()"/>

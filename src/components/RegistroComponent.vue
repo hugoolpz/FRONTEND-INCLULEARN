@@ -5,13 +5,13 @@
                 {{ $t('etqReg2') }}
             </div>
             <div class="row flex-center">
-                <q-input outlined rounded color="morado" class="adventPro-regular" v-model="nombre" type="text"
+                <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="nombre" type="text"
                     :label="$t('labNombre')" style="width: 200px" />
                 <q-space class="q-mx-sm" />
-                <q-input outlined rounded color="morado" class="adventPro-regular" v-model="apellidos" type="text"
+                <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="apellidos" type="text"
                     :label="$t('labApellidos')" style="width: 360px" />
             </div>
-            <q-input outlined rounded color="morado" class="adventPro-regular" v-model="correo" type="text"
+            <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="correo" type="text"
                 :label="$t('labCorreo')" style="max-width: 600px" />
             <div class="row">
                 <div class="col-3 flex flex-start">
@@ -22,14 +22,14 @@
                 </div>
                 <div class="col q-gutter-md">
                     <div class="row">
-                        <q-file outlined rounded color="morado" class="adventPro-regular" v-model="fotoPerfil" type="file"
-                            :label="$t('labFoto')" style="width: 231px" @update:model-value="console.log(fotoPerfil)">
+                        <q-file outlined rounded use-chips accept=".jpg,.png,.gif" color="morado" class="alumniSans-regular text-body1" v-model="fotoPerfil" type="file"
+                            :label="$t('labFoto')" style="width: 231px" @update:model-value="console.log(fotoPerfil)" @rejected="alRechazar">
                             <template v-slot:append>
                                 <q-icon name="fas fa-file-arrow-up" class="cursor-pointer" />
                             </template>
                         </q-file>
                         <q-space class="q-mx-sm" />
-                        <q-input outlined rounded v-model="fecha" class="adventPro-regular" type="text"
+                        <q-input outlined rounded v-model="fecha" class="alumniSans-regular text-body1" type="text"
                             :label="$t('labFecha')" color="morado" style="width: 184px">
                             <template v-slot:append>
                                 <q-icon name="fas fa-calendar-days" class="cursor-pointer">
@@ -46,14 +46,14 @@
                             </template>
                         </q-input>
                     </div>
-                    <q-input outlined rounded color="morado" class="adventPro-regular" v-model="contra" type="password"
+                    <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="contra" type="password"
                         :label="$t('labContra')" />
                 </div>
             </div>
             <q-space class="q-mt-md" />
             <div class="column flex-center">
                 <q-space class="q-mt-md" />
-                <q-btn :label="$t('etqCrearCuenta')" rounded type="submit" size="lg" style="width: 300px" color="morado"
+                <q-btn :label="$t('etqCrearCuenta')" rounded type="submit" size="lg" style="width: 300px; letter-spacing: 0.10rem;" color="morado"
                     class="adventPro-regular text-weight-bold" />
             </div>
             <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
@@ -152,4 +152,19 @@ function quitarCeroDelMes(fechaMandada) {
     let fechaSinCero = `${dia}/${mes}/${ano}`;
     fecha.value = fechaSinCero
 }
+
+function alRechazar (entries) {
+  if (entries.length > 0) {
+    switch (entries[0].failedPropValidation) {
+      case 'max-file-size':
+        this.$q.notify({
+          position: 'top',
+          type: 'negative',
+          message: 'El archivo excede el límite de 5MB'
+        })
+
+        break
+    }
+  }
+  }
 </script>

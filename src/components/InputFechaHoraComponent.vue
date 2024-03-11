@@ -1,5 +1,5 @@
 <template>
-  <q-input filled :label="label" v-model="fechaHora" color="naranja-claro">
+  <q-input filled :label="label" v-model="fechaHora" color="naranja-claro" class="alumniSans-regular text-body1">
     <template v-slot:prepend>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy cover transition-show="scale" transition-hide="scale">

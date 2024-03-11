@@ -10,12 +10,12 @@
       @datetime-was-clicked="alClickarIntervalo"
       @edit-event="editarEvento"
       @delete-event="eliminarEvento"
-      class="cursor-pointer"
+      class="cursor-pointer adventPro-semiBold"
     />
     <q-dialog v-model="crearMarca">
       <q-card style="max-width: 400px; width: 100%">
         <q-toolbar class="bg-naranja">
-          <q-toolbar-title class="text-white">Añadir evento</q-toolbar-title>
+          <q-toolbar-title class="text-white adventPro-semiBold">Añadir evento</q-toolbar-title>
           <q-btn flat round dense icon="fas fa-xmark" color="white" v-close-popup />
         </q-toolbar>
 
@@ -23,11 +23,11 @@
           <q-form
             @submit="crearEvento"
             @reset="onReset"
-            class="q-gutter-md"
+            class="q-gutter-lg"
           >
             <q-input
               filled
-              class="no-padding"
+              class="no-padding alumniSans-regular text-body1"
               v-model="titulo"
               label="Título"
               lazy-rules
@@ -36,7 +36,7 @@
             />
             <q-input
               filled
-              class="no-padding"
+              class="no-padding alumniSans-regular text-body1"
               v-model="detalles"
               label="Detalles"
               lazy-rules
@@ -46,8 +46,8 @@
             />
             <input-fecha-hora-component v-model="fechaInicio" label="Fecha de inicio"></input-fecha-hora-component>
             <input-fecha-hora-component v-model="fechaFin" label="Fecha de fin"></input-fecha-hora-component>
-            <div class="text-body1 text-underline">Elige el color de tu evento:</div>
-            <div class="row flex-center q-mb-lg">
+            <div class="text-body1 adventPro-semiBold">Elige el color de tu evento:</div>
+            <div class="row flex-center">
               <div class="col-auto"><chip-calendario-component color="azul-cal" contenido="Azul" @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component></div>
               <div class="col-auto"><chip-calendario-component color="amarillo-cal" contenido="Amarillo" @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component></div>
               <div class="col-auto"><chip-calendario-component color="verde-cal" contenido="Verde" @al-clickar="cambiarColorEvento('green')"></chip-calendario-component></div>
@@ -58,8 +58,8 @@
               <div class="col-auto"><chip-calendario-component color="cafe-cal" contenido="Café" @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component></div>
             </div>
             <div align="right">
-              <q-btn label="Crear" type="submit" color="naranja"/>
-              <q-btn label="Cancelar" type="reset" color="naranja-claro" flat class="q-ml-sm" v-close-popup/>
+              <q-btn label="Crear" type="submit" color="naranja" class="adventPro-semiBold"/>
+              <q-btn label="Cancelar" type="reset" color="naranja-claro" flat class="q-ml-sm adventPro-semiBold" v-close-popup/>
             </div>
           </q-form>
         </q-card-section>

@@ -11,7 +11,7 @@ export default {
   labCorreo: "Correo",
   labFoto: "Foto de perfil",
   labFecha: "Fecha de nacimiento",
-  labContra: "Contra",
+  labContra: "Contraseña",
   etqCrearCuenta: "Crear cuenta",
   etqHaciaInic: "¿Ya tienes cuenta?",
   etqHaciaReg: "¿No tienes cuenta?",

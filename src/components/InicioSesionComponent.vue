@@ -12,9 +12,9 @@
                     </q-avatar>
                 </div>
                 <div class="col-6 q-gutter-md">
-                    <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="correo"
+                    <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="correo"
                         type="text" :label="$t('labCorreo')" style="width: 425px" :error="correoErroneo" />
-                    <q-input hide-bottom-space outlined rounded color="morado" class="adventPro-regular" v-model="contra"
+                    <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="contra"
                         type="password" :label="$t('labContra')" style="width: 425px" :error="contraErronea" />
                 </div>
             </div>
@@ -27,7 +27,7 @@
                     </div>
                 </GoogleLogin>
                 <q-space class="q-mt-md" />
-                <q-btn :label="$t('etqInic1')" rounded type="submit" size="lg" style="width: 300px" color="morado"
+                <q-btn :label="$t('etqInic1')" rounded type="submit" size="lg" style="width: 300px; letter-spacing: 0.10rem;" color="morado"
                     class="adventPro-regular text-weight-bold" />
             </div>
             <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">

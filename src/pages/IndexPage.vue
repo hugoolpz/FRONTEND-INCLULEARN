@@ -19,7 +19,7 @@
         <q-space class="q-mb-md" />
         <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
           enter-active-class="anim-dur-1s">
-          <div style="font-size: 40px;" class="text-morado text-left text-h4 q-ml-sm alumniSans-light">
+          <div style="font-size: 2rem;" class="text-morado text-left text-h4 q-ml-sm alumniSans-light">
             {{ $t('subtInicio') }}
           </div>
         </transition>
@@ -27,7 +27,7 @@
           enter-active-class="anim-dur-1s">
           <div>
             <div class="text-azul-oscuro text-h5 q-ml-sm text-justify alumniSans-regular"
-              style="max-width: 530px; line-height: 1.2em">
+              style="max-width: 530vw; line-height: 1.2em">
               {{ $t('resInicio') }}
             </div>
           </div>

@@ -57,14 +57,14 @@
                 </q-card>
             </div>
             <div class="col">
-                <q-card class="tarjeta-funcion-plat bg-image-logo" v-ripple @click="router.push({ path: '/calendario' })">
+                <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer" v-ripple @click="$router.push({ path: '/calendario' })">
                     <div class="text-h4 text-white q-my-sm q-ml-md adventPro-semiBold absolute-bottom text-left">
                         CALENDARIO
                     </div>
                 </q-card>
             </div>
             <div class="col">
-                <q-card class="tarjeta-funcion-plat bg-image-logo">
+                <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer" v-ripple @click="$router.push({ path: '/almacenamiento' })">
                     <div class="text-h4 text-white q-my-sm q-ml-md adventPro-semiBold absolute-bottom text-left">
                         ALMACENAMIENTO
                     </div>
@@ -76,7 +76,5 @@
 
 <script setup>
 import { ref } from 'vue'
-import {useRouter} from "vue-router";
 const grupos = ref(false)
-const router = useRouter()
 </script>
