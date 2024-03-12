@@ -151,6 +151,19 @@
   background: rgb(169, 99, 30) !important;
 }
 
+.tarjeta-archivo{
+  width: 100%;
+  max-width: 280px;
+  min-width: 280px;
+  max-height: 250px;
+  min-height: 200px;
+  transition: 0.75s all;
+}
+
+.tarjeta-archivo:hover {
+  transform: scale(1.05);
+  transition: 0.75s all;
+}
 
 .tarjeta-funcion-plat {
   display: block;

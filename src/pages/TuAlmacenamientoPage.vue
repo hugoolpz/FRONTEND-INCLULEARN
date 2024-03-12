@@ -50,9 +50,10 @@
         field-name="filename"
         label="Sube tus archivos"
         color="morado"
-        accept=".pdf, .docx, .ppt, image/*"
-        max-file-size="10485760"
+        accept=".pdf, .docx, .ppt, image/*, .zip, .csb, video/*, audio/*"
+        max-file-size="25000000"
         @uploaded="onFileUploaded"
+        @rejected="alRechazar"
       >
 
         <template v-slot:header="scope">
@@ -83,13 +84,53 @@
         </template>
       </q-uploader>
     </div>
+
+    <div class="q-gutter-md row q-mt-md">
+      <div v-for="archivo in archivos">
+        <tarjeta-archivo-component :nombre="archivo.nombre" :ult-act="new Date(archivo.fechaAct).toLocaleDateString()" :url="archivo.url" :tipo="archivo.contentType"
+                                   :size="archivo.tamano" @descargar="descargarArchivo(archivo.url)" @compartir="copiarUrl(archivo.url)" @borrar="abrirElim(archivo.nombre)"></tarjeta-archivo-component>
+      </div>
+    </div>
+
+    <q-dialog v-model="confirmarElim" persistent>
+      <q-card>
+        <q-toolbar class="bg-warning text-white">
+          <q-avatar>
+            <q-icon name="fas fa-warning"></q-icon>
+          </q-avatar>
+
+          <q-toolbar-title>¡AVISO DE ELIMINACIÓN!</q-toolbar-title>
+        </q-toolbar>
+
+        <q-card-section>
+          ¿Seguro que quieres borrar el archivo <span class="text-weight-bold">{{nomElim}}</span>?
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn
+            v-close-popup
+            color="positive"
+            flat
+            label="Sí, eliminar"
+            @click="eliminarElegido()"
+          />
+          <q-btn v-close-popup color="negative" flat label="No, conservar"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {today} from "@quasar/quasar-ui-qcalendar";
 import {useQuasar} from "quasar";
+import api from "boot/httpSingleton";
+import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
+
+const localStorage = window.localStorage
+const infoUsuario = JSON.parse(localStorage.infoUsuario)
+const urlApi = api
 
 const $q = useQuasar()
 
@@ -125,11 +166,112 @@ const fechasMod = [
 ]
 const fechaElegida = ref()
 
-function factoryFn (files) {
+const archivo = ref(null)
+const archivos = ref([])
+
+const confirmarElim = ref(false)
+const nomElim = ref()
+
+onMounted(() => {
+  obtenerArchivos()
+})
+
+function alRechazar(rejectedEntries){
+  console.log(rejectedEntries)
+}
+
+function factoryFn () {
   return {
     url: 'http://localhost:3000/api/storage/' + JSON.parse(window.localStorage.getItem("infoUsuario"))._id,
     method: 'POST',
   }
+}
+
+function abrirElim(nombreElegido) {
+  confirmarElim.value = true;
+  nomElim.value = nombreElegido
+}
+
+async function eliminarElegido() {
+  await fetch(`${urlApi}/storage/${infoUsuario._id}/${nomElim.value}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then((res) => res.json())
+    .then((datos) => {
+      if (!datos.exito) {
+        $q.notify({
+          progress: true,
+          message: "No se pudo eliminar el archivo " + nomElim.value,
+          color: "negative",
+          timeout: 1000,
+        });
+      } else {
+        $q.notify({
+          progress: true,
+          message: "Se ha eliminado el archivo " + nomElim.value,
+          color: "positive",
+          timeout: 1000,
+        });
+
+        obtenerArchivos()
+      }
+    });
+}
+
+function descargarArchivo(url) {
+  window.open(url, "_blank")
+}
+function copiarUrl(url) {
+  navigator.clipboard.writeText(url)
+
+  $q.notify({
+    message: '¡Se ha copiado al portapapeles la URL del archivo!',
+    color: 'positive',
+    position: 'bottom',
+    timeout: 500,
+    progress: true,
+    icon: 'fas fa-circle-check',
+  });
+}
+async function obtenerArchivos() {
+  archivos.value.length = 0
+  await fetch(`${urlApi}/storage/${infoUsuario._id}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    }
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito){
+        $q.notify({
+          message: "¡Hubo un error al intentar obtener tus eventos!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        datos.files.forEach((archivo) => {
+          let nuevoArchivo = {
+            nombre: archivo.name,
+            url: archivo.downloadURL,
+            contentType: archivo.contentType,
+            tamano: archivo.size,
+            fechaCreacion: archivo.created,
+            fechaAct: archivo.updated,
+          }
+          archivos.value.push(nuevoArchivo)
+        })
+      }
+    })
+  console.log(archivos.value)
 }
 
 const onFileUploaded = () => {
@@ -141,5 +283,11 @@ const onFileUploaded = () => {
     progress: true,
     icon: 'fas fa-circle-check',
   });
+
+  obtenerArchivos()
+
+  setTimeout(function () {
+    archivo.value.removeUploadedFiles()
+  }, 500)
 };
 </script>

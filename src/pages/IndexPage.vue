@@ -6,7 +6,7 @@
           enter-active-class="anim-dur-1s">
           <div>
             <div class="column relative-position" style="left: 158px; top: 5px">
-              <img src="src\assets\gorro-logo.png" style="width: 210px" alt="" />
+              <img src="/gorro-logo.png" style="width: 210px" alt="" />
             </div>
             <div class="text-azul-oscuro text-left text-h1 adventPro-semiBold" style="
               text-shadow: 0 3px 3px rgba(137, 137, 137, 0.75);

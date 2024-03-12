@@ -181,8 +181,8 @@ function cambiarColorEvento(color){
   });
 }
 
-function crearEvento() {
-  fetch(`${urlApi}/marcasTiempo`, {
+async function crearEvento() {
+  await fetch(`${urlApi}/marcasTiempo`, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -247,8 +247,8 @@ function crearEvento() {
   crearMarca.value = false
 }
 
-function editarEvento(data){
-  fetch(`${urlApi}/marcasTiempo/${data}`, {
+async function editarEvento(data){
+  await fetch(`${urlApi}/marcasTiempo/${data}`, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
@@ -278,8 +278,8 @@ function editarEvento(data){
     })
 }
 
-function actualizarEventoElegido(){
-  fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
+async function actualizarEventoElegido(){
+  await fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
     method: "PUT",
     headers: {
       'Content-Type': 'application/json',
@@ -319,8 +319,8 @@ function actualizarEventoElegido(){
     })
 }
 
-function moverEventoManualmente(data){
-  fetch(`${urlApi}/marcasTiempo/${data.id}`, {
+async function moverEventoManualmente(data){
+  await fetch(`${urlApi}/marcasTiempo/${data.id}`, {
     method: "PUT",
     headers: {
       'Content-Type': 'application/json',
@@ -356,8 +356,8 @@ function moverEventoManualmente(data){
     })
 }
 
-function eliminarEvento(data){
-  fetch(`${urlApi}/marcasTiempo/${data}`, {
+async function eliminarEvento(data){
+  await fetch(`${urlApi}/marcasTiempo/${data}`, {
     method: "DELETE",
     headers: {
       'Content-Type': 'application/json',
@@ -413,9 +413,9 @@ function eliminarEvento(data){
     })
 }
 
-function actualizarEventos() {
+async function actualizarEventos() {
   eventos.value.length = 0
-  fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+  await fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
     method: "GET",
     headers: {
       'Content-Type': 'application/json',
