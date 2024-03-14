@@ -50,7 +50,7 @@
         field-name="filename"
         label="Sube tus archivos"
         color="morado"
-        accept=".pdf, .docx, .ppt, image/*, .zip, .csb, video/*, audio/*"
+        accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*"
         max-file-size="25000000"
         @uploaded="onFileUploaded"
         @rejected="alRechazar"
@@ -103,7 +103,7 @@
         </q-toolbar>
 
         <q-card-section>
-          ¿Seguro que quieres borrar el archivo <span class="text-weight-bold">{{nomElim}}</span>?
+          ¿Seguro que quieres borrar el archivo: <span class="text-weight-bold">{{nomElim}}</span>?
         </q-card-section>
 
         <q-card-actions align="right">

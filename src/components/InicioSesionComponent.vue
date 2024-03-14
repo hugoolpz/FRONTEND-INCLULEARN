@@ -1,43 +1,45 @@
 <template>
-    <div class="row flex-center q-mt-xl q-pt-xl" key="form">
-        <q-form @submit="iniciarSesion" class="q-gutter-y-md">
-            <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
-                {{ $t('etqInic1') }}
+  <div class="q-mt-xl q-pt-xl">
+    <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
+      {{ $t('etqInic2') }}
+    </div>
+    <div class="column flex-center">
+      <div class="row formInic q-mt-md">
+        <div class="col">
+          <q-form
+            @submit="iniciarSesion"
+            @reset="onReset"
+            class="q-gutter-md row flex-center">
+            <div class="col-12 flex flex-center">
+              <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="correo"
+                       type="text" :label="$t('labCorreo')" style="width: 75%" :error="correoErroneo" />
             </div>
-            <div class="row q-gutter-x-md">
-                <div class="col-2 flex flex-center">
-                    <q-avatar size="130px">
-                        <img class="rounded-borders" style="border: 1px solid #824b86;" alt="foto de perfil"
-                            src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png" />
-                    </q-avatar>
+            <div class="col-12 flex flex-center">
+              <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="contra"
+                       type="password" :label="$t('labContra')" style="width: 75%" :error="contraErronea" />
+            </div>
+            <div class="col-10 flex flex-center">
+              <GoogleLogin :callback="callback">
+                <div class="text-h6 text-azul-oscuro adventPro-regular cursor-pointer hover-underline-animation q-mb-md"
+                     align="center">
+                  {{ $t('etqInicGoogle') }}
+                  <q-icon name="img:src\assets\icons\google.svg" size="25px" />
                 </div>
-                <div class="col-6 q-gutter-md">
-                    <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="correo"
-                        type="text" :label="$t('labCorreo')" style="width: 425px" :error="correoErroneo" />
-                    <q-input hide-bottom-space outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="contra"
-                        type="password" :label="$t('labContra')" style="width: 425px" :error="contraErronea" />
-                </div>
-            </div>
-            <div class="column flex-center">
-                <GoogleLogin :callback="callback">
-                    <div class="text-h6 text-azul-oscuro adventPro-regular cursor-pointer hover-underline-animation"
-                        align="center">
-                        {{ $t('etqInicGoogle') }}
-                        <q-icon name="img:src\assets\icons\google.svg" size="25px" />
-                    </div>
-                </GoogleLogin>
-                <q-space class="q-mt-md" />
-                <q-btn :label="$t('etqInic1')" rounded type="submit" size="lg" style="width: 300px; letter-spacing: 0.10rem;" color="morado"
-                    class="adventPro-regular text-weight-bold" />
-            </div>
-            <div class="text-h6 text-azul-oscuro adventPro-regular q-mt-md" align="center">
+              </GoogleLogin>
+              <q-btn :label="$t('etqInic1')" rounded type="submit" size="lg" style="width: 100%; letter-spacing: 0.10rem;" color="morado"
+                     class="adventPro-regular text-weight-bold q-mb-md" />
+              <div class="text-h6 text-azul-oscuro adventPro-regular q-mb-sm" align="center">
                 {{ $t('etqHaciaReg') }}
                 <span class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirRegistro')">
                     {{ $t('etqReg2') }}
                 </span>
+              </div>
             </div>
-        </q-form>
+          </q-form>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -165,3 +167,18 @@ function iniciarSesion() {
         })
 }
 </script>
+
+<style scoped>
+@media screen and (max-width: 576px) {
+  .formInic {
+    width: 100%;
+  }
+}
+
+/* Estilos para pantallas medianas y grandes */
+@media screen and (min-width: 577px) {
+  .formInic {
+    width: 50%;
+  }
+}
+</style>

@@ -16,6 +16,7 @@
 
     <div class="flex flex-center q-pa-lg bg-white" style="max-height: 100px">
       <q-icon v-if="tipo === 'application/pdf'" size="xl" name="fas fa-file-lines" style="color: #EA4335"></q-icon>
+      <q-icon v-if="tipo === 'text/csv'" size="xl" name="fas fa-file-csv" color="green"></q-icon>
       <q-icon v-else-if="tipo.includes('image')" size="xl" name="fas fa-file-image" style="color: #D93025"></q-icon>
       <q-icon v-else-if="tipo.includes('audio')" size="xl" name="fas fa-file-audio" color="morado"></q-icon>
       <q-icon v-else-if="tipo.includes('video')" size="xl" name="fas fa-file-video" color="naranja-claro"></q-icon>

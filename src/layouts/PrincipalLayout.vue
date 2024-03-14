@@ -4,13 +4,13 @@
       <div id="linea-central"></div>
     </div>
 
-    <div class="absolute-top-right q-pa-md" style="z-index: 1;">
-      <q-btn size="lg" padding="5px" flat round color="naranja" icon="fas fa-universal-access"
-        @click="abrirMenuAccess()" />
+    <div class="absolute-top-right q-pa-md" style="z-index: 2;">
+      <q-btn size="md" padding="5px" flat round color="naranja" icon="fas fa-universal-access"
+        @click="abrirMenuAccess()" class="botonAccess" />
       <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none" auto-close>
         <template v-slot:label>
           <div class="row absolute-center">
-            <q-icon size="md" name="fas fa-globe" />
+            <q-icon size="sm" name="fas fa-globe" />
           </div>
         </template>
         <q-list>
@@ -32,9 +32,9 @@
       </q-btn-dropdown>
     </div>
 
-    <q-drawer v-model="menuIzq" :width="400" :breakpoint="500" behavior="mobile">
+    <q-drawer v-model="menuIzq" :width="350" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <div style="height: 80px;" class="bg-morado text-h3 text-white flex flex-center alumniSans-regular">Ajustes de accesibilidad</div>
+        <div style="height: 80px;" class="bg-morado text-h4 text-white flex flex-center alumniSans-regular">Ajustes de accesibilidad</div>
         <q-list class="q-mt-sm" separator="">
           <list-item-access :titulo-ajuste="$t('titAjDislexia')" :subt-ajuste="$t('subtAjDislexia')" icono="fas fa-font"
             @al-activar="ajusteDislexia()"></list-item-access>
@@ -119,5 +119,18 @@ function moverEnfoque(event) {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.top = (event.pageY - enfoqueElemento.offsetHeight / 30) + 'px';
 }
-
 </script>
+
+<style scoped>
+@media screen and (max-width: 576px) {
+  .botonAccess {
+    display: none;
+  }
+}
+
+/* Estilos para pantallas medianas y grandes */
+@media screen and (min-width: 577px) {
+  .botonAccess {
+  }
+}
+</style>
