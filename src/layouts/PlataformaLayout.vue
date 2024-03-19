@@ -1,25 +1,16 @@
 <template>
-  <div id="enfoque" :style="{ display: modoTDAH ? 'block' : 'none'}">
-    <div id="linea-central"></div>
-  </div>
+  <q-layout>
+    <div id="enfoque" :style="{ display: modoTDAH ? 'block' : 'none'}">
+      <div id="linea-central"></div>
+    </div>
 
-  <q-layout view="hHh lpR fFf">
-
-    <q-header elevated class="bg-naranja text-white">
-      <q-toolbar>
-        <q-btn
-          flat
-          class="bg-white"
-          color="naranja"
-          icon="fas fa-home"
-          @click="$router.push('/plataformaEducativa')"
-        />
-        <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          {{$t('tuCalendario')}}
-        </q-toolbar-title>
-        <q-btn flat round icon="fas fa-universal-access"
-               @click="abrirMenuAccess()"/>
-        <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
+    <q-header class="bg-transparent">
+      <q-toolbar class="q-pt-sm">
+        <img src="/logo-inclu.png" alt="logo-hacia-inicio" style="width: 5em" class="cursor-pointer shrink" @click="$router.push('/')">
+        <q-toolbar-title></q-toolbar-title>
+        <q-btn size="md" padding="5px" flat round color="naranja" icon="fas fa-universal-access"
+               @click="abrirMenuAccess()" class="boton-access" />
+        <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none" auto-close>
           <template v-slot:label>
             <div class="row absolute-center">
               <q-icon size="sm" name="fas fa-globe" class="boton-mundo"/>
@@ -47,14 +38,14 @@
 
     <q-drawer v-model="menuIzq" :width="400" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <div style="height: 80px;" class="bg-morado text-h3 text-white flex flex-center alumniSans-regular">{{$t('titAccess')}}</div>
+        <div style="height: 80px;" class="bg-morado text-h4 text-white flex flex-center alumniSans-regular">{{$t('titAccess')}}</div>
         <q-list class="q-mt-sm" separator="">
           <list-item-access :titulo-ajuste="$t('titAjDislexia')" :subt-ajuste="$t('subtAjDislexia')" icono="fas fa-font"
-                            @al-activar="ajusteDislexia()"></list-item-access>
+            @al-activar="ajusteDislexia()"></list-item-access>
           <list-item-access :titulo-ajuste="$t('titAjEpilepsia')" :subt-ajuste="$t('subtAjEpilepsia')"
-                            icono="fas fa-eye-low-vision" @al-activar="ajusteEpilepsia"></list-item-access>
+            icono="fas fa-eye-low-vision" @al-activar="ajusteEpilepsia"></list-item-access>
           <list-item-access :titulo-ajuste="$t('titAjTDAH')" :subt-ajuste="$t('subtAjTDAH')" icono="fas fa-arrows-to-eye"
-                            @al-activar="modoTDAH = !modoTDAH"></list-item-access>
+            @al-activar="modoTDAH = !modoTDAH"></list-item-access>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -62,28 +53,30 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
   </q-layout>
 </template>
 
 <script setup>
-import ListItemIdioma from "components/ListItemIdiomaComponent.vue";
-import { today } from '@quasar/quasar-ui-qcalendar/src/index.js'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
-import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
-import {ref, watch} from "vue";
-import {useI18n} from "vue-i18n";
-import { DatePicker } from "qalendar";
-import ListItemAccess from "components/ListItemAccessComponent.vue";
-document.body.style.overflow = "scroll"
+import ListItemAccess from 'src/components/ListItemAccessComponent.vue';
+import ListItemIdioma from 'src/components/ListItemIdiomaComponent.vue';
+import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 const idioma = ref(false)
-const menuIzq = ref(false)
 const { locale } = useI18n()
+const menuIzq = ref(false)
 
 //Accesibilidad
 const modoDislexia = ref(false)
 const modoEpilepsia = ref(false)
 const modoTDAH = ref(false);
+
+//Funciones
+function cambiarIdioma(idioma) {
+  locale.value = idioma
+}
+
 function abrirMenuAccess() {
   menuIzq.value = !menuIzq.value
   console.log(menuIzq.value)
@@ -130,9 +123,25 @@ function moverEnfoque(event) {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.top = (event.pageY - enfoqueElemento.offsetHeight / 30) + 'px';
 }
+</script>
 
-function cambiarIdioma(idioma) {
-  locale.value = idioma
+<style scoped>
+@media screen and (max-width: 576px) {
+  .boton-access {
+    display: none;
+  }
+
+  .boton-mundo {
+
+  }
 }
 
-</script>
+/* Estilos para pantallas medianas y grandes */
+@media screen and (min-width: 577px) {
+  .boton-access {
+  }
+
+  .boton-mundo {
+  }
+}
+</style>

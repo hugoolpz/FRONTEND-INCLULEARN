@@ -5,7 +5,7 @@
     <q-item style="height: 80px" class="bg-grey-2">
       <q-item-section>
         <q-item-label overline class="text-morado">{{bytesToMB(size)}}</q-item-label>
-        <q-item-label class="text-weight-bold">{{nombre.slice(0, 35) + "..."}}</q-item-label>
+        <q-item-label class="text-weight-bold">{{acortarNombre()}}</q-item-label>
         <q-item-label caption>
           Últ. actualización: {{ultAct}}
         </q-item-label>
@@ -44,5 +44,13 @@ function bytesToMB(bytes) {
   if (bytes === 0) return '0 MB';
   const megabytes = bytes / (1024 * 1024);
   return megabytes.toFixed(2) + ' MB';
+}
+
+function acortarNombre() {
+  if (props.nombre.length <= 35) {
+    return props.nombre;
+  } else {
+    return props.nombre.slice(0, 35) + "...";
+  }
 }
 </script>

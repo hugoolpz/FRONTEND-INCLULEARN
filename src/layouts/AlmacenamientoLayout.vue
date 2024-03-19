@@ -4,27 +4,49 @@
   </div>
 
   <q-layout view="hHh lpR fFf">
-
     <q-header elevated class="bg-naranja text-white">
       <q-toolbar>
         <q-btn
           flat
           class="bg-white"
           color="naranja"
-          icon="fas fa-graduation-cap"
+          icon="fas fa-home"
           @click="$router.push('/plataformaEducativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          Tu almacenamiento
+          {{$t('tusArchivos')}}
         </q-toolbar-title>
         <q-btn flat round icon="fas fa-universal-access"
                @click="abrirMenuAccess()"/>
+        <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
+          <template v-slot:label>
+            <div class="row absolute-center">
+              <q-icon size="sm" name="fas fa-globe" class="boton-mundo"/>
+            </div>
+          </template>
+          <q-list>
+            <q-scroll-area style="width: 160px; height: 112px;">
+              <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
+                                @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
+              <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
+                                @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
+              <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
+                                @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
+              <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
+                                @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
+              <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
+                                @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
+              <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
+                                @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
+            </q-scroll-area>
+          </q-list>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
 
     <q-drawer v-model="menuIzq" :width="400" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <div style="height: 80px;" class="bg-morado text-h3 text-white flex flex-center alumniSans-regular">Ajustes de accesibilidad</div>
+        <div style="height: 80px;" class="bg-morado text-h3 text-white flex flex-center alumniSans-regular">{{$t('titAccess')}}</div>
         <q-list class="q-mt-sm" separator="">
           <list-item-access :titulo-ajuste="$t('titAjDislexia')" :subt-ajuste="$t('subtAjDislexia')" icono="fas fa-font"
                             @al-activar="ajusteDislexia()"></list-item-access>
@@ -55,6 +77,7 @@ import ListItemAccess from "components/ListItemAccessComponent.vue";
 document.body.style.overflow = "scroll"
 const idioma = ref(false)
 const menuIzq = ref(false)
+const { locale } = useI18n()
 
 //Accesibilidad
 const modoDislexia = ref(false)
@@ -107,4 +130,7 @@ function moverEnfoque(event) {
   enfoqueElemento.style.top = (event.pageY - enfoqueElemento.offsetHeight / 30) + 'px';
 }
 
+function cambiarIdioma(idioma) {
+  locale.value = idioma
+}
 </script>

@@ -1,51 +1,55 @@
 <template>
   <div class="q-mt-lg">
-    <div class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase" align="center">
+    <div align="center" class="text-h4 text-azul-oscuro adventPro-semiBold text-uppercase">
       {{ $t('etqReg2') }}
     </div>
     <div class="column flex-center">
       <div class="row flex-center formReg q-mt-md">
         <div class="col">
           <q-form
-            @submit="registrarse"
+            class="q-gutter-md row flex-center"
             @reset="onReset"
-            class="q-gutter-md row flex-center">
+            @submit="registrarse">
             <div class="col-4">
-              <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="nombre" type="text"
-                       :label="$t('labNombre')"/>
+              <q-input v-model="nombre" :label="$t('labNombre')" class="alumniSans-regular text-body1" color="morado" outlined
+                       rounded
+                       type="text"/>
             </div>
             <div class="col-6">
-              <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="apellidos" type="text"
-                       :label="$t('labApellidos')" />
+              <q-input v-model="apellidos" :label="$t('labApellidos')" class="alumniSans-regular text-body1" color="morado" outlined
+                       rounded
+                       type="text"/>
             </div>
             <div class="col-10">
-              <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="correo" type="text"
-                       :label="$t('labCorreo')" />
+              <q-input v-model="correo" :label="$t('labCorreo')" class="alumniSans-regular text-body1" color="morado" outlined
+                       rounded
+                       type="text"/>
             </div>
             <div class="col-2 q-mr-lg">
               <q-avatar class="avatar">
-                <img style="border: 1px solid #824b86;" alt="foto de perfil"
-                     src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png" />
+                <img alt="foto de perfil" src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png"
+                     style="border: 1px solid #824b86;"/>
               </q-avatar>
             </div>
             <div class="col-7">
-              <q-file outlined rounded use-chips accept=".jpg,.png,.gif" color="morado" class="alumniSans-regular text-body1" v-model="fotoPerfil" type="file"
-                      :label="$t('labFoto')" @update:model-value="console.log(fotoPerfil)" @rejected="alRechazar">
+              <q-file v-model="fotoPerfil" :label="$t('labFoto')" accept=".jpg,.png,.gif" class="alumniSans-regular text-body1" color="morado"
+                      outlined rounded type="file"
+                      use-chips @rejected="alRechazar" @update:model-value="console.log(fotoPerfil)">
                 <template v-slot:append>
-                  <q-icon name="fas fa-file-arrow-up" class="cursor-pointer" />
+                  <q-icon class="cursor-pointer" name="fas fa-file-arrow-up"/>
                 </template>
               </q-file>
               <q-space class="q-mt-md"></q-space>
-              <q-input outlined rounded v-model="fecha" class="alumniSans-regular text-body1" type="text"
-                       :label="$t('labFecha')" color="morado">
+              <q-input v-model="fecha" :label="$t('labFecha')" class="alumniSans-regular text-body1" color="morado" outlined
+                       rounded type="text">
                 <template v-slot:append>
-                  <q-icon name="fas fa-calendar-days" class="cursor-pointer">
-                    <q-popup-proxy cover transition-show="scale" transition-hide="scale"
+                  <q-icon class="cursor-pointer" name="fas fa-calendar-days">
+                    <q-popup-proxy cover transition-hide="scale" transition-show="scale"
                                    @show="ponerFechaActual()">
                       <q-date v-model="fechaInput" color="morado"
                               @update:model-value="quitarCeroDelMes(fechaInput)">
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="secundario" flat />
+                          <q-btn v-close-popup color="morado" flat label="Cerrar"/>
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -54,18 +58,21 @@
               </q-input>
             </div>
             <div class="col-10">
-              <q-input outlined rounded color="morado" class="alumniSans-regular text-body1" v-model="contra" type="password"
-                       :label="$t('labContra')" />
+              <q-input v-model="contra" :label="$t('labContra')" class="alumniSans-regular text-body1" color="morado" outlined
+                       rounded
+                       type="password"/>
             </div>
             <div class="col-auto">
-              <div class="text-h6 text-azul-oscuro adventPro-regular q-mb-sm" align="center">
+              <div align="center" class="text-h6 text-azul-oscuro adventPro-regular q-mb-sm">
                 {{ $t('etqHaciaInic') }}
-                <span class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirInicioSesion')">
+                <span class="cursor-pointer hover-underline-animation text-uppercase"
+                      @click="$emit('abrirInicioSesion')">
                     {{ $t('etqInic2') }}
                 </span>
               </div>
-              <q-btn :label="$t('etqCrearCuenta')" rounded type="submit" size="lg" style="width: 100%; letter-spacing: 0.10rem;" color="morado"
-                     class="adventPro-regular text-weight-bold" />
+              <q-btn :label="$t('etqCrearCuenta')" :loading="cargando" class="adventPro-regular text-weight-bold" color="morado"
+                     rounded size="lg"
+                     style="width: 100%; letter-spacing: 0.10rem;" type="submit"/>
             </div>
           </q-form>
         </div>
@@ -87,7 +94,7 @@ const fotoPerfil = ref()
 const fecha = ref("")
 const fechaInput = ref("")
 const contra = ref("")
-
+const cargando = ref(false)
 //URL de la API REST
 const urlApi = api
 
@@ -99,6 +106,7 @@ const emits = defineEmits(['abrirInicioSesion'])
 
 //Funciones
 function registrarse() {
+  cargando.value = true
   fetch(`${urlApi}/usuarios`, {
     method: "POST",
     headers: {
@@ -125,6 +133,7 @@ function registrarse() {
           progress: true,
           icon: "fas fa-circle-exclamation",
         });
+        cargando.value = false
       } else {
         $q.notify({
           message: "¡Te has registrado correctamente!",
@@ -134,7 +143,7 @@ function registrarse() {
           progress: true,
           icon: "fas fa-circle-check",
         });
-
+        cargando.value = false
         emits('abrirInicioSesion')
       }
     })

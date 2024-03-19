@@ -2,12 +2,35 @@
   background-image: url(src/assets/fondo-grafismos-inicio.png);
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
 }
 
 .bg-image-forms {
   background-image: url(src/assets/fondo-grafismos-forms.png);
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
+}
+
+.bg-clases {
+  background-image: url(/fondo-tarjeta-clases.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.bg-calendario {
+  background-image: url(/fondo-tarjeta-calendario.png);
+  background-repeat: no-repeat;
+  background-size: 350px;
+  background-position: center;
+}
+
+.bg-archivos {
+  background-image: url(/fondo-tarjeta-archivos.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 @font-face {
@@ -166,11 +189,8 @@
 }
 
 .tarjeta-funcion-plat {
-  display: block;
-  margin: auto;
-  width: 100%;
+  width: 330px;
   height: 500px;
-  max-width: 350px;
   transition: 0.75s all;
 }
 
@@ -233,3 +253,13 @@
   background-color: black;
 }
 
+.shrink {
+  transition: 1s ease;
+}
+
+.shrink:hover{
+  -webkit-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  transform: scale(0.8);
+  transition: 1s ease;
+}
