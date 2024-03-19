@@ -196,6 +196,7 @@ import InputColorComponent from "components/InputColorComponent.vue";
 import ChipCalendarioComponent from "components/ChipCalendarioComponent.vue";
 import {QSpinnerGears, QSpinnerHourglass, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
+import {useRouter} from "vue-router";
 
 const crearMarca = ref(false)
 const actMarca = ref(false)
@@ -210,13 +211,56 @@ const idEvento = ref("")
 
 const componentKey = ref(0);
 const localStorage = window.localStorage
-const infoUsuario = JSON.parse(localStorage.infoUsuario)
+let infoUsuario = null
+const router = useRouter()
+
+if (localStorage.infoUsuario){
+  infoUsuario = JSON.parse(localStorage.infoUsuario)
+}
+
 const urlApi = api
 const eventos = ref([])
 
 onMounted(() => {
-  actualizarEventos()
+  comprobarSesion()
 })
+
+async function comprobarSesion() {
+  if (localStorage.infoUsuario){
+    await fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(respuesta => respuesta.json())
+      .then(datos => {
+        if (!datos.datos) {
+          $q.notify({
+            message: "Este usuario no existe",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-xmark"
+          });
+          router.push({path: "/"})
+        } else {
+          actualizarEventos()
+        }
+      })
+  } else {
+    $q.notify({
+      message: "No tienes permisos para entrar ahí",
+      color: "negative",
+      position: "top",
+      timeout: 1000,
+      progress: true,
+      icon: "fas fa-xmark"
+    });
+    router.push({path: "/"})
+  }
+}
 
 function alClickarIntervalo(data) {
   crearMarca.value = true;

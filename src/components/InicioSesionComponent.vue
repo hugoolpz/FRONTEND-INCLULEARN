@@ -127,7 +127,7 @@ async function iniciarSesionConGoogle(datosGoogle) {
         localStorage.setItem("tokenPrivado", datos.token)
         cargando.value = false
         setTimeout(function () {
-          router.push({path: "/plataformaEducativa"})
+          router.push({path: "/plataforma-educativa"})
         }, 2000)
       }
     })
@@ -171,7 +171,7 @@ async function iniciarSesion() {
         localStorage.setItem("tokenPrivado", datos.token)
 
         setTimeout(function () {
-          router.push({path: "/plataformaEducativa"})
+          router.push({path: "/plataforma-educativa"})
         }, 2000)
       }
     })

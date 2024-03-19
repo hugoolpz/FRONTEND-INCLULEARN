@@ -59,6 +59,9 @@ import ListItemIdioma from 'src/components/ListItemIdiomaComponent.vue';
 import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+window.localStorage.clear()
+document.body.style.overflow = "hidden"
+
 const idioma = ref(false)
 const { locale } = useI18n()
 const menuIzq = ref(false)

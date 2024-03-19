@@ -70,19 +70,30 @@ import { today } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useI18n} from "vue-i18n";
 import { DatePicker } from "qalendar";
 import ListItemAccess from "components/ListItemAccessComponent.vue";
+import {QSpinnerGears, useQuasar} from "quasar";
+import api from 'src/boot/httpSingleton';
 document.body.style.overflow = "scroll"
 const idioma = ref(false)
 const menuIzq = ref(false)
 const { locale } = useI18n()
 
+const localStorage = window.localStorage
+
+//URL de la API REST
+const urlApi = api
+
+//Notify
+const $q = useQuasar()
+
 //Accesibilidad
 const modoDislexia = ref(false)
 const modoEpilepsia = ref(false)
 const modoTDAH = ref(false);
+
 function abrirMenuAccess() {
   menuIzq.value = !menuIzq.value
   console.log(menuIzq.value)

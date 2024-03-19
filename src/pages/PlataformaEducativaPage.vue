@@ -38,7 +38,62 @@
 </template>
 
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
+import api from "boot/httpSingleton";
+import {useRouter} from "vue-router";
+import {useQuasar} from "quasar";
 
-const grupos = ref(false)
+const localStorage = window.localStorage
+let infoUsuario = null
+
+if (localStorage.infoUsuario){
+  infoUsuario = JSON.parse(localStorage.infoUsuario)
+}
+
+const urlApi = api
+
+const router = useRouter()
+
+const $q = useQuasar()
+
+onMounted(() => {
+  comprobarSesion()
+})
+
+async function comprobarSesion() {
+  if (localStorage.infoUsuario){
+    await fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(respuesta => respuesta.json())
+      .then(datos => {
+        if (!datos.datos) {
+          $q.notify({
+            message: "Este usuario no existe",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-xmark"
+          });
+          router.push({path: "/"})
+        } else {
+          obtenerArchivos()
+        }
+      })
+  } else {
+    $q.notify({
+      message: "No tienes permisos para entrar ahí",
+      color: "negative",
+      position: "top",
+      timeout: 1000,
+      progress: true,
+      icon: "fas fa-xmark"
+    });
+    router.push({path: "/"})
+  }
+}
 </script>
