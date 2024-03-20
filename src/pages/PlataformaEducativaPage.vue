@@ -23,7 +23,7 @@
           </q-card>
         </div>
         <div class="col-auto col-md-auto col-sm-auto">
-          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-archivos" v-ripple @click="$router.push({ path: '/tu-almacenamiento' })" flat>
+          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-archivos" v-ripple @click="$router.push({ path: '/tus-archivos' })" flat>
             <q-card-section>
 
             </q-card-section>

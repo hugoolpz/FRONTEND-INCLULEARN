@@ -28,7 +28,7 @@
           >
             <q-input
               v-model="titulo"
-              :rules="[ val => val && val.length > 0 || $t('campReq')]"
+              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
               class="no-padding alumniSans-regular text-body1"
               color="naranja-claro"
               filled
@@ -37,7 +37,7 @@
             />
             <q-input
               v-model="detalles"
-              :rules="[ val => val && val.length > 0 || $t('campReq')]"
+              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
               autogrow
               class="no-padding alumniSans-regular text-body1"
               color="naranja-claro"
@@ -114,7 +114,7 @@
             />
             <q-input
               v-model="titulo"
-              :rules="[ val => val && val.length > 0 || $t('campReq')]"
+              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
               class="no-padding alumniSans-regular text-body1"
               color="naranja-claro"
               filled
@@ -123,7 +123,7 @@
             />
             <q-input
               v-model="detalles"
-              :rules="[ val => val && val.length > 0 || $t('campReq')]"
+              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
               autogrow
               class="no-padding alumniSans-regular text-body1"
               color="naranja-claro"

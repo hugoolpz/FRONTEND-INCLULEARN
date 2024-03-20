@@ -15,8 +15,16 @@
           @click="$router.push('/plataforma-educativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          {{$t('tuCalendario')}}
+          TUS CLASES
         </q-toolbar-title>
+        <q-btn
+          flat
+          class="bg-white q-mr-md"
+          color="naranja"
+          label="Unirse o crear equipo"
+          icon="fas fa-plus"
+          @click="nuevoGrupo = true"
+        />
         <q-btn flat round icon="fas fa-universal-access"
                @click="abrirMenuAccess()"/>
         <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
@@ -60,7 +68,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view v-model="nuevoGrupo"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -79,6 +87,8 @@ document.body.style.overflow = "scroll"
 const idioma = ref(false)
 const menuIzq = ref(false)
 const { locale } = useI18n()
+
+const nuevoGrupo = ref(false);
 
 //Accesibilidad
 const modoDislexia = ref(false)
@@ -134,5 +144,4 @@ function moverEnfoque(event) {
 function cambiarIdioma(idioma) {
   locale.value = idioma
 }
-
 </script>

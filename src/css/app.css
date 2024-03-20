@@ -188,6 +188,16 @@
   transition: 0.75s all;
 }
 
+.tarjeta-equipo {
+  width: 40vh;
+  transition: 0.75s all;
+}
+
+.tarjeta-equipo:hover {
+  transform: scale(1.05);
+  transition: 0.75s all;
+}
+
 .tarjeta-funcion-plat {
   width: 330px;
   height: 500px;

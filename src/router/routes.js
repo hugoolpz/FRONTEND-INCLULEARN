@@ -25,12 +25,22 @@ const routes = [
     ],
   },
   {
-    path: "/tu-almacenamiento",
+    path: "/tus-archivos",
     component: () => import("layouts/AlmacenamientoLayout.vue"),
     children: [
       {
         path: "",
         component: () => import("pages/TuAlmacenamientoPage.vue"),
+      },
+    ],
+  },
+  {
+    path: "/tus-clases",
+    component: () => import("layouts/ClasesLayout.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("pages/TusClasesPage.vue"),
       },
     ],
   },

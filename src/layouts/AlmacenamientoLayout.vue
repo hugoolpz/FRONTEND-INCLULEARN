@@ -11,7 +11,7 @@
           class="bg-white"
           color="naranja"
           icon="fas fa-home"
-          @click="$router.push('/plataformaEducativa')"
+          @click="$router.push('/plataforma-educativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
           {{$t('tusArchivos')}}
