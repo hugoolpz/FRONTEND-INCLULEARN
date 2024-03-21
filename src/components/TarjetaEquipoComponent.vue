@@ -1,12 +1,12 @@
 <template>
 <q-card bordered class="tarjeta-equipo cursor-pointer">
     <q-card-section class="row flex-center">
-      <q-avatar square size="70px" color="naranja-claro" text-color="white" icon="fas fa-user-group" />
+      <q-avatar square size="70px" :style="{backgroundColor: color}" text-color="white" :icon="icono" />
     </q-card-section>
     <q-separator dark color="morado"/>
     <q-card-actions class="row flex-center">
       <q-toolbar>
-        <q-toolbar-title class="adventPro-semiBold">
+        <q-toolbar-title class="adventPro-semiBold text-body1">
           {{nombre}}
         </q-toolbar-title>
 
@@ -44,7 +44,10 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="$emit('eliminarGrupo')">
+            <q-item clickable v-close-popup @click="$emit('eliminarGrupo')" :disable="!esCreador">
+              <q-tooltip v-if="!esCreador" class="bg-negative">
+              ¡No eres el creador de este grupo!
+              </q-tooltip>
               <q-item-section>
                 <q-item-label>Eliminar grupo</q-item-label>
               </q-item-section>
@@ -61,6 +64,6 @@
 </template>
 
 <script setup>
-const props = defineProps(['nombre'])
+const props = defineProps(['nombre', 'icono', 'color', 'esCreador'])
 const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo'])
 </script>

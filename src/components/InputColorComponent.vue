@@ -1,5 +1,8 @@
 <template>
-  <q-input v-model="hex" label="Color del evento" color="naranja-claro" filled>
+  <q-input v-model="hex" label="Color del grupo" color="naranja-claro" filled>
+    <template v-slot:prepend v-if="hex !== ''">
+      <q-icon name="fas fa-splotch" :style="{color: hex}"></q-icon>
+    </template>
     <template v-slot:append>
       <q-icon name="fas fa-eye-dropper" class="cursor-pointer">
         <q-popup-proxy v-model="mostrarSelector">
