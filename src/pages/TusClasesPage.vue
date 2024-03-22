@@ -1,119 +1,128 @@
 <template>
   <q-page>
-    <div class="q-gutter-lg row q-mt-md flex-center">
-      <div v-for="grupo in grupos">
-        <tarjeta-equipo :nombre="grupo.nombre" :icono="grupo.icono" :color="grupo.color" @agregar-miembro="abrirDialogoMiembro(grupo._id)" @agregar-canal="abrirDialogoCanal(grupo._id)"
-                        @abandonar-grupo="abandonarGrupo(grupo._id)"
-                        @eliminar-grupo="eliminarGrupo(grupo._id)" :es-creador="grupo.creador === infoUsuario._id"></tarjeta-equipo>
+    <div v-if="$route.params.grupo === ''">
+      <div class="q-gutter-lg row q-mt-md flex-center">
+        <div v-for="grupo in grupos">
+          <tarjeta-equipo :color="grupo.color" :es-creador="grupo.creador === infoUsuario._id" :icono="grupo.icono"
+                          :nombre="grupo.nombre"
+                          @al-clickar="entrarEnGrupo(grupo.codigo_acceso)"
+                          @agregar-miembro="abrirDialogoMiembro(grupo._id)"
+                          @agregar-canal="abrirDialogoCanal(grupo._id)"
+                          @abandonar-grupo="abandonarGrupo(grupo._id)"
+                          @eliminar-grupo="eliminarGrupo(grupo._id)"></tarjeta-equipo>
+        </div>
       </div>
-    </div>
 
-    <q-dialog v-model="nuevoMiembro">
-      <q-card style="width: 100%; max-width: 400px">
-        <q-card-section>
-          <div class="text-h5 text-center adventPro-semiBold">Escribe el correo de la persona que deseas agregar:</div>
-        </q-card-section>
-
-        <q-card-section>
-          <q-form
-            class="q-gutter-lg"
-            @reset="onReset"
-            @submit="agregarMiembro">
-            <q-input
-              v-model="correoMiembro"
-              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-              class="no-padding alumniSans-regular text-body1"
-              color="morado"
-              filled
-              label="Correo del miembro"
-              lazy-rules
-            />
-            <div align="right">
-              <q-btn label="Agregar" class="adventPro-semiBold" color="naranja" type="submit"/>
-              <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold" color="naranja-claro"
-                     flat type="reset"/>
+      <q-dialog v-model="nuevoMiembro">
+        <q-card style="width: 100%; max-width: 400px">
+          <q-card-section>
+            <div class="text-h5 text-center adventPro-semiBold">Escribe el correo de la persona que deseas agregar:
             </div>
-          </q-form>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+          </q-card-section>
 
-    <q-dialog v-model="nuevoGrupo">
-      <q-card style="width: 100%; max-width: 450px">
-        <q-tabs
-          v-model="tabGrupo"
-          class="text-naranja-claro"
-          inline-label>
-          <q-tab :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-          <q-tab class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
-        </q-tabs>
+          <q-card-section>
+            <q-form
+              class="q-gutter-lg"
+              @reset="onReset"
+              @submit="agregarMiembro">
+              <q-input
+                v-model="correoMiembro"
+                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1"
+                color="morado"
+                filled
+                label="Correo del miembro"
+                lazy-rules
+              />
+              <div align="right">
+                <q-btn class="adventPro-semiBold" color="naranja" label="Agregar" type="submit"/>
+                <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                       color="naranja-claro"
+                       flat type="reset"/>
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
 
-        <q-tab-panels v-model="tabGrupo" animated>
-          <q-tab-panel name="crear">
-            <q-card-section>
-              <q-form
-                class="q-gutter-lg"
-                @reset="onReset"
-                @submit="crearGrupo">
-                <div class="text-h5 adventPro-semiBold">Crear un grupo:</div>
-                <q-input
-                  v-model="nombreGrupo"
-                  :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                  class="no-padding alumniSans-regular text-body1"
-                  color="morado"
-                  filled
-                  label="Nombre del grupo"
-                  lazy-rules
-                />
-                <q-input
-                  v-model="descripcionGrupo"
-                  :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                  autogrow
-                  class="no-padding alumniSans-regular text-body1"
-                  color="morado"
-                  filled
-                  label="Descripción del grupo"
-                  lazy-rules
-                />
-                <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
-                <input-color-component v-model="colorGrupo"></input-color-component>
-                <div align="right">
-                  <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
-                  <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold" color="naranja-claro"
-                         flat type="reset"/>
-                </div>
-              </q-form>
-            </q-card-section>
-          </q-tab-panel>
-          <q-tab-panel name="unirse">
-            <q-card-section>
-              <q-form
-                class="q-gutter-lg"
-                @reset="onReset"
-                @submit="unirsePorCodigo">
-                <div class="text-h5 adventPro-semiBold">¡Introduce el código de un grupo y únete!</div>
-                <q-input
-                  v-model="codigoGrupo"
-                  :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                  class="no-padding alumniSans-regular text-body1"
-                  color="morado"
-                  filled
-                  label="Código del grupo"
-                  lazy-rules
-                />
-                <div align="right">
-                  <q-btn class="adventPro-semiBold" color="naranja" label="UNIRSE" type="submit"/>
-                  <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold" color="naranja-claro"
-                         flat type="reset"/>
-                </div>
-              </q-form>
-            </q-card-section>
-          </q-tab-panel>
-        </q-tab-panels>
-      </q-card>
-    </q-dialog>
+      <q-dialog v-model="nuevoGrupo">
+        <q-card style="width: 100%; max-width: 450px">
+          <q-tabs
+            v-model="tabGrupo"
+            class="text-naranja-claro"
+            inline-label>
+            <q-tab :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
+            <q-tab class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+          </q-tabs>
 
-    <q-dialog v-model="nuevoCanal">
+          <q-tab-panels v-model="tabGrupo" animated>
+            <q-tab-panel name="crear">
+              <q-card-section>
+                <q-form
+                  class="q-gutter-lg"
+                  @reset="onReset"
+                  @submit="crearGrupo">
+                  <div class="text-h5 adventPro-semiBold">Crear un grupo:</div>
+                  <q-input
+                    v-model="nombreGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Nombre del grupo"
+                    lazy-rules
+                  />
+                  <q-input
+                    v-model="descripcionGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    autogrow
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Descripción del grupo"
+                    lazy-rules
+                  />
+                  <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
+                  <input-color-component v-model="colorGrupo"></input-color-component>
+                  <div align="right">
+                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                    <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                           color="naranja-claro"
+                           flat type="reset"/>
+                  </div>
+                </q-form>
+              </q-card-section>
+            </q-tab-panel>
+            <q-tab-panel name="unirse">
+              <q-card-section>
+                <q-form
+                  class="q-gutter-lg"
+                  @reset="onReset"
+                  @submit="unirsePorCodigo">
+                  <div class="text-h5 adventPro-semiBold">¡Introduce el código de un grupo y únete!</div>
+                  <q-input
+                    v-model="codigoGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Código del grupo"
+                    lazy-rules
+                  />
+                  <div align="right">
+                    <q-btn class="adventPro-semiBold" color="naranja" label="UNIRSE" type="submit"/>
+                    <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                           color="naranja-claro"
+                           flat type="reset"/>
+                  </div>
+                </q-form>
+              </q-card-section>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-model="nuevoCanal">
         <q-card style="width: 100%; max-width: 450px">
           <q-card-section>
             <q-form
@@ -142,13 +151,171 @@
               />
               <div align="right">
                 <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
-                <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold" color="naranja-claro"
+                <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                       color="naranja-claro"
                        flat type="reset"/>
               </div>
             </q-form>
           </q-card-section>
         </q-card>
-    </q-dialog>
+      </q-dialog>
+    </div>
+    <div v-else>
+      <vista-equipo-component :grupo-actual="grupoActual" :ver-canales="verCanales" :key="componentKey" :es-creador="grupoActual.creador._id === infoUsuario._id"
+                              @agregar-miembro="abrirDialogoMiembro(grupoActual._id)"
+                              @agregar-canal="abrirDialogoCanal(grupoActual._id)"
+                              @abandonar-grupo="abandonarGrupo(grupoActual._id)"
+                              @eliminar-grupo="eliminarGrupo(grupoActual._id)"
+                              @al-clickar-canal="entrarAlCanal">
+      </vista-equipo-component>
+
+      <q-dialog v-model="nuevoMiembro">
+        <q-card style="width: 100%; max-width: 400px">
+          <q-card-section>
+            <div class="text-h5 text-center adventPro-semiBold">Escribe el correo de la persona que deseas agregar:
+            </div>
+          </q-card-section>
+
+          <q-card-section>
+            <q-form
+              class="q-gutter-lg"
+              @reset="onReset"
+              @submit="agregarMiembroDesdeGrupo">
+              <q-input
+                v-model="correoMiembro"
+                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1"
+                color="morado"
+                filled
+                label="Correo del miembro"
+                lazy-rules
+              />
+              <div align="right">
+                <q-btn class="adventPro-semiBold" color="naranja" label="Agregar" type="submit"/>
+                <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                       color="naranja-claro"
+                       flat type="reset"/>
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-model="nuevoGrupo">
+        <q-card style="width: 100%; max-width: 450px">
+          <q-tabs
+            v-model="tabGrupo"
+            class="text-naranja-claro"
+            inline-label>
+            <q-tab :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
+            <q-tab class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+          </q-tabs>
+
+          <q-tab-panels v-model="tabGrupo" animated>
+            <q-tab-panel name="crear">
+              <q-card-section>
+                <q-form
+                  class="q-gutter-lg"
+                  @reset="onReset"
+                  @submit="crearGrupo">
+                  <div class="text-h5 adventPro-semiBold">Crear un grupo:</div>
+                  <q-input
+                    v-model="nombreGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Nombre del grupo"
+                    lazy-rules
+                  />
+                  <q-input
+                    v-model="descripcionGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    autogrow
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Descripción del grupo"
+                    lazy-rules
+                  />
+                  <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
+                  <input-color-component v-model="colorGrupo"></input-color-component>
+                  <div align="right">
+                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                    <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                           color="naranja-claro"
+                           flat type="reset"/>
+                  </div>
+                </q-form>
+              </q-card-section>
+            </q-tab-panel>
+            <q-tab-panel name="unirse">
+              <q-card-section>
+                <q-form
+                  class="q-gutter-lg"
+                  @reset="onReset"
+                  @submit="unirsePorCodigo">
+                  <div class="text-h5 adventPro-semiBold">¡Introduce el código de un grupo y únete!</div>
+                  <q-input
+                    v-model="codigoGrupo"
+                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1"
+                    color="morado"
+                    filled
+                    label="Código del grupo"
+                    lazy-rules
+                  />
+                  <div align="right">
+                    <q-btn class="adventPro-semiBold" color="naranja" label="UNIRSE" type="submit"/>
+                    <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                           color="naranja-claro"
+                           flat type="reset"/>
+                  </div>
+                </q-form>
+              </q-card-section>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog v-model="nuevoCanal">
+        <q-card style="width: 100%; max-width: 450px">
+          <q-card-section>
+            <q-form
+              class="q-gutter-lg"
+              @reset="onReset"
+              @submit="crearCanalDesdeGrupo">
+              <div class="text-h5 adventPro-semiBold">Crear un canal:</div>
+              <q-input
+                v-model="nombreCanal"
+                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1"
+                color="morado"
+                filled
+                label="Nombre del canal"
+                lazy-rules
+              />
+              <q-input
+                v-model="descripcionCanal"
+                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
+                autogrow
+                class="no-padding alumniSans-regular text-body1"
+                color="morado"
+                filled
+                label="Descripción del canal"
+                lazy-rules
+              />
+              <div align="right">
+                <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
+                       color="naranja-claro"
+                       flat type="reset"/>
+              </div>
+            </q-form>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
@@ -157,10 +324,11 @@ import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
 import TarjetaEquipo from "components/TarjetaEquipoComponent.vue";
 import {QSpinnerHourglass, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
-import {onMounted, ref} from "vue";
-import {useRouter} from "vue-router";
+import {onMounted, onUpdated, ref, watch} from "vue";
+import {useRouter, useRoute, onBeforeRouteUpdate} from "vue-router";
 import InputIconosComponent from "components/InputIconosComponent.vue";
 import InputColorComponent from "components/InputColorComponent.vue";
+import VistaEquipoComponent from "components/VistaEquipoComponent.vue";
 
 const localStorage = window.localStorage
 let infoUsuario = null
@@ -170,6 +338,7 @@ if (localStorage.infoUsuario) {
 }
 
 const router = useRouter()
+const route = useRoute()
 const $q = useQuasar()
 const urlApi = api
 const grupos = ref([])
@@ -177,7 +346,9 @@ const grupos = ref([])
 const nuevoGrupo = defineModel()
 const nuevoMiembro = ref(false)
 const nuevoCanal = ref(false)
+const verCanales = ref(true)
 const tabGrupo = ref('crear')
+const componentKey = ref(0)
 
 //Formulario
 const nombreGrupo = ref("")
@@ -190,8 +361,18 @@ const codigoGrupo = ref("")
 const correoMiembro = ref("")
 const grupoElegido = ref("")
 
+const grupoActual = ref()
+
 onMounted(() => {
   comprobarSesion()
+})
+
+onBeforeRouteUpdate(async (to, from) => {
+  if (to.params.grupo !== '') {
+    await obtenerInfoGrupo(to.params.grupo);
+  } else {
+    await obtenerGrupos()
+  }
 })
 
 async function comprobarSesion() {
@@ -215,7 +396,9 @@ async function comprobarSesion() {
           });
           router.push({path: "/"})
         } else {
-          obtenerGrupos()
+          if (route.params.grupo === ''){
+            obtenerGrupos()
+          }
         }
       })
   } else {
@@ -384,6 +567,74 @@ async function crearCanal() {
   $q.loading.hide()
 }
 
+async function crearCanalDesdeGrupo() {
+  mostrarCarga()
+
+  await fetch(`${urlApi}/canales`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+    body: JSON.stringify({
+      "creador": infoUsuario._id,
+      "nombre": nombreCanal.value,
+      "descripcion": descripcionCanal.value,
+    })
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar crear el canal!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        fetch(`${urlApi}/grupos/${grupoActual.value._id}`, {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+            'token-privado': localStorage.tokenPrivado
+          },
+          body: JSON.stringify({
+            "canales": datos.datos._id
+          })
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            if (!datos.exito) {
+              $q.notify({
+                message: "¡Hubo un error al intentar crear el canal!",
+                color: "negative",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-exclamation",
+              });
+              //TODO: Borrar el canal previamente creado
+            } else {
+              $q.notify({
+                message: "¡Canal creado con éxito!",
+                color: "positive",
+                position: "top",
+                timeout: 1000,
+                progress: true,
+                icon: "fas fa-circle-check",
+              });
+              obtenerInfoGrupo(grupoActual.value.codigo_acceso)
+              componentKey.value++
+            }
+          })
+      }
+    })
+  nuevoCanal.value = false
+  $q.loading.hide()
+}
+
 async function obtenerGrupos() {
   grupos.value.length = 0
   mostrarCarga()
@@ -426,12 +677,12 @@ async function obtenerGrupos() {
   $q.loading.hide()
 }
 
-function abrirDialogoMiembro(id){
+function abrirDialogoMiembro(id) {
   nuevoMiembro.value = true;
   grupoElegido.value = id
 }
 
-function abrirDialogoCanal(id){
+function abrirDialogoCanal(id) {
   nuevoCanal.value = true;
   grupoElegido.value = id
 }
@@ -456,76 +707,172 @@ async function agregarMiembro() {
           icon: "fas fa-circle-exclamation",
         });
       } else {
-          if (datos.datos) {
-            let idMiembro = datos.datos._id
-            let nombreMiembro = datos.datos.nombre + " " + datos.datos.apellidos
-            fetch(`${urlApi}/usuarios/${idMiembro}`, {
-              method: "PUT",
-              headers: {
-                'Content-Type': 'application/json',
-                'token-privado': localStorage.tokenPrivado
-              },
-              body: JSON.stringify({
-                "grupos": grupoElegido.value
-              })
+        if (datos.datos) {
+          let idMiembro = datos.datos._id
+          let nombreMiembro = datos.datos.nombre + " " + datos.datos.apellidos
+          fetch(`${urlApi}/usuarios/${idMiembro}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'token-privado': localStorage.tokenPrivado
+            },
+            body: JSON.stringify({
+              "grupos": grupoElegido.value
             })
-              .then(respuesta => respuesta.json())
-              .then(datos => {
-                if (!datos.exito) {
-                  $q.notify({
-                    message: "¡Hubo un error al intentar agregar al miembro al grupo!",
-                    color: "negative",
-                    position: "top",
-                    timeout: 1000,
-                    progress: true,
-                    icon: "fas fa-circle-exclamation",
-                  });
-                } else {
-                  fetch(`${urlApi}/grupos/${grupoElegido.value}`, {
-                    method: "PUT",
-                    headers: {
-                      'Content-Type': 'application/json',
-                      'token-privado': localStorage.tokenPrivado
-                    },
-                    body: JSON.stringify({
-                      "miembros": idMiembro
-                    })
+          })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              if (!datos.exito) {
+                $q.notify({
+                  message: "¡Hubo un error al intentar agregar al miembro al grupo!",
+                  color: "negative",
+                  position: "top",
+                  timeout: 1000,
+                  progress: true,
+                  icon: "fas fa-circle-exclamation",
+                });
+              } else {
+                fetch(`${urlApi}/grupos/${grupoElegido.value}`, {
+                  method: "PUT",
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'token-privado': localStorage.tokenPrivado
+                  },
+                  body: JSON.stringify({
+                    "miembros": idMiembro
                   })
-                    .then(respuesta => respuesta.json())
-                    .then(datos => {
-                      if (!datos.exito) {
-                        $q.notify({
-                          message: "¡Hubo un error al intentar agregar al miembro al grupo!",
-                          color: "negative",
-                          position: "top",
-                          timeout: 1000,
-                          progress: true,
-                          icon: "fas fa-circle-exclamation",
-                        });
-                      } else {
-                        $q.notify({
-                          message: "¡Se agregó a " + nombreMiembro + " con éxito!",
-                          color: "positive",
-                          position: "top",
-                          timeout: 1000,
-                          progress: true,
-                          icon: "fas fa-circle-check",
-                        });
-                        nuevoMiembro.value = false
-                      }
-                    })
-                }
-              })
-          } else {
-            $q.notify({
-              message: "¡No tenemos registros de una cuenta con ese correo!",
-              color: "negative",
-              position: "top",
-              timeout: 1000,
-              progress: true,
-              icon: "fas fa-circle-exclamation",
-            });
-          }
+                })
+                  .then(respuesta => respuesta.json())
+                  .then(datos => {
+                    if (!datos.exito) {
+                      $q.notify({
+                        message: "¡Hubo un error al intentar agregar al miembro al grupo!",
+                        color: "negative",
+                        position: "top",
+                        timeout: 1000,
+                        progress: true,
+                        icon: "fas fa-circle-exclamation",
+                      });
+                    } else {
+                      $q.notify({
+                        message: "¡Se agregó a " + nombreMiembro + " con éxito!",
+                        color: "positive",
+                        position: "top",
+                        timeout: 1000,
+                        progress: true,
+                        icon: "fas fa-circle-check",
+                      });
+                      nuevoMiembro.value = false
+                    }
+                  })
+              }
+            })
+        } else {
+          $q.notify({
+            message: "¡No tenemos registros de una cuenta con ese correo!",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-exclamation",
+          });
+        }
+      }
+    })
+}
+
+async function agregarMiembroDesdeGrupo() {
+  await fetch(`${urlApi}/usuarios/correo/${correoMiembro.value}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar agregar al miembro al grupo!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        if (datos.datos) {
+          let idMiembro = datos.datos._id
+          let nombreMiembro = datos.datos.nombre + " " + datos.datos.apellidos
+          fetch(`${urlApi}/usuarios/${idMiembro}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'token-privado': localStorage.tokenPrivado
+            },
+            body: JSON.stringify({
+              "grupos": grupoActual.value._id
+            })
+          })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              if (!datos.exito) {
+                $q.notify({
+                  message: "¡Hubo un error al intentar agregar al miembro al grupo!",
+                  color: "negative",
+                  position: "top",
+                  timeout: 1000,
+                  progress: true,
+                  icon: "fas fa-circle-exclamation",
+                });
+              } else {
+                fetch(`${urlApi}/grupos/${grupoActual.value._id}`, {
+                  method: "PUT",
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'token-privado': localStorage.tokenPrivado
+                  },
+                  body: JSON.stringify({
+                    "miembros": idMiembro
+                  })
+                })
+                  .then(respuesta => respuesta.json())
+                  .then(datos => {
+                    if (!datos.exito) {
+                      $q.notify({
+                        message: "¡Hubo un error al intentar agregar al miembro al grupo!",
+                        color: "negative",
+                        position: "top",
+                        timeout: 1000,
+                        progress: true,
+                        icon: "fas fa-circle-exclamation",
+                      });
+                    } else {
+                      $q.notify({
+                        message: "¡Se agregó a " + nombreMiembro + " con éxito!",
+                        color: "positive",
+                        position: "top",
+                        timeout: 1000,
+                        progress: true,
+                        icon: "fas fa-circle-check",
+                      });
+                      nuevoMiembro.value = false
+                      entrarEnGrupo(grupoActual.value.codigo_acceso)
+                      componentKey.value++
+                    }
+                  })
+              }
+            })
+        } else {
+          $q.notify({
+            message: "¡No tenemos registros de una cuenta con ese correo!",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-exclamation",
+          });
+        }
       }
     })
 }
@@ -679,7 +1026,7 @@ async function abandonarGrupo(id) {
                 progress: true,
                 icon: "fas fa-circle-check",
               });
-              obtenerGrupos()
+              router.push('/tus-clases')
             }
           })
       }
@@ -716,10 +1063,48 @@ async function eliminarGrupo(id) {
           progress: true,
           icon: "fas fa-check",
         });
-        obtenerGrupos()
+        router.push('/tus-clases')
       }
     })
   $q.loading.hide()
+}
+
+function entrarEnGrupo(id) {
+  router.push({
+    name: 'TusClases',
+    params: {grupo: id},
+    query: route.query,
+    hash: route.hash,
+  })
+}
+
+function entrarAlCanal(id) {
+  console.log(id)
+}
+
+async function obtenerInfoGrupo(id) {
+  await fetch(`${urlApi}/grupos/codigo/${id}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar entrar al grupo!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        grupoActual.value = datos.datos
+      }
+    })
 }
 
 function mostrarCarga() {

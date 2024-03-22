@@ -1,7 +1,7 @@
 <template>
 <q-card bordered class="tarjeta-equipo cursor-pointer">
-    <q-card-section class="row flex-center">
-      <q-avatar square size="70px" :style="{backgroundColor: color}" text-color="white" :icon="icono" />
+    <q-card-section class="row flex-center" @click="$emit('alClickar')">
+      <q-avatar rounded size="70px" :style="{backgroundColor: color}" text-color="white" :icon="icono" />
     </q-card-section>
     <q-separator dark color="morado"/>
     <q-card-actions class="row flex-center">
@@ -65,5 +65,5 @@
 
 <script setup>
 const props = defineProps(['nombre', 'icono', 'color', 'esCreador'])
-const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo'])
+const emits = defineEmits(['alClickar', 'agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo'])
 </script>

@@ -10,6 +10,7 @@ const routes = [
     children: [
       {
         path: "",
+        name: "PlataformaEducativa",
         component: () => import("pages/PlataformaEducativaPage.vue"),
       },
     ],
@@ -20,6 +21,7 @@ const routes = [
     children: [
       {
         path: "",
+        name: "TuCalendario",
         component: () => import("pages/TuCalendarioPage.vue"),
       },
     ],
@@ -30,16 +32,18 @@ const routes = [
     children: [
       {
         path: "",
+        name: "TusArchivos",
         component: () => import("pages/TuAlmacenamientoPage.vue"),
       },
     ],
   },
   {
-    path: "/tus-clases",
+    path: "/tus-clases/:grupo?",
     component: () => import("layouts/ClasesLayout.vue"),
     children: [
       {
         path: "",
+        name: "TusClases",
         component: () => import("pages/TusClasesPage.vue"),
       },
     ],

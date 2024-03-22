@@ -80,8 +80,6 @@ async function comprobarSesion() {
             icon: "fas fa-xmark"
           });
           router.push({path: "/"})
-        } else {
-          obtenerArchivos()
         }
       })
   } else {

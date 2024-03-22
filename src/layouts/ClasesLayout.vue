@@ -24,6 +24,7 @@
           label="Unirse o crear equipo"
           icon="fas fa-plus"
           @click="nuevoGrupo = true"
+          v-show="$route.params.grupo === ''"
         />
         <q-btn flat round icon="fas fa-universal-access"
                @click="abrirMenuAccess()"/>
