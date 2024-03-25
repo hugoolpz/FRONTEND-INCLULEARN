@@ -330,6 +330,7 @@ import InputIconosComponent from "components/InputIconosComponent.vue";
 import InputColorComponent from "components/InputColorComponent.vue";
 import VistaEquipoComponent from "components/VistaEquipoComponent.vue";
 
+document.body.style.overflow = "scroll"
 const localStorage = window.localStorage
 let infoUsuario = null
 

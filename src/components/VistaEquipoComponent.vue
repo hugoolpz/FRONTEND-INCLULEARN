@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <q-card class="col-md-1 col-xs0" flat>
+    <q-card class="col-md-1 col-xs-1" flat>
       <q-list bordered class="column flex-center" separator>
         <q-item v-ripple clickable>
           <q-item-section>
@@ -101,13 +101,13 @@
             <div v-show="verCanales">
               <q-list bordered separator>
                 <q-item v-for="(canal, index) in grupoActual.canales" :key="index" v-ripple clickable
-                        @click="$emit('alClickarCanal', canal._id)">
+                        @click="canalActual = canal; tabCanal = 'chat'" :active="esCanalElegido(canal)" active-class="bg-morado text-white">
                   <q-item-section avatar>
-                    <q-avatar color="morado" icon="fas fa-hashtag" rounded text-color="white"/>
+                    <q-avatar :color="esCanalElegido(canal) ? 'white' : 'morado'" icon="fas fa-hashtag" rounded :text-color="esCanalElegido(canal) ? 'morado' : 'white'"/>
                   </q-item-section>
                   <q-item-section>
                     <q-item-label>{{ canal.nombre }}</q-item-label>
-                    <q-item-label caption>{{ canal.descripcion }}</q-item-label>
+                    <q-item-label caption :class="esCanalElegido(canal) ? 'text-white' : 'text-morado'">{{ canal.descripcion }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -116,30 +116,49 @@
         </div>
       </div>
     </q-card>
-    <div class="col">
-      <q-scroll-area class="q-px-xl" style="height: 375px; max-width: 950px;">
-        <div v-for="n in 10" :key="n">
-          <q-chat-message
-            :text="['hey, how are you?']"
-            avatar="https://cdn.quasar.dev/img/avatar4.jpg"
-            name="me"
-            sent
-            stamp="7 minutes ago"
+    <div v-if="canalActual !== null" class="col">
+      <q-toolbar class="bg-morado text-white">
+        <q-toolbar-title>
+          <q-icon
+            name="fas fa-hashtag"
           />
-          <q-chat-message
-            :text="[`doing fine, how r you?`]"
-            avatar="https://cdn.quasar.dev/img/avatar3.jpg"
-            name="Jane"
-            stamp="4 minutes ago"
+          {{ canalActual.nombre }}
+        </q-toolbar-title>
+        <q-tabs
+          v-model="tabCanal"
+          class="text-white"
+          inline-label>
+          <q-btn flat
+              color="white"
+              icon="fas fa-headset"
+              @click="onClick"
           />
-        </div>
-      </q-scroll-area>
-      <div :style="{visibility: !emoji ? 'hidden' : 'visible'}">
-        <EmojiPicker @select="alSeleccionarEmoji" class="absolute-right" style="top: 55px" hide-search />
-      </div>
-      <q-editor
-        v-model="mensaje"
-        :definitions="{
+          <q-separator vertical inset color="white" />
+          <q-tab icon="fas fa-comments" label="Chat" name="chat"/>
+          <q-tab icon="fas fa-folder" label="Archivos" name="archivos"/>
+          <q-tab icon="fas fa-scroll" label="Tareas" name="tareas"/>
+        </q-tabs>
+      </q-toolbar>
+      <q-tab-panels v-model="tabCanal" animated>
+        <q-tab-panel class="no-padding" name="chat">
+          <q-scroll-area style="height: 375px; max-width: 950px;">
+            <div>
+              <q-chat-message v-for="chat in  chats" :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
+                              :name="chat.emisor._id === infoUsuario._id ? 'Tú' : chat.nombreEmisor"
+                              :sent="chat.emisor._id === infoUsuario._id" :stamp="chat.marcaTiempo"
+                              :text="[chat.contenido]" :text-color="chat.emisor._id === infoUsuario._id ? 'white' : 'black'"
+                              avatar="https://i.pinimg.com/originals/d3/99/67/d399672b6ac028bf8ec8655b9f02f00d.jpg"
+                              class="q-pa-lg"
+                              text-html>
+              </q-chat-message>
+            </div>
+          </q-scroll-area>
+          <div :style="{visibility: !emoji ? 'hidden' : 'visible'}">
+            <EmojiPicker class="absolute-right" hide-search style="top: 55px" @select="alSeleccionarEmoji"/>
+          </div>
+          <q-editor
+            v-model="mensaje"
+            :definitions="{
                     subir: {
                         icon: 'fas fa-paperclip',
                         label: 'Subir archivo',
@@ -158,7 +177,7 @@
                     },
                 }
                     "
-        :toolbar="[
+            :toolbar="[
         ['bold', 'italic', 'strike', 'underline'],
         [
             {
@@ -172,32 +191,131 @@
         ['unordered', 'ordered'],
         ['subir', 'enviar', 'emoticonos'],
     ]"
-        min-height="9.8rem"
-        placeholder="Escribe aquí tu mensaje..."
-        toolbar-bg="morado"
-        toolbar-text-color="white"
-        toolbar-toggle-color="naranja"
+            min-height="8rem"
+            placeholder="Escribe aquí tu mensaje..."
+            toolbar-bg="morado"
+            toolbar-text-color="white"
+            toolbar-toggle-color="naranja"
+            @keydown.enter="intentarEnviarMensaje"
+          />
+        </q-tab-panel>
+        <q-tab-panel class="no-padding" name="archivos">
+          <q-list bordered separator>
+            <q-scroll-area style="height: 530px">
+              <q-item v-for="n in 15" v-ripple clickable>
+                <q-item-section avatar top>
+                  <q-avatar color="naranja-claro" icon="fas fa-file" text-color="white"/>
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label lines="1">Nombre archivo</q-item-label>
+                  <q-item-label caption>1.25 MB</q-item-label>
+                </q-item-section>
+
+                <q-item-section side>
+                  <q-btn flat round color="azul-oscuro" icon="fas fa-download" @click="" />
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn flat round color="morado" icon="fas fa-share-nodes" @click=""/>
+                </q-item-section>
+                <q-item-section side>
+                  <q-btn flat round color="negative" icon="fas fa-trash" @click="" />
+                </q-item-section>
+              </q-item>
+            </q-scroll-area>
+          </q-list>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
+    <div v-else class="col column flex-center">
+      <q-img
+        spinner-color="primary"
+        spinner-size="82px"
+        src="/Conversation-pana.svg"
+        style="width: 45rem;"
       />
+
+      <div class="text-h5 text-morado" style="opacity:.5;">
+        ¡Elige un canal y empieza a conversar!
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import EmojiPicker from 'vue3-emoji-picker'
-import 'vue3-emoji-picker/css'
+import {computed, ref} from "vue";
+import DOMPurify from 'dompurify';
+import EmojiPicker from 'vue3-emoji-picker';
+import 'vue3-emoji-picker/css';
+import {io} from "socket.io-client";
 
-const mensaje = ref('')
-const emoji = ref(false)
-const props = defineProps(['grupoActual', 'verCanales', 'esCreador'])
-const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'alClickarCanal'])
+const mensaje = ref('');
+const emoji = ref(false);
+const socket = io("http://localhost:3000");
+const props = defineProps(['grupoActual', 'verCanales', 'esCreador']);
+const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'alClickarCanal']);
+const chats = ref([]);
+const canalActual = ref(null)
+const tabCanal = ref('chat')
+const localStorage = window.localStorage;
+let infoUsuario = null;
 
-function alSeleccionarEmoji(emoji) {
-  console.log(emoji)
-  mensaje.value += emoji.i
+if (localStorage.infoUsuario) {
+  infoUsuario = JSON.parse(localStorage.infoUsuario);
 }
 
-function manejarMenuEmojis(){
-  emoji.value = !emoji.value
+function alSeleccionarEmoji(emojiElegido) {
+  mensaje.value += emojiElegido.i;
+  emoji.value = false
 }
+
+function manejarMenuEmojis() {
+  emoji.value = !emoji.value;
+}
+
+function esCanalElegido(canal) {
+  if (canalActual.value){
+    return canalActual.value._id === canal._id;
+  }
+}
+
+function intentarEnviarMensaje(event) {
+  if (!event.shiftKey) {
+    event.preventDefault();
+    enviarMensaje();
+  }
+}
+
+function limpiarContenidoMensaje(contenido) {
+  const contenidoLimpio = DOMPurify.sanitize(contenido);
+  if (contenido !== contenidoLimpio) {
+    console.log("DOMPurify ha encontrado y eliminado contenido malicioso.");
+  }
+  return contenidoLimpio;
+}
+
+
+function enviarMensaje() {
+  if (mensaje.value.trim() !== "") {
+    const contenidoLimpio = limpiarContenidoMensaje(mensaje.value);
+    socket.emit("mensaje", infoUsuario._id, contenidoLimpio, obtenerMarcaTiempo());
+    mensaje.value = "";
+  }
+}
+
+function obtenerMarcaTiempo() {
+  let fecha = new Date();
+  return fecha.toLocaleString();
+}
+
+socket.on("mensaje", (emisor, contenido, marcaTiempo) => {
+  let mensajeEnviado = {
+    emisor: emisor,
+    nombreEmisor: emisor.nombre + " " + emisor.apellidos,
+    contenido: contenido,
+    marcaTiempo: marcaTiempo
+  };
+  chats.value.push(mensajeEnviado);
+});
 </script>
+
