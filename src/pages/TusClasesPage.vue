@@ -1114,7 +1114,7 @@ function mostrarCarga() {
     spinnerColor: 'naranja',
     spinnerSize: 150,
     backgroundColor: 'morado',
-    message: 'Reuniendo tus archivos...',
+    message: 'Reuniendo tus grupos...',
     messageColor: 'naranja-claro'
   })
 }

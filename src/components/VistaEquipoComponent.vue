@@ -101,7 +101,7 @@
             <div v-show="verCanales">
               <q-list bordered separator>
                 <q-item v-for="(canal, index) in grupoActual.canales" :key="index" v-ripple clickable
-                        @click="canalActual = canal; tabCanal = 'chat'" :active="esCanalElegido(canal)" active-class="bg-morado text-white">
+                        @click="canalActual = canal; tabCanal = 'chat'; obtenerHistorialMensajes(canal._id)" :active="esCanalElegido(canal)" active-class="bg-morado text-white">
                   <q-item-section avatar>
                     <q-avatar :color="esCanalElegido(canal) ? 'white' : 'morado'" icon="fas fa-hashtag" rounded :text-color="esCanalElegido(canal) ? 'morado' : 'white'"/>
                   </q-item-section>
@@ -143,13 +143,34 @@
         <q-tab-panel class="no-padding" name="chat">
           <q-scroll-area style="height: 375px; max-width: 950px;">
             <div>
-              <q-chat-message v-for="chat in  chats" :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
-                              :name="chat.emisor._id === infoUsuario._id ? 'Tú' : chat.nombreEmisor"
+              <q-chat-message v-for="(chat, index) in  chats" :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
                               :sent="chat.emisor._id === infoUsuario._id" :stamp="chat.marcaTiempo"
                               :text="[chat.contenido]" :text-color="chat.emisor._id === infoUsuario._id ? 'white' : 'black'"
                               avatar="https://i.pinimg.com/originals/d3/99/67/d399672b6ac028bf8ec8655b9f02f00d.jpg"
-                              class="q-pa-lg"
+                              class="q-px-lg q-my-md"
                               text-html>
+                <template v-slot:name v-if="chat.emisor._id === infoUsuario._id && index === chats.length-1">
+                  <div class="row q-gutter-x-sm">
+                    <q-icon
+                      name="fas fa-pen"
+                      color="naranja-claro"
+                      size="15px"
+                      class="cursor-pointer"
+                      @click="activarModoEdicion(chat)"
+                    />
+                    <q-icon
+                      name="fas fa-trash"
+                      color="negative"
+                      size="15px"
+                      class="cursor-pointer"
+                      @click="borrarMensaje(chat.idMensaje)"
+                    />
+                    <div class="col self-end">Tú</div>
+                  </div>
+                </template>
+                <template v-slot:name v-else>
+                  {{chat.emisor._id === infoUsuario._id ? 'Tú' : chat.nombreEmisor}}
+                </template>
               </q-chat-message>
             </div>
           </q-scroll-area>
@@ -157,6 +178,7 @@
             <EmojiPicker class="absolute-right" hide-search style="top: 55px" @select="alSeleccionarEmoji"/>
           </div>
           <q-editor
+            v-if="!modoEdicion"
             v-model="mensaje"
             :definitions="{
                     subir: {
@@ -198,6 +220,50 @@
             toolbar-toggle-color="naranja"
             @keydown.enter="intentarEnviarMensaje"
           />
+
+          <q-editor
+            v-else
+            v-model="mensaje"
+            :definitions="{
+                    subir: {
+                        icon: 'fas fa-paperclip',
+                        label: 'Subir archivo',
+                        //handler: uploadIt,
+                    },
+                    enviar: {
+                        icon: 'far fa-paper-plane',
+                        label: 'Editar mensaje',
+                        handler: editarMensaje,
+                        disable: !mensaje.trim(),
+                        color: mensaje.trim() ? 'primario' : 'grey',
+                    },
+                    emoticonos: {
+                        icon: 'far fa-smile',
+                        handler: manejarMenuEmojis,
+                    },
+                }
+                    "
+            :toolbar="[
+        ['bold', 'italic', 'strike', 'underline'],
+        [
+            {
+                label: $q.lang.editor.formatting,
+                icon: $q.iconSet.editor.formatting,
+                list: 'no-icons',
+                options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
+            },
+            'removeFormat',
+        ],
+        ['unordered', 'ordered'],
+        ['subir', 'enviar', 'emoticonos'],
+    ]"
+            min-height="8rem"
+            placeholder="Escribe aquí tu mensaje..."
+            toolbar-bg="morado"
+            toolbar-text-color="white"
+            toolbar-toggle-color="naranja"
+            @keydown.enter="intentarEditarMensaje"
+          />
         </q-tab-panel>
         <q-tab-panel class="no-padding" name="archivos">
           <q-list bordered separator>
@@ -225,6 +291,20 @@
             </q-scroll-area>
           </q-list>
         </q-tab-panel>
+        <q-tab-panel name="tareas">
+          <div class="col column flex-center">
+            <q-img
+              spinner-color="primary"
+              spinner-size="82px"
+              src="/Software engineer-amico.svg"
+              style="width: 25rem;"
+            />
+
+            <div class="text-h4 text-naranja q-mt-md" style="opacity:.5;">
+              ¡Próximamente: gestión de tareas!
+            </div>
+          </div>
+        </q-tab-panel>
       </q-tab-panels>
     </div>
     <div v-else class="col column flex-center">
@@ -243,14 +323,18 @@
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import DOMPurify from 'dompurify';
 import EmojiPicker from 'vue3-emoji-picker';
 import 'vue3-emoji-picker/css';
 import {io} from "socket.io-client";
+import {QSpinnerHourglass, useQuasar} from "quasar";
+import api from "boot/httpSingleton";
 
 const mensaje = ref('');
 const emoji = ref(false);
+const modoEdicion = ref(false)
+const idEdicion = ref(null)
 const socket = io("http://localhost:3000");
 const props = defineProps(['grupoActual', 'verCanales', 'esCreador']);
 const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'alClickarCanal']);
@@ -259,6 +343,8 @@ const canalActual = ref(null)
 const tabCanal = ref('chat')
 const localStorage = window.localStorage;
 let infoUsuario = null;
+const $q = useQuasar()
+const urlApi = api
 
 if (localStorage.infoUsuario) {
   infoUsuario = JSON.parse(localStorage.infoUsuario);
@@ -286,6 +372,13 @@ function intentarEnviarMensaje(event) {
   }
 }
 
+function intentarEditarMensaje(event) {
+  if (!event.shiftKey) {
+    event.preventDefault();
+    editarMensaje(idEdicion.value);
+  }
+}
+
 function limpiarContenidoMensaje(contenido) {
   const contenidoLimpio = DOMPurify.sanitize(contenido);
   if (contenido !== contenidoLimpio) {
@@ -295,21 +388,199 @@ function limpiarContenidoMensaje(contenido) {
 }
 
 
-function enviarMensaje() {
+async function enviarMensaje() {
   if (mensaje.value.trim() !== "") {
     const contenidoLimpio = limpiarContenidoMensaje(mensaje.value);
-    socket.emit("mensaje", infoUsuario._id, contenidoLimpio, obtenerMarcaTiempo());
     mensaje.value = "";
+
+    await fetch(`${urlApi}/mensajes/`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'token-privado': localStorage.tokenPrivado
+      },
+      body: JSON.stringify({
+        "emisor": infoUsuario._id,
+        "contenido": contenidoLimpio,
+        "marca_tiempo": obtenerMarcaTiempo(),
+      })
+    })
+      .then(respuesta => respuesta.json())
+      .then(datos => {
+        if (!datos.exito) {
+          $q.notify({
+            message: "¡Hubo un error al intentar enviar tu mensaje!",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-exclamation",
+          });
+        } else {
+          let idMensaje = datos.datos._id
+          fetch(`${urlApi}/canales/${canalActual.value._id}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'token-privado': localStorage.tokenPrivado
+            },
+            body: JSON.stringify({
+              "mensajes": datos.datos._id
+            })
+          })
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              if (!datos.exito) {
+                $q.notify({
+                  message: "¡Hubo un error al intentar enviar tu mensaje!",
+                  color: "negative",
+                  position: "top",
+                  timeout: 1000,
+                  progress: true,
+                  icon: "fas fa-circle-exclamation",
+                });
+                //TODO: Borrar el mensaje previamente creado
+              } else {
+                socket.emit("mensaje", idMensaje, infoUsuario._id, contenidoLimpio, obtenerMarcaTiempo());
+              }
+            })
+        }
+      })
   }
 }
 
-function obtenerMarcaTiempo() {
-  let fecha = new Date();
-  return fecha.toLocaleString();
+async function obtenerHistorialMensajes(idCanal) {
+  chats.value.length = 0
+  mostrarCarga()
+  await fetch(`${urlApi}/canales/${idCanal}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    }
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar obtener el historial de mensajes del canal!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        if (datos.datos.mensajes) {
+          datos.datos.mensajes.forEach((chat) => {
+            let mensaje = {
+              idMensaje: chat._id,
+              emisor: chat.emisor,
+              nombreEmisor: chat.emisor.nombre + " " + chat.emisor.apellidos,
+              contenido: chat.contenido,
+              marcaTiempo: chat.marca_tiempo
+            };
+            chats.value.push(mensaje)
+          })
+        }
+      }
+
+    })
+  $q.loading.hide()
 }
 
-socket.on("mensaje", (emisor, contenido, marcaTiempo) => {
+function activarModoEdicion(chat){
+  modoEdicion.value = true;
+  mensaje.value = chat.contenido;
+  idEdicion.value = chat.idMensaje
+  console.log(mensaje.value)
+}
+
+async function editarMensaje(){
+  await fetch(`${urlApi}/mensajes/${idEdicion.value}`, {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+    body: JSON.stringify({
+      "contenido": mensaje.value
+    })
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar editar el mensaje!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        $q.notify({
+          message: "¡Se editó el mensaje con éxito!",
+          color: "positive",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-check",
+        });
+        socket.emit("mensaje-editado", idEdicion.value, mensaje.value);
+        mensaje.value = ""
+        modoEdicion.value = false
+      }
+    })
+}
+
+async function borrarMensaje(id){
+  await fetch(`${urlApi}/mensajes/${id}`, {
+    method: "DELETE",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      if (!datos.exito) {
+        $q.notify({
+          message: "¡Hubo un error al intentar eliminar el mensaje!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+      } else {
+        $q.notify({
+          message: "¡Se eliminó el mensaje con éxito!",
+          color: "positive",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-check",
+        });
+        socket.emit("mensaje-borrado", id);
+      }
+    })
+}
+
+function mostrarCarga() {
+  $q.loading.show({
+    spinner: QSpinnerHourglass,
+    spinnerColor: 'naranja',
+    spinnerSize: 150,
+    backgroundColor: 'morado',
+    message: 'Reuniendo historial de mensajes...',
+    messageColor: 'naranja-claro'
+  })
+}
+
+socket.on("mensaje", (idMensaje, emisor, contenido, marcaTiempo) => {
   let mensajeEnviado = {
+    idMensaje: idMensaje,
     emisor: emisor,
     nombreEmisor: emisor.nombre + " " + emisor.apellidos,
     contenido: contenido,
@@ -317,5 +588,29 @@ socket.on("mensaje", (emisor, contenido, marcaTiempo) => {
   };
   chats.value.push(mensajeEnviado);
 });
+
+socket.on("mensaje-borrado", (idMsg) => {
+  chats.value = chats.value.filter((chat) => chat.idMensaje !== idMsg);
+});
+
+socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
+  // Iteramos sobre cada chat en el array
+  chats.value = chats.value.map((chat) => {
+    if (chat.idMensaje === idMsg) {
+      // Si coincide, actualizamos el contenido del mensaje
+      return {
+        ...chat, // Mantenemos las propiedades originales del chat
+        contenido: contenidoNuevo
+      };
+    } else {
+      return chat;
+    }
+  });
+});
+
+
+function obtenerMarcaTiempo() {
+  return new Date().toLocaleString();
+}
 </script>
 
