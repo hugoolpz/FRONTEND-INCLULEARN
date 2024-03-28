@@ -131,9 +131,9 @@
           <q-btn flat
               color="white"
               icon="fas fa-headset"
-              @click="onClick"
+              @click="entrarEnLlamada"
           />
-          <q-separator vertical inset color="white" />
+          <q-separator vertical inset color="white" class="q-mx-sm" />
           <q-tab icon="fas fa-comments" label="Chat" name="chat"/>
           <q-tab icon="fas fa-folder" label="Archivos" name="archivos"/>
           <q-tab icon="fas fa-scroll" label="Tareas" name="tareas"/>
@@ -146,7 +146,7 @@
               <q-chat-message v-for="(chat, index) in  chats" :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
                               :sent="chat.emisor._id === infoUsuario._id" :stamp="chat.marcaTiempo"
                               :text="[chat.contenido]" :text-color="chat.emisor._id === infoUsuario._id ? 'white' : 'black'"
-                              avatar="https://i.pinimg.com/originals/d3/99/67/d399672b6ac028bf8ec8655b9f02f00d.jpg"
+                              :avatar="chat.emisor.url_foto !== './' ? chat.emisor.url_foto : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'"
                               class="q-px-lg q-my-md"
                               text-html>
                 <template v-slot:name v-if="chat.emisor._id === infoUsuario._id && index === chats.length-1">
@@ -330,6 +330,7 @@ import 'vue3-emoji-picker/css';
 import {io} from "socket.io-client";
 import {QSpinnerHourglass, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
+import {useRouter} from "vue-router";
 
 const mensaje = ref('');
 const emoji = ref(false);
@@ -594,12 +595,10 @@ socket.on("mensaje-borrado", (idMsg) => {
 });
 
 socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
-  // Iteramos sobre cada chat en el array
   chats.value = chats.value.map((chat) => {
     if (chat.idMensaje === idMsg) {
-      // Si coincide, actualizamos el contenido del mensaje
       return {
-        ...chat, // Mantenemos las propiedades originales del chat
+        ...chat,
         contenido: contenidoNuevo
       };
     } else {
@@ -611,6 +610,10 @@ socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
 
 function obtenerMarcaTiempo() {
   return new Date().toLocaleString();
+}
+
+function entrarEnLlamada(){
+  window.open('http://localhost:9000/llamada/' + canalActual.value._id, '_blank')
 }
 </script>
 

@@ -48,6 +48,17 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/llamada/:canal?",
+    component: () => import("layouts/LlamadaLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "Llamada",
+        component: () => import("pages/LlamadaPage.vue"),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
