@@ -5,9 +5,9 @@
       <q-toolbar class="q-gutter-x-sm">
         <q-toolbar-title>
           <q-icon
-              class="q-ml-xs q-mr-md"
-              name="fas fa-clock"
-              color="white"
+            class="q-ml-xs q-mr-md"
+            name="fas fa-clock"
+            color="white"
           />
           -- : --
         </q-toolbar-title>
@@ -23,6 +23,7 @@
                color="white"
                :icon="!video ? 'fas fa-video' : 'fas fa-video-slash'"
                @click="video = !video"
+               disable
         />
         <q-btn flat
                rounded
@@ -31,10 +32,10 @@
                @click="alternarMicro"
         />
         <q-btn
-               color="negative"
-               icon="fas fa-phone-slash"
-               label="Salir"
-               @click="abandonar"
+          color="negative"
+          icon="fas fa-phone-slash"
+          label="Salir"
+          @click="abandonar"
         />
       </q-toolbar>
     </q-header>
@@ -52,8 +53,10 @@ import { onMounted, ref } from "vue";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import AgoraRTM from 'agora-rtm-sdk';
 import {useRoute} from "vue-router";
+import {io} from "socket.io-client";
 
 const route = useRoute()
+const socket = io("http://localhost:3000");
 
 const localStorage = window.localStorage
 let infoUsuario = null
@@ -67,7 +70,7 @@ let rtmClient
 let canal
 let idCanal
 const silenciado = ref(true)
-const video = ref(false)
+const video = ref(true)
 const usuarios = ref([])
 
 onMounted(() => {
@@ -106,7 +109,8 @@ async function entrarEnLlamadaRTM(nombre, urlFoto){
   canal.on('MemberJoined', manejarEntradaUsuario)
   canal.on('MemberLeft', manejarSalidaUsuarioRTM)
 
-  window.addEventListener('beforeunload', abandonarLlamadaRTM)
+  /*TODO esto no funciona si la ventana se cierra forzosamente*/
+  //window.addEventListener('beforeunload', abandonar())
 }
 
 async function manejarEntradaUsuario(uid){
@@ -189,6 +193,14 @@ async function abandonar(){
 }
 
 async function abandonarLlamadaRTM(){
+  let usuariosQueQuedan = await canal.getMembers()
+  if (usuariosQueQuedan.length === 1){
+    socket.emit('cerrar-llamada')
+    /*TODO: al cerrar la llamada debería activarse nuevo el boton para comenzar una llamada para todos*/
+  } else {
+    socket.emit('irse-de-llamada', infoUsuario._id)
+    /*TODO: al irse solo se debería volver a activar el boton para unirse a la llamada solo para ese cliente*/
+  }
   await canal.leave()
   await rtmClient.logout()
 }

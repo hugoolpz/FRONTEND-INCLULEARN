@@ -270,7 +270,7 @@ function alClickarIntervalo(data) {
 function cambiarColorEvento(color) {
   colorEvento.value = color
 
-  if (color == "turquoise") {
+  if (color === "turquoise") {
     color = "turquesa-cal"
   }
 
@@ -282,69 +282,83 @@ function cambiarColorEvento(color) {
 }
 
 async function crearEvento() {
-  await fetch(`${urlApi}/marcasTiempo`, {
-    method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-      'token-privado': localStorage.tokenPrivado
-    },
-    body: JSON.stringify({
-      "titulo": titulo.value,
-      "detalles": detalles.value,
-      "tiempoInicio": fechaInicio.value,
-      "tiempoFin": fechaFin.value,
-      "color": colorEvento.value
+  let fechaInicioComp = new Date(fechaInicio.value).getTime()
+  let fechaFinComp = new Date(fechaFin.value).getTime()
+
+  if (fechaInicioComp - fechaFinComp > 0) {
+    $q.notify({
+      message: "¡El evento no puede tener una marca de tiempo imposible!",
+      color: "negative",
+      position: "top",
+      timeout: 1000,
+      progress: true,
+      icon: "fas fa-circle-exclamation",
+    });
+  } else {
+    await fetch(`${urlApi}/marcasTiempo`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'token-privado': localStorage.tokenPrivado
+      },
+      body: JSON.stringify({
+        "titulo": titulo.value,
+        "detalles": detalles.value,
+        "tiempoInicio": fechaInicio.value,
+        "tiempoFin": fechaFin.value,
+        "color": colorEvento.value
+      })
     })
-  })
-    .then(respuesta => respuesta.json())
-    .then(datos => {
-      if (!datos.exito) {
-        $q.notify({
-          message: "¡Hubo un error al intentar crear el evento!",
-          color: "negative",
-          position: "top",
-          timeout: 1000,
-          progress: true,
-          icon: "fas fa-circle-exclamation",
-        });
-      } else {
-        fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
-          method: "PUT",
-          headers: {
-            'Content-Type': 'application/json',
-            'token-privado': localStorage.tokenPrivado
-          },
-          body: JSON.stringify({
-            "marcas_tiempo": datos.datos._id
+      .then(respuesta => respuesta.json())
+      .then(datos => {
+        if (!datos.exito) {
+          $q.notify({
+            message: "¡Hubo un error al intentar crear el evento!",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-exclamation",
+          });
+        } else {
+          fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'token-privado': localStorage.tokenPrivado
+            },
+            body: JSON.stringify({
+              "marcas_tiempo": datos.datos._id
+            })
           })
-        })
-          .then(respuesta => respuesta.json())
-          .then(datos => {
-            if (!datos.exito) {
-              $q.notify({
-                message: "¡Hubo un error al intentar crear el evento!",
-                color: "negative",
-                position: "top",
-                timeout: 1000,
-                progress: true,
-                icon: "fas fa-circle-exclamation",
-              });
-              //TODO: Borrar el evento previamente creado
-            } else {
-              $q.notify({
-                message: "¡Evento guardado con éxito!",
-                color: "positive",
-                position: "top",
-                timeout: 1000,
-                progress: true,
-                icon: "fas fa-circle-check",
-              });
-              actualizarEventos()
-            }
-          })
-      }
-    })
-  crearMarca.value = false
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+              if (!datos.exito) {
+                $q.notify({
+                  message: "¡Hubo un error al intentar crear el evento!",
+                  color: "negative",
+                  position: "top",
+                  timeout: 1000,
+                  progress: true,
+                  icon: "fas fa-circle-exclamation",
+                });
+                //TODO: Borrar el evento previamente creado
+              } else {
+                $q.notify({
+                  message: "¡Evento guardado con éxito!",
+                  color: "positive",
+                  position: "top",
+                  timeout: 1000,
+                  progress: true,
+                  icon: "fas fa-circle-check",
+                });
+                actualizarEventos()
+              }
+            })
+        }
+      })
+    crearMarca.value = false
+  }
 }
 
 async function editarEvento(data) {
@@ -379,44 +393,51 @@ async function editarEvento(data) {
 }
 
 async function actualizarEventoElegido() {
-  await fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
-    method: "PUT",
-    headers: {
-      'Content-Type': 'application/json',
-      'token-privado': localStorage.tokenPrivado
-    },
-    body: JSON.stringify({
-      "titulo": titulo.value,
-      "detalles": detalles.value,
-      "tiempoInicio": fechaInicio.value,
-      "tiempoFin": fechaFin.value,
-      "color": colorEvento.value
+  let fechaInicioComp = new Date(fechaInicio.value).getTime()
+  let fechaFinComp = new Date(fechaFin.value).getTime()
+
+  if (fechaInicioComp - fechaFinComp > 0) {
+
+  } else {
+    await fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        'token-privado': localStorage.tokenPrivado
+      },
+      body: JSON.stringify({
+        "titulo": titulo.value,
+        "detalles": detalles.value,
+        "tiempoInicio": fechaInicio.value,
+        "tiempoFin": fechaFin.value,
+        "color": colorEvento.value
+      })
     })
-  })
-    .then(respuesta => respuesta.json())
-    .then(datos => {
-      if (!datos.exito) {
-        $q.notify({
-          message: "¡Hubo un error al intentar editar el evento!",
-          color: "negative",
-          position: "top",
-          timeout: 1000,
-          progress: true,
-          icon: "fas fa-circle-exclamation",
-        });
-      } else {
-        $q.notify({
-          message: "¡Evento editado con éxito!",
-          color: "positive",
-          position: "top",
-          timeout: 1000,
-          progress: true,
-          icon: "fas fa-circle-check",
-        });
-        actMarca.value = false
-        actualizarEventos()
-      }
-    })
+      .then(respuesta => respuesta.json())
+      .then(datos => {
+        if (!datos.exito) {
+          $q.notify({
+            message: "¡Hubo un error al intentar editar el evento!",
+            color: "negative",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-exclamation",
+          });
+        } else {
+          $q.notify({
+            message: "¡Evento editado con éxito!",
+            color: "positive",
+            position: "top",
+            timeout: 1000,
+            progress: true,
+            icon: "fas fa-circle-check",
+          });
+          actMarca.value = false
+          actualizarEventos()
+        }
+      })
+  }
 }
 
 async function moverEventoManualmente(data) {

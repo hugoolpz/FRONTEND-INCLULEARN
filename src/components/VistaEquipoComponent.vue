@@ -131,8 +131,19 @@
           <q-btn flat
               color="white"
               icon="fas fa-headset"
-              @click="entrarEnLlamada"
+              @click="comenzarLlamada"
+              :disable="llamadaEnCurso" v-if="!todaviaEnLlamada"
           />
+          <q-btn flat
+                 color="white"
+                 icon="fas fa-headset"
+                 @click="entrarEnLlamada(canalActual._id)"
+                 :disable="llamadaEnCurso" v-else
+          >
+            <q-tooltip v-if="todaviaEnLlamada">
+              ¡Únete a la llamada en curso!
+            </q-tooltip>
+          </q-btn>
           <q-separator vertical inset color="white" class="q-mx-sm" />
           <q-tab icon="fas fa-comments" label="Chat" name="chat"/>
           <q-tab icon="fas fa-folder" label="Archivos" name="archivos"/>
@@ -338,14 +349,19 @@ const modoEdicion = ref(false)
 const idEdicion = ref(null)
 const socket = io("http://localhost:3000");
 const props = defineProps(['grupoActual', 'verCanales', 'esCreador']);
-const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'alClickarCanal']);
+const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo']);
 const chats = ref([]);
 const canalActual = ref(null)
+const llamadaEnCurso = ref(false)
+const todaviaEnLlamada = ref(false)
 const tabCanal = ref('chat')
 const localStorage = window.localStorage;
 let infoUsuario = null;
 const $q = useQuasar()
 const urlApi = api
+const router = useRouter()
+
+/*window.onbeforeunload =  */
 
 if (localStorage.infoUsuario) {
   infoUsuario = JSON.parse(localStorage.infoUsuario);
@@ -607,13 +623,54 @@ socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
   });
 });
 
+socket.on('irse-de-llamada', (idRecibida) => {
+  if (idRecibida === infoUsuario._id) {
+    habilitarLlamada()
+  }
+})
+
+socket.on('cerrar-llamada', (idRecibida) => {
+  llamadaEnCurso.value = false
+  todaviaEnLlamada.value = false
+})
+
+socket.on('notificar-llamada', (canalElegido, usuarioQueLlamo) => {
+  props.grupoActual.canales.forEach((canal) => {
+    if (canal._id === canalElegido._id && usuarioQueLlamo._id !== infoUsuario._id) {
+      llamadaEnCurso.value = true
+      $q.notify({
+        message: "¡" + usuarioQueLlamo.nombre + " " + usuarioQueLlamo.apellidos + " ha iniciado una llamada!",
+        color: 'azul-oscuro',
+        icon: 'fas fa-phone',
+        timeout: 0,
+        position: 'top',
+        actions: [
+          { label: 'Entrar', color: 'positive', handler: () => { entrarEnLlamada(canalElegido._id) } },
+          { label: 'Rechazar', color: 'negative', handler: () => { habilitarLlamada() } }
+        ]
+      })
+    }
+  })
+});
 
 function obtenerMarcaTiempo() {
   return new Date().toLocaleString();
 }
 
-function entrarEnLlamada(){
+function comenzarLlamada(){
+  llamadaEnCurso.value = true
+  socket.emit('notificar-llamada', canalActual.value, infoUsuario)
   window.open('http://localhost:9000/llamada/' + canalActual.value._id, '_blank')
+}
+
+function entrarEnLlamada(idCanal){
+  llamadaEnCurso.value = true
+  window.open('http://localhost:9000/llamada/' + idCanal, '_blank')
+}
+
+function habilitarLlamada(){
+  llamadaEnCurso.value = false
+  todaviaEnLlamada.value = true
 }
 </script>
 

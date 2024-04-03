@@ -165,8 +165,7 @@
                               @agregar-miembro="abrirDialogoMiembro(grupoActual._id)"
                               @agregar-canal="abrirDialogoCanal(grupoActual._id)"
                               @abandonar-grupo="abandonarGrupo(grupoActual._id)"
-                              @eliminar-grupo="eliminarGrupo(grupoActual._id)"
-                              @al-clickar-canal="entrarAlCanal">
+                              @eliminar-grupo="eliminarGrupo(grupoActual._id)">
       </vista-equipo-component>
 
       <q-dialog v-model="nuevoMiembro">
@@ -1074,13 +1073,8 @@ function entrarEnGrupo(id) {
   router.push({
     name: 'TusClases',
     params: {grupo: id},
-    query: route.query,
-    hash: route.hash,
   })
-}
-
-function entrarAlCanal(id) {
-  console.log(id)
+  localStorage.setItem('ultimoGrupo', id)
 }
 
 async function obtenerInfoGrupo(id) {

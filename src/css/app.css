@@ -280,3 +280,21 @@
   transform: scale(0.8);
   transition: 1s ease;
 }
+
+#video-streams{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  height: 90vh;
+  width: 1400px;
+  margin:0 auto;
+}
+
+.video-container{
+  height: 45vh;
+  width: 35vw;
+}
+
+.video-player{
+  height: 100%;
+  width: 100%;
+}

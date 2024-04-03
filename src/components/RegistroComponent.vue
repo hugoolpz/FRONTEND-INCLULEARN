@@ -10,57 +10,77 @@
             class="q-gutter-md row flex-center"
             @reset="onReset"
             @submit="registrarse">
-            <div class="col-4">
-              <q-input v-model="nombre" :label="$t('labNombre')" class="alumniSans-regular text-body1" color="morado" outlined
-                       rounded
-                       type="text"/>
+            <div class="col-xs-4 col-md-4">
+              <q-input v-model="nombre" :label="$t('labNombre')" :rules="[val => !!val]"
+                       class="alumniSans-regular text-body1"
+                       color="morado"
+                       lazy-rules
+                       outlined rounded type="text"/>
             </div>
-            <div class="col-6">
-              <q-input v-model="apellidos" :label="$t('labApellidos')" class="alumniSans-regular text-body1" color="morado" outlined
-                       rounded
-                       type="text"/>
+            <div class="col-xs-6 col-md-6">
+              <q-input v-model="apellidos" :label="$t('labApellidos')" :rules="[val => !!val]"
+                       class="alumniSans-regular text-body1" color="morado"
+                       lazy-rules
+                       outlined rounded type="text"/>
             </div>
-            <div class="col-10">
-              <q-input v-model="correo" :label="$t('labCorreo')" class="alumniSans-regular text-body1" color="morado" outlined
-                       rounded
-                       type="text"/>
+            <div class="col-xs-10 col-md-10 q-my-xs">
+              <q-input v-model="correo" :label="$t('labCorreo')" :rules="[
+                            (val) => validarEmail(val),
+                        ]" class="alumniSans-regular text-body1"
+                       color="morado"
+                       lazy-rules
+                       outlined rounded type="email"/>
             </div>
-            <div class="col-2 q-mr-lg">
+            <div class="col-xs-10 col-md-10 q-my-xs">
+              <q-input v-model="contra" :rules="[
+                            (val) => validarContrasena(val),
+                        ]" :type="!esContra ? 'password' : 'text'" class="alumniSans-regular text-body1"
+                       color="morado"
+                       hint='Mínimo 1 mayúscula, minúscula, carácter especial, número y 8 caracteres'
+                       :label="$t('labContra')" lazy-rules outlined rounded>
+                <template v-slot:error>
+                  Falta al menos
+                  <span v-if="!tieneMinusculas">
+                      1 minúscula.
+                  </span>
+                            <span v-if="!tieneMayusculas">
+                      1 mayúscula.
+                  </span>
+                            <span v-if="!tieneNumeros">
+                      1 número.
+                  </span>
+                            <span v-if="!tieneSimbolos">
+                      1 carácter especial.
+                  </span>
+                            <span v-if="!tieneLongitud">
+                      Una longitud de 8 caracteres.
+                  </span>
+                </template>
+                <template v-slot:append>
+                  <q-icon
+                    :name="esContra ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                    class="cursor-pointer"
+                    @click="esContra = !esContra"
+                  />
+                </template>
+              </q-input>
+            </div>
+            <div class="col-xs-1 col-md-1 q-mr-lg">
               <q-avatar class="avatar">
-                <img alt="foto de perfil" src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png"
+                <img alt="foto de perfil"
+                     src="https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png"
                      style="border: 1px solid #824b86;"/>
               </q-avatar>
             </div>
-            <div class="col-7">
-              <q-file v-model="fotoPerfil" :label="$t('labFoto')" accept=".jpg,.png,.gif" class="alumniSans-regular text-body1" color="morado"
+            <div class="col-xs-8 col-md-8">
+              <q-file v-model="fotoPerfil" :label="$t('labFoto')" accept=".jpg,.png,.gif"
+                      class="alumniSans-regular text-body1" color="morado"
                       outlined rounded type="file"
                       use-chips @rejected="alRechazar" @update:model-value="console.log(fotoPerfil)">
                 <template v-slot:append>
                   <q-icon class="cursor-pointer" name="fas fa-file-arrow-up"/>
                 </template>
               </q-file>
-              <q-space class="q-mt-md"></q-space>
-              <q-input v-model="fecha" :label="$t('labFecha')" class="alumniSans-regular text-body1" color="morado" outlined
-                       rounded type="text">
-                <template v-slot:append>
-                  <q-icon class="cursor-pointer" name="fas fa-calendar-days">
-                    <q-popup-proxy cover transition-hide="scale" transition-show="scale"
-                                   @show="ponerFechaActual()">
-                      <q-date v-model="fechaInput" color="morado"
-                              @update:model-value="quitarCeroDelMes(fechaInput)">
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup color="morado" flat label="Cerrar"/>
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="col-10">
-              <q-input v-model="contra" :label="$t('labContra')" class="alumniSans-regular text-body1" color="morado" outlined
-                       rounded
-                       type="password"/>
             </div>
             <div class="col-auto">
               <div align="center" class="text-h6 text-azul-oscuro adventPro-regular q-mb-sm">
@@ -70,7 +90,8 @@
                     {{ $t('etqInic2') }}
                 </span>
               </div>
-              <q-btn :label="$t('etqCrearCuenta')" :loading="cargando" class="adventPro-regular text-weight-bold" color="morado"
+              <q-btn :label="$t('etqCrearCuenta')" :loading="cargando" class="adventPro-regular text-weight-bold"
+                     color="morado"
                      rounded size="lg"
                      style="width: 100%; letter-spacing: 0.10rem;" type="submit"/>
             </div>
@@ -95,6 +116,12 @@ const fecha = ref("")
 const fechaInput = ref("")
 const contra = ref("")
 const cargando = ref(false)
+const tieneMinusculas = ref(false)
+const tieneMayusculas = ref(false)
+const tieneNumeros = ref(false)
+const tieneSimbolos = ref(false)
+const tieneLongitud = ref(false)
+const esContra = ref(false)
 //URL de la API REST
 const urlApi = api
 
@@ -118,7 +145,6 @@ function registrarse() {
       "correo": correo.value,
       "contra": contra.value,
       "rol": "Alumno",
-      "fecha": fecha.value,
       "url_foto": "./"
     })
   })
@@ -149,13 +175,12 @@ function registrarse() {
     })
 }
 
-function ponerFechaActual() {
+/*function ponerFechaActual() {
   let fechaNueva = new Date();
   let dia = fechaNueva.getDate();
   let mes = fechaNueva.getMonth() + 1;
   let ano = fechaNueva.getFullYear();
-  let fechaActual = `${dia}/${mes}/${ano}`;
-  fechaInput.value = fechaActual
+  fechaInput.value = `${dia}/${mes}/${ano}`
 }
 
 function quitarCeroDelMes(fechaMandada) {
@@ -166,9 +191,8 @@ function quitarCeroDelMes(fechaMandada) {
 
   mes = mes.startsWith('0') ? mes.substring(1) : mes;
 
-  let fechaSinCero = `${dia}/${mes}/${ano}`;
-  fecha.value = fechaSinCero
-}
+  fecha.value = `${dia}/${mes}/${ano}`
+}*/
 
 function alRechazar(entries) {
   if (entries.length > 0) {
@@ -184,6 +208,34 @@ function alRechazar(entries) {
     }
   }
 }
+
+function validarEmail(correoElegido) {
+  return /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(correoElegido);
+}
+
+function validarContrasena(contrasena) {
+  let minusculas = /[a-z]/g;
+  let mayusculas = /[A-Z]/g;
+  let numeros = /[0-9]/g;
+  let simbolos = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+
+  tieneMinusculas.value = !!contrasena.match(minusculas);
+
+  tieneMayusculas.value = !!contrasena.match(mayusculas);
+
+  tieneNumeros.value = !!contrasena.match(numeros);
+
+  tieneSimbolos.value = !!contrasena.match(simbolos)
+
+  tieneLongitud.value = contrasena.length >= 8
+
+  return !!(contrasena.match(minusculas) &&
+    contrasena.match(mayusculas) &&
+    contrasena.match(numeros) &&
+    contrasena.match(simbolos) &&
+    contrasena.length >= 8);
+}
+
 </script>
 
 <style scoped>
@@ -193,7 +245,7 @@ function alRechazar(entries) {
   }
 
   .avatar {
-    font-size: 6rem;
+    font-size: 4rem;
   }
 }
 
@@ -204,7 +256,7 @@ function alRechazar(entries) {
   }
 
   .avatar {
-    font-size: 8rem;
+    font-size: 5rem;
   }
 }
 </style>
