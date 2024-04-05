@@ -68,13 +68,13 @@ if (localStorage.infoUsuario){
 let rtcClient
 let rtmClient
 let canal
-let idCanal
+let idGrupo
 const silenciado = ref(true)
 const video = ref(true)
 const usuarios = ref([])
 
 onMounted(() => {
-  idCanal = route.params.canal.toString()
+  idGrupo = route.params.canal.toString()
   entrarEnLlamadaRTC()
   entrarEnLlamadaRTM(infoUsuario.nombre + " " + infoUsuario.apellidos, infoUsuario.url_foto)
 })
@@ -85,7 +85,7 @@ async function entrarEnLlamadaRTC() {
   rtcClient.on('user-left', manejarSalidaUsuarioRTC)
   rtcClient.on('user-published', manejarPublicacionUsuario)
 
-  await rtcClient.join(appId, idCanal, token, rtcUid)
+  await rtcClient.join(appId, idGrupo, token, rtcUid)
 
   audioTracks.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack()
   audioTracks.localAudioTrack.setMuted(silenciado.value)
@@ -101,7 +101,7 @@ async function entrarEnLlamadaRTM(nombre, urlFoto){
 
   await rtmClient.addOrUpdateLocalUserAttributes({'uidRtc': rtcUid.toString(), 'nombre': nombre, 'urlFoto': urlFoto})
 
-  canal = rtmClient.createChannel(idCanal)
+  canal = rtmClient.createChannel(idGrupo)
   await canal.join()
 
   await obtenerMiembrosCanal()
@@ -110,7 +110,7 @@ async function entrarEnLlamadaRTM(nombre, urlFoto){
   canal.on('MemberLeft', manejarSalidaUsuarioRTM)
 
   /*TODO esto no funciona si la ventana se cierra forzosamente*/
-  //window.addEventListener('beforeunload', abandonar())
+  window.addEventListener('beforeunload', abandonarLlamadaRTM)
 }
 
 async function manejarEntradaUsuario(uid){

@@ -137,7 +137,7 @@
           <q-btn flat
                  color="white"
                  icon="fas fa-headset"
-                 @click="entrarEnLlamada(canalActual._id)"
+                 @click="entrarEnLlamada(grupoActual._id)"
                  :disable="llamadaEnCurso" v-else
           >
             <q-tooltip v-if="todaviaEnLlamada">
@@ -146,7 +146,7 @@
           </q-btn>
           <q-separator vertical inset color="white" class="q-mx-sm" />
           <q-tab icon="fas fa-comments" label="Chat" name="chat"/>
-          <q-tab icon="fas fa-folder" label="Archivos" name="archivos"/>
+          <q-tab icon="fas fa-folder" label="Archivos" name="archivos" @click="obtenerArchivos"/>
           <q-tab icon="fas fa-scroll" label="Tareas" name="tareas"/>
         </q-tabs>
       </q-toolbar>
@@ -277,30 +277,81 @@
           />
         </q-tab-panel>
         <q-tab-panel class="no-padding" name="archivos">
+          <q-toolbar class="q-pa-sm bg-azul-oscuro">
+            <q-uploader
+              ref="archivo"
+              :factory="factoryFn"
+              field-name="filename"
+              label="{{$t('subeArchivos')}}"
+              color="morado"
+              accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*"
+              max-file-size="25000000"
+              @uploaded="alSubir"
+              @rejected="alRechazar"
+              no-thumbnails
+            >
+
+              <template v-slot:header="scope">
+                <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
+                  <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense flat >
+                    <q-tooltip>{{$t('borraTodos')}}</q-tooltip>
+                  </q-btn>
+                  <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
+                    <q-tooltip>{{$t('quitarSubidos')}}</q-tooltip>
+                  </q-btn>
+                  <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+                  <div class="col">
+                    <div class="q-uploader__title">{{$t('subeArchivos')}}</div>
+                    <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+                  </div>
+                  <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+                    <q-uploader-add-trigger />
+                    <q-tooltip>{{$t('elegirArchivos')}}</q-tooltip>
+                  </q-btn>
+                  <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="scope.upload" round dense flat >
+                    <q-tooltip>{{$t('subirArchivos')}}</q-tooltip>
+                  </q-btn>
+
+                  <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
+                    <q-tooltip>{{$t('cancelarSubida')}}</q-tooltip>
+                  </q-btn>
+                </div>
+              </template>
+            </q-uploader>
+          </q-toolbar>
+
           <q-list bordered separator>
             <q-scroll-area style="height: 530px">
-              <q-item v-for="n in 15" v-ripple clickable>
-                <q-item-section avatar top>
-                  <q-avatar color="naranja-claro" icon="fas fa-file" text-color="white"/>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label lines="1">Nombre archivo</q-item-label>
-                  <q-item-label caption>1.25 MB</q-item-label>
-                </q-item-section>
-
-                <q-item-section side>
-                  <q-btn flat round color="azul-oscuro" icon="fas fa-download" @click="" />
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn flat round color="morado" icon="fas fa-share-nodes" @click=""/>
-                </q-item-section>
-                <q-item-section side>
-                  <q-btn flat round color="negative" icon="fas fa-trash" @click="" />
-                </q-item-section>
-              </q-item>
+              <list-archivo-item-component v-for="archivo in archivos" :nombre="archivo.nombre" :tamano="archivo.tamano" @descargar="descargarArchivo(archivo.url)" @compartir="copiarUrl(archivo.url)" @borrar="abrirElim(archivo.nombre)"></list-archivo-item-component>
             </q-scroll-area>
           </q-list>
+
+          <q-dialog v-model="confirmarElim" persistent>
+            <q-card>
+              <q-toolbar class="bg-warning text-white">
+                <q-avatar>
+                  <q-icon name="fas fa-warning"></q-icon>
+                </q-avatar>
+
+                <q-toolbar-title>{{$t('avisoElim')}}</q-toolbar-title>
+              </q-toolbar>
+
+              <q-card-section>
+                {{$t('confirmElim')}} <span class="text-weight-bold">{{nomElim}}</span>?
+              </q-card-section>
+
+              <q-card-actions align="right">
+                <q-btn
+                  v-close-popup
+                  color="positive"
+                  flat
+                  :label="$t('siEliminar')"
+                  @click="eliminarElegido()"
+                />
+                <q-btn v-close-popup color="negative" flat :label="$t('noConservar')"/>
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
         </q-tab-panel>
         <q-tab-panel name="tareas">
           <div class="col column flex-center">
@@ -342,6 +393,8 @@ import {io} from "socket.io-client";
 import {QSpinnerHourglass, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
 import {useRouter} from "vue-router";
+import ListArchivoItemComponent from "components/ListArchivoItemComponent.vue";
+import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
 
 const mensaje = ref('');
 const emoji = ref(false);
@@ -360,8 +413,10 @@ let infoUsuario = null;
 const $q = useQuasar()
 const urlApi = api
 const router = useRouter()
-
-/*window.onbeforeunload =  */
+const archivo = ref(null)
+const archivos = ref([])
+const confirmarElim = ref(false)
+const nomElim = ref()
 
 if (localStorage.infoUsuario) {
   infoUsuario = JSON.parse(localStorage.infoUsuario);
@@ -403,7 +458,6 @@ function limpiarContenidoMensaje(contenido) {
   }
   return contenidoLimpio;
 }
-
 
 async function enviarMensaje() {
   if (mensaje.value.trim() !== "") {
@@ -590,7 +644,7 @@ function mostrarCarga() {
     spinnerColor: 'naranja',
     spinnerSize: 150,
     backgroundColor: 'morado',
-    message: 'Reuniendo historial de mensajes...',
+    message: 'CARGANDO...',
     messageColor: 'naranja-claro'
   })
 }
@@ -629,7 +683,7 @@ socket.on('irse-de-llamada', (idRecibida) => {
   }
 })
 
-socket.on('cerrar-llamada', (idRecibida) => {
+socket.on('cerrar-llamada', () => {
   llamadaEnCurso.value = false
   todaviaEnLlamada.value = false
 })
@@ -657,15 +711,133 @@ function obtenerMarcaTiempo() {
   return new Date().toLocaleString();
 }
 
-function comenzarLlamada(){
-  llamadaEnCurso.value = true
-  socket.emit('notificar-llamada', canalActual.value, infoUsuario)
-  window.open('http://localhost:9000/llamada/' + canalActual.value._id, '_blank')
+function factoryFn () {
+  return {
+    url: 'http://localhost:3000/api/storage/' + canalActual.value._id,
+    method: 'POST',
+  }
 }
 
-function entrarEnLlamada(idCanal){
+const alSubir = () => {
+  $q.notify({
+    message: '¡El archivo se subió correctamente!',
+    color: 'positive',
+    position: 'bottom',
+    timeout: 500,
+    progress: true,
+    icon: 'fas fa-circle-check',
+  });
+
+  obtenerArchivos()
+
+  setTimeout(function () {
+    archivo.value.removeUploadedFiles()
+  }, 500)
+};
+
+function descargarArchivo(url) {
+  window.open(url, "_blank")
+}
+
+function copiarUrl(url) {
+  navigator.clipboard.writeText(url)
+
+  $q.notify({
+    message: '¡Se ha copiado al portapapeles la URL del archivo!',
+    color: 'positive',
+    position: 'bottom',
+    timeout: 500,
+    progress: true,
+    icon: 'fas fa-circle-check',
+  });
+}
+
+async function obtenerArchivos() {
+  console.log(canalActual.value._id)
+  archivos.value.length = 0
+  mostrarCarga()
+  await fetch(`${urlApi}/storage/${canalActual.value._id}`, {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'token-privado': localStorage.tokenPrivado
+    }
+  })
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+      console.log(datos)
+      if (!datos.exito){
+        $q.notify({
+          message: "¡Hubo un error al intentar obtener tus eventos!",
+          color: "negative",
+          position: "top",
+          timeout: 1000,
+          progress: true,
+          icon: "fas fa-circle-exclamation",
+        });
+
+      } else {
+        datos.files.forEach((archivo) => {
+          let nuevoArchivo = {
+            nombre: archivo.name,
+            url: archivo.downloadURL,
+            contentType: archivo.contentType,
+            tamano: archivo.size,
+            fechaCreacion: archivo.created,
+            fechaAct: archivo.updated,
+          }
+          archivos.value.push(nuevoArchivo)
+        })
+      }
+
+    })
+  $q.loading.hide()
+}
+
+function abrirElim(nombreElegido) {
+  confirmarElim.value = true;
+  nomElim.value = nombreElegido
+}
+
+async function eliminarElegido() {
+  await fetch(`${urlApi}/storage/${canalActual.value._id}/${nomElim.value}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      'token-privado': localStorage.tokenPrivado
+    },
+  })
+    .then((res) => res.json())
+    .then((datos) => {
+      if (!datos.exito) {
+        $q.notify({
+          progress: true,
+          message: "No se pudo eliminar el archivo " + nomElim.value,
+          color: "negative",
+          timeout: 1000,
+        });
+      } else {
+        $q.notify({
+          progress: true,
+          message: "Se ha eliminado el archivo " + nomElim.value,
+          color: "positive",
+          timeout: 1000,
+        });
+
+        obtenerArchivos()
+      }
+    });
+}
+
+function comenzarLlamada(){
   llamadaEnCurso.value = true
-  window.open('http://localhost:9000/llamada/' + idCanal, '_blank')
+  socket.emit('notificar-llamada', props.grupoActual, infoUsuario)
+  window.open('http://localhost:9000/llamada/' + props.grupoActual._id, '_blank')
+}
+
+function entrarEnLlamada(idGrupo){
+  llamadaEnCurso.value = true
+  window.open('http://localhost:9000/llamada/' + idGrupo, '_blank')
 }
 
 function habilitarLlamada(){

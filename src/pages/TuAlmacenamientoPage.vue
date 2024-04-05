@@ -53,7 +53,7 @@
         color="morado"
         accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*"
         max-file-size="25000000"
-        @uploaded="onFileUploaded"
+        @uploaded="alSubir"
         @rejected="alRechazar"
         style="width: 18rem"
       >
@@ -113,10 +113,10 @@
             v-close-popup
             color="positive"
             flat
-            label="{{$t('siEliminar')}}"
+            :label="$t('siEliminar')"
             @click="eliminarElegido()"
           />
-          <q-btn v-close-popup color="negative" flat label="{{$t('noConservar')}}"/>
+          <q-btn v-close-popup color="negative" flat :label="$t('noConservar')"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -300,7 +300,7 @@ async function obtenerArchivos() {
       console.log(datos)
       if (!datos.exito){
         $q.notify({
-          message: "¡Hubo un error al intentar obtener tus eventos!",
+          message: "¡Hubo un error al intentar obtener tus archivos!",
           color: "negative",
           position: "top",
           timeout: 1000,
@@ -341,7 +341,7 @@ async function filtrarArchivos() {
      .then(datos => {
        if (!datos.exito){
          $q.notify({
-           message: "¡Hubo un error al intentar obtener tus eventos!",
+           message: "¡Hubo un error al intentar obtener tus archivos!",
            color: "negative",
            position: "top",
            timeout: 1000,
@@ -418,7 +418,7 @@ function mostrarCarga(){
   })
 }
 
-const onFileUploaded = () => {
+const alSubir = () => {
   $q.notify({
     message: '¡El archivo se subió correctamente!',
     color: 'positive',
