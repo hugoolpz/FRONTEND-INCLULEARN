@@ -1,33 +1,5 @@
 <template>
   <div class="row">
-    <q-card class="col-md-1 col-xs-1" flat>
-      <q-list bordered class="column flex-center" separator>
-        <q-item v-ripple clickable>
-          <q-item-section>
-            <q-avatar color="morado" icon="fas fa-comments" rounded size="lg" text-color="white"/>
-          </q-item-section>
-          <q-tooltip :offset="[8,10]" anchor="center right" class="bg-morado" self="center left">
-            Tus chats
-          </q-tooltip>
-        </q-item>
-        <q-item v-ripple clickable @click="$router.push('/tus-clases')">
-          <q-item-section>
-            <q-avatar color="morado" icon="fas fa-user-group" rounded size="lg" text-color="white"/>
-          </q-item-section>
-          <q-tooltip :offset="[8,10]" anchor="center right" class="bg-morado" self="center left">
-            Tus grupos
-          </q-tooltip>
-        </q-item>
-        <q-item v-ripple clickable>
-          <q-item-section>
-            <q-avatar color="morado" icon="fas fa-scroll" rounded size="lg" text-color="white"/>
-          </q-item-section>
-          <q-tooltip :offset="[8,10]" anchor="center right" class="bg-morado" self="center left">
-            Tus tareas
-          </q-tooltip>
-        </q-item>
-      </q-list>
-    </q-card>
     <q-card bordered class="col-md-3 col-xs-5" flat>
       <div class="column">
         <div class="col flex flex-center q-mt-lg">
@@ -35,14 +7,14 @@
                     text-color="white"/>
         </div>
         <div class="col flex flex-center q-mt-md">
-          <div class="text-h6 text-center">{{ grupoActual.nombre }}
+          <div class="text-h6 text-center adventPro-semiBold">{{ grupoActual.nombre }}
             <q-btn-dropdown auto-close dropdown-icon="none" flat rounded>
               <template v-slot:label>
                 <div class="row absolute-center">
                   <q-icon class="boton-mundo" name="fas fa-ellipsis" size="sm"/>
                 </div>
               </template>
-              <q-list>
+              <q-list class="adventPro-semiBold">
                 <q-item v-close-popup clickable @click="$emit('agregarMiembro')">
                   <q-item-section>
                     <q-item-label>Agregar miembro</q-item-label>
@@ -81,12 +53,21 @@
                     <q-icon name="fas fa-trash"/>
                   </q-item-section>
                 </q-item>
+
+                <q-item v-close-popup clickable @click="$emit('copiarCodigo')">
+                  <q-item-section>
+                    <q-item-label>Copiar código del grupo</q-item-label>
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="fas fa-key"/>
+                  </q-item-section>
+                </q-item>
               </q-list>
             </q-btn-dropdown>
           </div>
         </div>
         <div class="col q-mt-md q-ml-md">
-          <div class="text-body1">Canales
+          <div class="text-body1 adventPro-semiBold">Canales
             <q-icon
               :name="verCanales ? 'fas fa-caret-up' : 'fas fa-caret-down'"
               class="cursor-pointer"
@@ -100,14 +81,18 @@
           <q-slide-transition>
             <div v-show="verCanales">
               <q-list bordered separator>
-                <q-item v-for="(canal, index) in grupoActual.canales" :key="index" v-ripple clickable
-                        @click="canalActual = canal; tabCanal = 'chat'; obtenerHistorialMensajes(canal._id)" :active="esCanalElegido(canal)" active-class="bg-morado text-white">
+                <q-item v-for="(canal, index) in grupoActual.canales" :key="index" v-ripple :active="esCanalElegido(canal)"
+                        active-class="bg-morado text-white"
+                        clickable @click="canalActual = canal; tabCanal = 'chat'; obtenerHistorialMensajes(canal._id); usuariosEscribiendo.length = 0">
                   <q-item-section avatar>
-                    <q-avatar :color="esCanalElegido(canal) ? 'white' : 'morado'" icon="fas fa-hashtag" rounded :text-color="esCanalElegido(canal) ? 'morado' : 'white'"/>
+                    <q-avatar :color="esCanalElegido(canal) ? 'white' : 'morado'" :text-color="esCanalElegido(canal) ? 'morado' : 'white'" icon="fas fa-hashtag"
+                              rounded/>
                   </q-item-section>
                   <q-item-section>
-                    <q-item-label>{{ canal.nombre }}</q-item-label>
-                    <q-item-label caption :class="esCanalElegido(canal) ? 'text-white' : 'text-morado'">{{ canal.descripcion }}</q-item-label>
+                    <q-item-label class="adventPro-semiBold">{{ canal.nombre }}</q-item-label>
+                    <q-item-label class="adventPro-regular" :class="esCanalElegido(canal) ? 'text-white' : 'text-morado'" caption>
+                      {{ canal.descripcion }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </q-list>
@@ -118,7 +103,7 @@
     </q-card>
     <div v-if="canalActual !== null" class="col">
       <q-toolbar class="bg-morado text-white">
-        <q-toolbar-title>
+        <q-toolbar-title class="adventPro-semiBold">
           <q-icon
             name="fas fa-hashtag"
           />
@@ -126,25 +111,25 @@
         </q-toolbar-title>
         <q-tabs
           v-model="tabCanal"
-          class="text-white"
+          class="text-white adventPro-semiBold"
           inline-label>
-          <q-btn flat
-              color="white"
-              icon="fas fa-headset"
-              @click="comenzarLlamada"
-              :disable="llamadaEnCurso" v-if="!todaviaEnLlamada"
-          />
-          <q-btn flat
+          <q-btn v-if="!todaviaEnLlamada"
+                 :disable="llamadaEnCurso"
                  color="white"
-                 icon="fas fa-headset"
-                 @click="entrarEnLlamada(grupoActual._id)"
-                 :disable="llamadaEnCurso" v-else
+                 flat
+                 icon="fas fa-headset" @click="comenzarLlamada"
+          />
+          <q-btn v-else
+                 :disable="llamadaEnCurso"
+                 color="white"
+                 flat
+                 icon="fas fa-headset" @click="entrarEnLlamada(grupoActual._id)"
           >
             <q-tooltip v-if="todaviaEnLlamada">
               ¡Únete a la llamada en curso!
             </q-tooltip>
           </q-btn>
-          <q-separator vertical inset color="white" class="q-mx-sm" />
+          <q-separator class="q-mx-sm" color="white" inset vertical/>
           <q-tab icon="fas fa-comments" label="Chat" name="chat"/>
           <q-tab icon="fas fa-folder" label="Archivos" name="archivos" @click="obtenerArchivos"/>
           <q-tab icon="fas fa-scroll" label="Tareas" name="tareas"/>
@@ -154,35 +139,39 @@
         <q-tab-panel class="no-padding" name="chat">
           <q-scroll-area style="height: 375px; max-width: 950px;">
             <div>
-              <q-chat-message v-for="(chat, index) in  chats" :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
-                              :sent="chat.emisor._id === infoUsuario._id" :stamp="chat.marcaTiempo"
-                              :text="[chat.contenido]" :text-color="chat.emisor._id === infoUsuario._id ? 'white' : 'black'"
+              <q-chat-message v-for="(chat, index) in  chats"
                               :avatar="chat.emisor.url_foto !== './' ? chat.emisor.url_foto : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'"
-                              class="q-px-lg q-my-md"
+                              :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'" :sent="chat.emisor._id === infoUsuario._id"
+                              :stamp="chat.marcaTiempo"
+                              :text="[chat.contenido]"
+                              :text-color="chat.emisor._id === infoUsuario._id ? 'white' : 'black'"
+                              class="q-px-lg q-my-md adventPro-regular"
                               text-html>
-                <template v-slot:name v-if="chat.emisor._id === infoUsuario._id && index === chats.length-1">
+                <template v-if="chat.emisor._id === infoUsuario._id && index === chats.length-1" v-slot:name>
                   <div class="row q-gutter-x-sm">
                     <q-icon
-                      name="fas fa-pen"
-                      color="naranja-claro"
-                      size="15px"
                       class="cursor-pointer"
+                      color="naranja-claro"
+                      name="fas fa-pen"
+                      size="15px"
                       @click="activarModoEdicion(chat)"
                     />
                     <q-icon
-                      name="fas fa-trash"
-                      color="negative"
-                      size="15px"
                       class="cursor-pointer"
+                      color="negative"
+                      name="fas fa-trash"
+                      size="15px"
                       @click="borrarMensaje(chat.idMensaje)"
                     />
                     <div class="col self-end">Tú</div>
                   </div>
                 </template>
-                <template v-slot:name v-else>
-                  {{chat.emisor._id === infoUsuario._id ? 'Tú' : chat.nombreEmisor}}
+                <template v-else v-slot:name>
+                  {{ chat.emisor._id === infoUsuario._id ? 'Tú' : chat.nombreEmisor }}
                 </template>
               </q-chat-message>
+
+              <mensaje-escribiendo-component v-for="u in usuariosEscribiendo" :avatar="u.avatar !== './' ? u.avatar : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'" :nombre="u.nombre"/>
             </div>
           </q-scroll-area>
           <div :style="{visibility: !emoji ? 'hidden' : 'visible'}">
@@ -191,6 +180,7 @@
           <q-editor
             v-if="!modoEdicion"
             v-model="mensaje"
+            class="adventPro-regular"
             :definitions="{
                     subir: {
                         icon: 'fas fa-paperclip',
@@ -229,12 +219,15 @@
             toolbar-bg="morado"
             toolbar-text-color="white"
             toolbar-toggle-color="naranja"
+            @focus="estaEscribiendo(infoUsuario, canalActual._id)"
+            @blur="dejoDeEscribir(infoUsuario, canalActual._id)"
             @keydown.enter="intentarEnviarMensaje"
           />
 
           <q-editor
             v-else
             v-model="mensaje"
+            class="adventPro-regular"
             :definitions="{
                     subir: {
                         icon: 'fas fa-paperclip',
@@ -253,8 +246,7 @@
                         handler: manejarMenuEmojis,
                     },
                 }
-                    "
-            :toolbar="[
+                    " :toolbar="[
         ['bold', 'italic', 'strike', 'underline'],
         [
             {
@@ -273,6 +265,8 @@
             toolbar-bg="morado"
             toolbar-text-color="white"
             toolbar-toggle-color="naranja"
+            @focus="estaEscribiendo(infoUsuario, canalActual._id)"
+            @blur="dejoDeEscribir(infoUsuario, canalActual._id)"
             @keydown.enter="intentarEditarMensaje"
           />
         </q-tab-panel>
@@ -281,39 +275,45 @@
             <q-uploader
               ref="archivo"
               :factory="factoryFn"
+              accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*"
+              color="morado"
               field-name="filename"
               label="{{$t('subeArchivos')}}"
-              color="morado"
-              accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*"
               max-file-size="25000000"
-              @uploaded="alSubir"
-              @rejected="alRechazar"
               no-thumbnails
+              @rejected="alRechazar"
+              @uploaded="alSubir"
+              class="adventPro-semiBold"
             >
 
               <template v-slot:header="scope">
                 <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-                  <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense flat >
-                    <q-tooltip>{{$t('borraTodos')}}</q-tooltip>
+                  <q-btn v-if="scope.queuedFiles.length > 0" dense flat icon="clear_all"
+                         round @click="scope.removeQueuedFiles">
+                    <q-tooltip>{{ $t('borraTodos') }}</q-tooltip>
                   </q-btn>
-                  <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
-                    <q-tooltip>{{$t('quitarSubidos')}}</q-tooltip>
+                  <q-btn v-if="scope.uploadedFiles.length > 0" dense flat icon="done_all"
+                         round @click="scope.removeUploadedFiles">
+                    <q-tooltip>{{ $t('quitarSubidos') }}</q-tooltip>
                   </q-btn>
-                  <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
+                  <q-spinner v-if="scope.isUploading" class="q-uploader__spinner"/>
                   <div class="col">
-                    <div class="q-uploader__title">{{$t('subeArchivos')}}</div>
-                    <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
+                    <div class="q-uploader__title">{{ $t('subeArchivos') }}</div>
+                    <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{
+                        scope.uploadProgressLabel
+                      }}
+                    </div>
                   </div>
-                  <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
-                    <q-uploader-add-trigger />
-                    <q-tooltip>{{$t('elegirArchivos')}}</q-tooltip>
+                  <q-btn v-if="scope.canAddFiles" dense flat icon="add_box" round type="a" @click="scope.pickFiles">
+                    <q-uploader-add-trigger/>
+                    <q-tooltip>{{ $t('elegirArchivos') }}</q-tooltip>
                   </q-btn>
-                  <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="scope.upload" round dense flat >
-                    <q-tooltip>{{$t('subirArchivos')}}</q-tooltip>
+                  <q-btn v-if="scope.canUpload" dense flat icon="cloud_upload" round @click="scope.upload">
+                    <q-tooltip>{{ $t('subirArchivos') }}</q-tooltip>
                   </q-btn>
 
-                  <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
-                    <q-tooltip>{{$t('cancelarSubida')}}</q-tooltip>
+                  <q-btn v-if="scope.isUploading" dense flat icon="clear" round @click="scope.abort">
+                    <q-tooltip>{{ $t('cancelarSubida') }}</q-tooltip>
                   </q-btn>
                 </div>
               </template>
@@ -322,7 +322,10 @@
 
           <q-list bordered separator>
             <q-scroll-area style="height: 530px">
-              <list-archivo-item-component v-for="archivo in archivos" :nombre="archivo.nombre" :tamano="archivo.tamano" @descargar="descargarArchivo(archivo.url)" @compartir="copiarUrl(archivo.url)" @borrar="abrirElim(archivo.nombre)"></list-archivo-item-component>
+              <list-archivo-item-component class="adventPro-regular" v-for="archivo in archivos" :nombre="archivo.nombre" :tamano="archivo.tamano"
+                                           @borrar="abrirElim(archivo.nombre)"
+                                           @compartir="copiarUrl(archivo.url)"
+                                           @descargar="descargarArchivo(archivo.url)"></list-archivo-item-component>
             </q-scroll-area>
           </q-list>
 
@@ -333,22 +336,22 @@
                   <q-icon name="fas fa-warning"></q-icon>
                 </q-avatar>
 
-                <q-toolbar-title>{{$t('avisoElim')}}</q-toolbar-title>
+                <q-toolbar-title>{{ $t('avisoElim') }}</q-toolbar-title>
               </q-toolbar>
 
               <q-card-section>
-                {{$t('confirmElim')}} <span class="text-weight-bold">{{nomElim}}</span>?
+                {{ $t('confirmElim') }} <span class="text-weight-bold">{{ nomElim }}</span>?
               </q-card-section>
 
               <q-card-actions align="right">
                 <q-btn
                   v-close-popup
+                  :label="$t('siEliminar')"
                   color="positive"
                   flat
-                  :label="$t('siEliminar')"
                   @click="eliminarElegido()"
                 />
-                <q-btn v-close-popup color="negative" flat :label="$t('noConservar')"/>
+                <q-btn v-close-popup :label="$t('noConservar')" color="negative" flat/>
               </q-card-actions>
             </q-card>
           </q-dialog>
@@ -362,7 +365,7 @@
               style="width: 25rem;"
             />
 
-            <div class="text-h4 text-naranja q-mt-md" style="opacity:.5;">
+            <div class="text-h4 text-naranja q-mt-md adventPro-semiBold" style="opacity:.5;">
               ¡Próximamente: gestión de tareas!
             </div>
           </div>
@@ -377,7 +380,7 @@
         style="width: 45rem;"
       />
 
-      <div class="text-h5 text-morado" style="opacity:.5;">
+      <div class="text-h5 text-morado adventPro-semiBold" style="opacity:.5;">
         ¡Elige un canal y empieza a conversar!
       </div>
     </div>
@@ -395,6 +398,7 @@ import api from "boot/httpSingleton";
 import {useRouter} from "vue-router";
 import ListArchivoItemComponent from "components/ListArchivoItemComponent.vue";
 import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
+import MensajeEscribiendoComponent from "components/MensajeEscribiendoComponent.vue";
 
 const mensaje = ref('');
 const emoji = ref(false);
@@ -402,8 +406,9 @@ const modoEdicion = ref(false)
 const idEdicion = ref(null)
 const socket = io("http://localhost:3000");
 const props = defineProps(['grupoActual', 'verCanales', 'esCreador']);
-const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo']);
+const emits = defineEmits(['agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'copiarCodigo']);
 const chats = ref([]);
+const usuariosEscribiendo = ref([]);
 const canalActual = ref(null)
 const llamadaEnCurso = ref(false)
 const todaviaEnLlamada = ref(false)
@@ -432,9 +437,17 @@ function manejarMenuEmojis() {
 }
 
 function esCanalElegido(canal) {
-  if (canalActual.value){
+  if (canalActual.value) {
     return canalActual.value._id === canal._id;
   }
+}
+
+function estaEscribiendo(usuario, idCanal) {
+  socket.emit('usuario-escribiendo', usuario, idCanal)
+}
+
+function dejoDeEscribir(usuario, idCanal) {
+  socket.emit('usuario-no-escribiendo', usuario, idCanal)
 }
 
 function intentarEnviarMensaje(event) {
@@ -560,14 +573,14 @@ async function obtenerHistorialMensajes(idCanal) {
   $q.loading.hide()
 }
 
-function activarModoEdicion(chat){
+function activarModoEdicion(chat) {
   modoEdicion.value = true;
   mensaje.value = chat.contenido;
   idEdicion.value = chat.idMensaje
   console.log(mensaje.value)
 }
 
-async function editarMensaje(){
+async function editarMensaje() {
   await fetch(`${urlApi}/mensajes/${idEdicion.value}`, {
     method: "PUT",
     headers: {
@@ -605,7 +618,7 @@ async function editarMensaje(){
     })
 }
 
-async function borrarMensaje(id){
+async function borrarMensaje(id) {
   await fetch(`${urlApi}/mensajes/${id}`, {
     method: "DELETE",
     headers: {
@@ -677,6 +690,26 @@ socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
   });
 });
 
+socket.on('usuario-escribiendo', (usuario, idCanal) => {
+  console.log(usuario.nombre + ' esta escribiendo')
+  if (canalActual.value._id === idCanal && usuario._id !== infoUsuario._id) {
+    let u = {
+      _id: usuario._id,
+      avatar: usuario.url_foto,
+      nombre: usuario.nombre + ' ' + usuario.apellidos
+    }
+    usuariosEscribiendo.value.push(u)
+  }
+  console.log(usuariosEscribiendo.value)
+})
+
+socket.on('usuario-no-escribiendo', (usuario, idCanal) => {
+  console.log(usuario.nombre + ' dejo de escribir')
+  if (canalActual.value._id === idCanal) {
+    usuariosEscribiendo.value = usuariosEscribiendo.value.filter((u) => u._id !== usuario._id);
+  }
+})
+
 socket.on('irse-de-llamada', (idRecibida) => {
   if (idRecibida === infoUsuario._id) {
     habilitarLlamada()
@@ -699,8 +732,16 @@ socket.on('notificar-llamada', (canalElegido, usuarioQueLlamo) => {
         timeout: 0,
         position: 'top',
         actions: [
-          { label: 'Entrar', color: 'positive', handler: () => { entrarEnLlamada(canalElegido._id) } },
-          { label: 'Rechazar', color: 'negative', handler: () => { habilitarLlamada() } }
+          {
+            label: 'Entrar', color: 'positive', handler: () => {
+              entrarEnLlamada(canalElegido._id)
+            }
+          },
+          {
+            label: 'Rechazar', color: 'negative', handler: () => {
+              habilitarLlamada()
+            }
+          }
         ]
       })
     }
@@ -711,7 +752,7 @@ function obtenerMarcaTiempo() {
   return new Date().toLocaleString();
 }
 
-function factoryFn () {
+function factoryFn() {
   return {
     url: 'http://localhost:3000/api/storage/' + canalActual.value._id,
     method: 'POST',
@@ -766,7 +807,7 @@ async function obtenerArchivos() {
     .then(respuesta => respuesta.json())
     .then(datos => {
       console.log(datos)
-      if (!datos.exito){
+      if (!datos.exito) {
         $q.notify({
           message: "¡Hubo un error al intentar obtener tus eventos!",
           color: "negative",
@@ -829,18 +870,18 @@ async function eliminarElegido() {
     });
 }
 
-function comenzarLlamada(){
+function comenzarLlamada() {
   llamadaEnCurso.value = true
   socket.emit('notificar-llamada', props.grupoActual, infoUsuario)
   window.open('http://localhost:9000/llamada/' + props.grupoActual._id, '_blank')
 }
 
-function entrarEnLlamada(idGrupo){
+function entrarEnLlamada(idGrupo) {
   llamadaEnCurso.value = true
   window.open('http://localhost:9000/llamada/' + idGrupo, '_blank')
 }
 
-function habilitarLlamada(){
+function habilitarLlamada() {
   llamadaEnCurso.value = false
   todaviaEnLlamada.value = true
 }

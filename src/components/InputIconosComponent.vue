@@ -17,7 +17,7 @@ watch(value, () => {
 
 
 <template>
-  <q-input v-model="value" label="Icono del grupo" color="naranja-claro" filled readonly>
+  <q-input v-model="value" class="alumniSans-regular text-body1" label="Icono del grupo" color="naranja-claro" filled readonly>
     <template v-slot:prepend v-if="value !== ''">
       <q-icon :name="value" color="naranja-claro"></q-icon>
     </template>

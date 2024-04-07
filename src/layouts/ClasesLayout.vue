@@ -17,40 +17,36 @@
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
           TUS CLASES
         </q-toolbar-title>
-        <q-btn
-          flat
-          class="bg-white q-mr-md"
-          color="naranja"
-          label="Unirse o crear equipo"
-          icon="fas fa-plus"
-          @click="nuevoGrupo = true"
-          v-show="$route.params.grupo === ''"
-        />
-        <q-btn flat round icon="fas fa-universal-access"
-               @click="abrirMenuAccess()"/>
-        <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
-          <template v-slot:label>
-            <div class="row absolute-center">
-              <q-icon size="sm" name="fas fa-globe" class="boton-mundo"/>
-            </div>
-          </template>
-          <q-list>
-            <q-scroll-area style="width: 160px; height: 112px;">
-              <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
-                                @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
-              <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
-                                @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
-              <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
-                                @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
-              <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
-                                @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
-              <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
-                                @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
-              <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
-                                @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
-            </q-scroll-area>
-          </q-list>
-        </q-btn-dropdown>
+        <q-btn-group flat class="bg-naranja text-white">
+          <q-btn flat class="bg-white text-naranja" icon="fas fa-plus" @click="nuevoGrupo = true"
+                 v-show="$route.params.grupo === ''"/>
+          <q-btn flat icon="fas fa-comments" />
+          <q-btn flat icon="fas fa-universal-access"
+                 @click="abrirMenuAccess()"/>
+          <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
+            <template v-slot:label>
+              <div class="row absolute-center">
+                <q-icon size="sm" name="fas fa-globe" class="boton-mundo"/>
+              </div>
+            </template>
+            <q-list>
+              <q-scroll-area style="width: 160px; height: 112px;">
+                <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
+                                  @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
+                <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
+                                  @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
+                <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
+                                  @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
+                <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
+                                  @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
+                <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
+                                  @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
+                <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
+                                  @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
+              </q-scroll-area>
+            </q-list>
+          </q-btn-dropdown>
+        </q-btn-group>
       </q-toolbar>
     </q-header>
 

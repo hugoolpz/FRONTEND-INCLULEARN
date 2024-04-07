@@ -55,6 +55,15 @@
                 <q-icon name="fas fa-trash" />
               </q-item-section>
             </q-item>
+
+            <q-item v-close-popup clickable @click="$emit('copiarCodigo')">
+              <q-item-section>
+                <q-item-label>Copiar código del grupo</q-item-label>
+              </q-item-section>
+              <q-item-section avatar>
+                <q-icon name="fas fa-key"/>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-btn-dropdown>
       </q-toolbar>
@@ -65,5 +74,5 @@
 
 <script setup>
 const props = defineProps(['nombre', 'icono', 'color', 'esCreador'])
-const emits = defineEmits(['alClickar', 'agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo'])
+const emits = defineEmits(['alClickar', 'agregarMiembro', 'agregarCanal', 'abandonarGrupo', 'eliminarGrupo', 'copiarCodigo'])
 </script>

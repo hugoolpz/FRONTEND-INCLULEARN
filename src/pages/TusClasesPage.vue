@@ -9,7 +9,9 @@
                           @agregar-miembro="abrirDialogoMiembro(grupo._id)"
                           @agregar-canal="abrirDialogoCanal(grupo._id)"
                           @abandonar-grupo="abandonarGrupo(grupo._id)"
-                          @eliminar-grupo="eliminarGrupo(grupo._id)"></tarjeta-equipo>
+                          @eliminar-grupo="eliminarGrupo(grupo._id)"
+                          @copiar-codigo="copiarCodigo(grupo.codigo_acceso)"
+          ></tarjeta-equipo>
         </div>
       </div>
 
@@ -165,7 +167,8 @@
                               @agregar-miembro="abrirDialogoMiembro(grupoActual._id)"
                               @agregar-canal="abrirDialogoCanal(grupoActual._id)"
                               @abandonar-grupo="abandonarGrupo(grupoActual._id)"
-                              @eliminar-grupo="eliminarGrupo(grupoActual._id)">
+                              @eliminar-grupo="eliminarGrupo(grupoActual._id)"
+                              @copiar-codigo="copiarCodigo(grupoActual.codigo_acceso)">
       </vista-equipo-component>
 
       <q-dialog v-model="nuevoMiembro">
@@ -877,6 +880,8 @@ async function agregarMiembroDesdeGrupo() {
     })
 }
 
+console.log(infoUsuario.grupos)
+
 async function unirsePorCodigo() {
   await fetch(`${urlApi}/grupos/codigo/${codigoGrupo.value}`, {
     method: "GET",
@@ -899,68 +904,88 @@ async function unirsePorCodigo() {
       } else {
         let idGrupo = datos.datos._id
         let nombre = datos.datos.nombre
-        if (datos.datos) {
-          fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
-            method: "PUT",
-            headers: {
-              'Content-Type': 'application/json',
-              'token-privado': localStorage.tokenPrivado
-            },
-            body: JSON.stringify({
-              "grupos": idGrupo
+        let yaEstaEnGrupo = false
+
+        infoUsuario.grupos.forEach((grupo) => {
+          if (grupo === idGrupo) {
+            yaEstaEnGrupo = true
+          }
+        })
+
+
+        if (!yaEstaEnGrupo) {
+          if (datos.datos) {
+            fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
+              method: "PUT",
+              headers: {
+                'Content-Type': 'application/json',
+                'token-privado': localStorage.tokenPrivado
+              },
+              body: JSON.stringify({
+                "grupos": idGrupo
+              })
             })
-          })
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-              if (!datos.exito) {
-                $q.notify({
-                  message: "¡Hubo un error al intentar unirse al grupo!",
-                  color: "negative",
-                  position: "top",
-                  timeout: 1000,
-                  progress: true,
-                  icon: "fas fa-circle-exclamation",
-                });
-              } else {
-                fetch(`${urlApi}/grupos/${idGrupo}`, {
-                  method: "PUT",
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'token-privado': localStorage.tokenPrivado
-                  },
-                  body: JSON.stringify({
-                    "miembros": infoUsuario._id
+              .then(respuesta => respuesta.json())
+              .then(datos => {
+                if (!datos.exito) {
+                  $q.notify({
+                    message: "¡Hubo un error al intentar unirse al grupo!",
+                    color: "negative",
+                    position: "top",
+                    timeout: 1000,
+                    progress: true,
+                    icon: "fas fa-circle-exclamation",
+                  });
+                } else {
+                  fetch(`${urlApi}/grupos/${idGrupo}`, {
+                    method: "PUT",
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'token-privado': localStorage.tokenPrivado
+                    },
+                    body: JSON.stringify({
+                      "miembros": infoUsuario._id
+                    })
                   })
-                })
-                  .then(respuesta => respuesta.json())
-                  .then(datos => {
-                    if (!datos.exito) {
-                      $q.notify({
-                        message: "¡Hubo un error al intentar unirse al grupo!",
-                        color: "negative",
-                        position: "top",
-                        timeout: 1000,
-                        progress: true,
-                        icon: "fas fa-circle-exclamation",
-                      });
-                    } else {
-                      $q.notify({
-                        message: "¡Te uniste al grupo '" + nombre + "' con éxito!",
-                        color: "positive",
-                        position: "top",
-                        timeout: 1000,
-                        progress: true,
-                        icon: "fas fa-circle-check",
-                      });
-                      obtenerGrupos()
-                      nuevoGrupo.value = false
-                    }
-                  })
-              }
-            })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+                      if (!datos.exito) {
+                        $q.notify({
+                          message: "¡Hubo un error al intentar unirse al grupo!",
+                          color: "negative",
+                          position: "top",
+                          timeout: 1000,
+                          progress: true,
+                          icon: "fas fa-circle-exclamation",
+                        });
+                      } else {
+                        $q.notify({
+                          message: "¡Te uniste al grupo '" + nombre + "' con éxito!",
+                          color: "positive",
+                          position: "top",
+                          timeout: 1000,
+                          progress: true,
+                          icon: "fas fa-circle-check",
+                        });
+                        obtenerGrupos()
+                        nuevoGrupo.value = false
+                      }
+                    })
+                }
+              })
+          } else {
+            $q.notify({
+              message: "¡El código introducido es incorrecto!",
+              color: "negative",
+              position: "top",
+              timeout: 1000,
+              progress: true,
+              icon: "fas fa-circle-exclamation",
+            });
+          }
         } else {
           $q.notify({
-            message: "¡El código introducido es incorrecto!",
+            message: "¡Ya perteneces a ese grupo!",
             color: "negative",
             position: "top",
             timeout: 1000,
@@ -1064,9 +1089,23 @@ async function eliminarGrupo(id) {
           icon: "fas fa-check",
         });
         router.push('/tus-clases')
+        obtenerGrupos()
       }
     })
   $q.loading.hide()
+}
+
+function copiarCodigo(cod){
+  navigator.clipboard.writeText(cod)
+
+  $q.notify({
+    message: '¡Se ha copiado al portapapeles el código del grupo!',
+    color: 'positive',
+    position: 'bottom',
+    timeout: 500,
+    progress: true,
+    icon: 'fas fa-circle-check',
+  });
 }
 
 function entrarEnGrupo(id) {
