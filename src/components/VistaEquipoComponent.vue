@@ -577,7 +577,6 @@ function activarModoEdicion(chat) {
   modoEdicion.value = true;
   mensaje.value = chat.contenido;
   idEdicion.value = chat.idMensaje
-  console.log(mensaje.value)
 }
 
 async function editarMensaje() {
@@ -691,7 +690,6 @@ socket.on("mensaje-editado", (idMsg, contenidoNuevo) => {
 });
 
 socket.on('usuario-escribiendo', (usuario, idCanal) => {
-  console.log(usuario.nombre + ' esta escribiendo')
   if (canalActual.value._id === idCanal && usuario._id !== infoUsuario._id) {
     let u = {
       _id: usuario._id,
@@ -700,11 +698,9 @@ socket.on('usuario-escribiendo', (usuario, idCanal) => {
     }
     usuariosEscribiendo.value.push(u)
   }
-  console.log(usuariosEscribiendo.value)
 })
 
 socket.on('usuario-no-escribiendo', (usuario, idCanal) => {
-  console.log(usuario.nombre + ' dejo de escribir')
   if (canalActual.value._id === idCanal) {
     usuariosEscribiendo.value = usuariosEscribiendo.value.filter((u) => u._id !== usuario._id);
   }
@@ -722,30 +718,28 @@ socket.on('cerrar-llamada', () => {
 })
 
 socket.on('notificar-llamada', (canalElegido, usuarioQueLlamo) => {
-  props.grupoActual.canales.forEach((canal) => {
-    if (canal._id === canalElegido._id && usuarioQueLlamo._id !== infoUsuario._id) {
-      llamadaEnCurso.value = true
-      $q.notify({
-        message: "¡" + usuarioQueLlamo.nombre + " " + usuarioQueLlamo.apellidos + " ha iniciado una llamada!",
-        color: 'azul-oscuro',
-        icon: 'fas fa-phone',
-        timeout: 0,
-        position: 'top',
-        actions: [
-          {
-            label: 'Entrar', color: 'positive', handler: () => {
-              entrarEnLlamada(canalElegido._id)
-            }
-          },
-          {
-            label: 'Rechazar', color: 'negative', handler: () => {
-              habilitarLlamada()
-            }
+  if (usuarioQueLlamo._id !== infoUsuario._id) {
+    llamadaEnCurso.value = true
+    $q.notify({
+      message: "¡" + usuarioQueLlamo.nombre + " " + usuarioQueLlamo.apellidos + " ha iniciado una llamada!",
+      color: 'azul-oscuro',
+      icon: 'fas fa-phone',
+      timeout: 0,
+      position: 'top',
+      actions: [
+        {
+          label: 'Entrar', color: 'positive', handler: () => {
+            entrarEnLlamada(canalElegido._id)
           }
-        ]
-      })
-    }
-  })
+        },
+        {
+          label: 'Rechazar', color: 'negative', handler: () => {
+            habilitarLlamada()
+          }
+        }
+      ]
+    })
+  }
 });
 
 function obtenerMarcaTiempo() {
@@ -794,7 +788,6 @@ function copiarUrl(url) {
 }
 
 async function obtenerArchivos() {
-  console.log(canalActual.value._id)
   archivos.value.length = 0
   mostrarCarga()
   await fetch(`${urlApi}/storage/${canalActual.value._id}`, {
@@ -806,7 +799,6 @@ async function obtenerArchivos() {
   })
     .then(respuesta => respuesta.json())
     .then(datos => {
-      console.log(datos)
       if (!datos.exito) {
         $q.notify({
           message: "¡Hubo un error al intentar obtener tus eventos!",
@@ -878,6 +870,7 @@ function comenzarLlamada() {
 
 function entrarEnLlamada(idGrupo) {
   llamadaEnCurso.value = true
+  todaviaEnLlamada.value = false
   window.open('http://localhost:9000/llamada/' + idGrupo, '_blank')
 }
 

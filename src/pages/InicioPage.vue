@@ -1,9 +1,9 @@
 <template>
   <q-page :class="!formAbierto ? 'bg-image-logo' : 'bg-image-forms'" padding>
     <!--Inicio logo-->
-    <div class="row flex-center fullscreen" v-if="!formAbierto" style="z-index: 1">
+    <div class="row flex-center fullscreen" v-if="!formAbierto" style="z-index: 1;">
       <div class="column contenedor">
-        <div class="col-auto">
+        <div class="col-md-12 col-sm-6">
           <div class="column flex-center">
             <img src="/gorro-logo.png" alt="logo" class="logo-inclu"/>
           </div>
@@ -15,13 +15,13 @@
           </div>
         </div>
 
-        <div class="col-auto">
+        <div class="col-md-12 col-sm-6">
           <div class="text-morado text-center alumniSans-light texto-sub1">
             {{ $t('subtInicio') }}
           </div>
         </div>
 
-        <div class="col-auto">
+        <div class="col-md-12 col-sm-6">
           <div class="text-azul-oscuro text-justify alumniSans-regular texto-sub2">
             {{ $t('resInicio') }}
           </div>

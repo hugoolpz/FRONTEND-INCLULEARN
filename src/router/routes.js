@@ -49,6 +49,17 @@ const routes = [
     ],
   },
   {
+    path: "/tus-chats",
+    component: () => import("layouts/TusChatsLayout.vue"),
+    children: [
+      {
+        path: "",
+        name: "TusChats",
+        component: () => import("pages/TusChatsPage.vue"),
+      },
+    ],
+  },
+  {
     path: "/llamada/:canal?",
     component: () => import("layouts/LlamadaLayout.vue"),
     children: [

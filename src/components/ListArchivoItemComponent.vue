@@ -29,5 +29,6 @@ function bytesToMB(bytes) {
       <q-btn flat round color="negative" icon="fas fa-trash" @click="$emit('borrar')" />
     </q-item-section>
   </q-item>
+  <q-separator></q-separator>
 </template>
 

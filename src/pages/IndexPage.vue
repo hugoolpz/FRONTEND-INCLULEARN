@@ -1,9 +1,7 @@
 <template>
   <q-page padding :class="!formAbierto ? 'bg-image-logo' : 'bg-image-forms'">
-    <div class="row flex-center" v-if="!formAbierto" key="form">
-      <div class="col-6 q-ml-xl q-pl-xl q-my-xl">
-        <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
-          enter-active-class="anim-dur-1s">
+    <div class="row" v-if="!formAbierto" key="form">
+      <div class="col-md-6 col-lg-6 col-sm-12 q-ml-xl q-pl-xl q-my-xl" style="border: 1px solid black">
           <div>
             <div class="column relative-position" style="left: 158px; top: 5px">
               <img src="/gorro-logo.png" style="width: 210px" alt="" />
@@ -15,27 +13,18 @@
               INCL<span class="text-naranja">U | L</span>EARN
             </div>
           </div>
-        </transition>
         <q-space class="q-mb-md" />
-        <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
-          enter-active-class="anim-dur-1s">
           <div style="font-size: 2rem;" class="text-morado text-left text-h4 q-ml-sm alumniSans-light">
             {{ $t('subtInicio') }}
           </div>
-        </transition>
-        <transition appear enter-from-class="animated zoomOutDown" enter-to-class="animated zoomInDown"
-          enter-active-class="anim-dur-1s">
           <div>
             <div class="text-azul-oscuro text-h5 q-ml-sm text-justify alumniSans-regular"
               style="max-width: 530vw; line-height: 1.2em">
               {{ $t('resInicio') }}
             </div>
           </div>
-        </transition>
       </div>
-      <transition appear enter-from-class="animated zoomInLeft" enter-to-class="animated zoomInRight"
-        enter-active-class="anim-dur-1s">
-        <div class="col q-gutter-y-xl q-mt-xl q-pt-xl">
+      <div class="col-md-6 col-lg-6 col-sm-12 q-gutter-y-xl q-mt-xl q-pt-xl">
           <div class="column flex-center">
             <q-btn color="naranja-claro" class="adventPro-regular" style="width: 300px; font-size: 28px" rounded size="xl"
               icon="mdi-plus" :label="$t('etqReg1')" @click="abrirRegistro" />
@@ -45,19 +34,12 @@
               icon="mdi-login" :label="$t('etqInic1')" @click="abrirInicioSesion" />
           </div>
         </div>
-      </transition>
     </div>
 
-    <transition appear enter-from-class="animated fadeOut" enter-to-class="animated fadeIn"
-      enter-active-class="anim-dur-1s">
-      <registro-component v-if="formAbierto && formRegistro"
-        @abrir-inicio-sesion="abrirInicioSesion"></registro-component>
-    </transition>
+    <registro-component v-if="formAbierto && formRegistro"
+                        @abrir-inicio-sesion="abrirInicioSesion"></registro-component>
 
-    <transition appear enter-from-class="animated fadeOut" enter-to-class="animated fadeIn"
-      enter-active-class="anim-dur-1s">
-      <inicio-sesion-component v-if="formAbierto && formInicio" @abrir-registro="abrirRegistro"></inicio-sesion-component>
-    </transition>
+    <inicio-sesion-component v-if="formAbierto && formInicio" @abrir-registro="abrirRegistro"></inicio-sesion-component>
   </q-page>
 </template>
 

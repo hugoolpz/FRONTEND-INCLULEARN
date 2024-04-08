@@ -11,8 +11,8 @@
           flat
           class="bg-white"
           color="naranja"
-          icon="fas fa-home"
-          @click="$router.push('/plataforma-educativa')"
+          :icon="$route.params.grupo ? 'fas fa-arrow-left' : 'fas fa-home'"
+          @click="$route.params.grupo ? $router.push('/tus-clases') : $router.push('/plataforma-educativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
           TUS CLASES
@@ -20,7 +20,7 @@
         <q-btn-group flat class="bg-naranja text-white">
           <q-btn flat class="bg-white text-naranja" icon="fas fa-plus" @click="nuevoGrupo = true"
                  v-show="$route.params.grupo === ''"/>
-          <q-btn flat icon="fas fa-comments" />
+          <q-btn flat icon="fas fa-comments" @click="$router.push('tus-chats')"/>
           <q-btn flat icon="fas fa-universal-access"
                  @click="abrirMenuAccess()"/>
           <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>
