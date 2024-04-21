@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <q-card bordered class="col-md-3 col-xs-5" flat>
+    <q-card class="col-md-3 col-xs-5 window-height" flat bordered>
       <div class="column">
         <div class="col flex flex-center q-mt-lg">
           <q-avatar :icon="grupoActual.icono" :style="{backgroundColor: grupoActual.color}" rounded size="100px"
@@ -15,7 +15,10 @@
                 </div>
               </template>
               <q-list class="adventPro-semiBold">
-                <q-item v-close-popup clickable @click="$emit('agregarMiembro')">
+                <q-item v-close-popup :disable="!esCreador" clickable @click="$emit('agregarMiembro')">
+                  <q-tooltip v-if="!esCreador" class="bg-negative">
+                    ¡No eres el creador de este grupo!
+                  </q-tooltip>
                   <q-item-section>
                     <q-item-label>Agregar miembro</q-item-label>
                   </q-item-section>
@@ -24,7 +27,10 @@
                   </q-item-section>
                 </q-item>
 
-                <q-item v-close-popup clickable @click="$emit('agregarCanal')">
+                <q-item v-close-popup :disable="!esCreador" clickable @click="$emit('agregarCanal')">
+                  <q-tooltip v-if="!esCreador" class="bg-negative">
+                    ¡No eres el creador de este grupo!
+                  </q-tooltip>
                   <q-item-section>
                     <q-item-label>Agregar canal</q-item-label>
                   </q-item-section>

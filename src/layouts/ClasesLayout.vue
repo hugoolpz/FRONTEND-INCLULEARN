@@ -20,7 +20,7 @@
         <q-btn-group flat class="bg-naranja text-white">
           <q-btn flat class="bg-white text-naranja" icon="fas fa-plus" @click="nuevoGrupo = true"
                  v-show="$route.params.grupo === ''"/>
-          <q-btn flat icon="fas fa-comments" @click="$router.push('tus-chats')"/>
+          <q-btn flat icon="fas fa-comments" @click="$router.push('/tus-chats')"/>
           <q-btn flat icon="fas fa-universal-access"
                  @click="abrirMenuAccess()"/>
           <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" auto-close>

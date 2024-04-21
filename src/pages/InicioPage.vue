@@ -111,6 +111,7 @@ function abrirInicioSesion() {
 
   .texto-sub2 {
     font-size: 1.5rem;
+    margin-bottom: .8rem;
   }
 
   .logo-inclu {

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div v-if="$route.params.grupo === ''">
-      <div class="q-gutter-lg row q-mt-md flex-center">
+      <div class="q-gutter-lg row q-my-md flex-center">
         <div v-for="grupo in grupos">
           <tarjeta-equipo :color="grupo.color" :es-creador="grupo.creador === infoUsuario._id" :icono="grupo.icono"
                           :nombre="grupo.nombre"

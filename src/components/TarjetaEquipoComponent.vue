@@ -17,7 +17,10 @@
             </div>
           </template>
           <q-list>
-            <q-item clickable v-close-popup @click="$emit('agregarMiembro')">
+            <q-item clickable v-close-popup @click="$emit('agregarMiembro')" :disable="!esCreador">
+              <q-tooltip v-if="!esCreador" class="bg-negative">
+                ¡No eres el creador de este grupo!
+              </q-tooltip>
               <q-item-section>
                 <q-item-label>Agregar miembro</q-item-label>
               </q-item-section>
@@ -26,7 +29,10 @@
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="$emit('agregarCanal')">
+            <q-item clickable v-close-popup @click="$emit('agregarCanal')" :disable="!esCreador">
+              <q-tooltip v-if="!esCreador" class="bg-negative">
+                ¡No eres el creador de este grupo!
+              </q-tooltip>
               <q-item-section>
                 <q-item-label>Agregar canal</q-item-label>
               </q-item-section>
