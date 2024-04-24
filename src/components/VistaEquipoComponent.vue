@@ -124,12 +124,14 @@
                  color="white"
                  flat
                  icon="fas fa-headset" @click="comenzarLlamada"
+                 aria-label="Entrar en llamada"
           />
           <q-btn v-else
                  :disable="llamadaEnCurso"
                  color="white"
                  flat
                  icon="fas fa-headset" @click="entrarEnLlamada(grupoActual._id)"
+                 aria-label="Entrar en llamada en curso"
           >
             <q-tooltip v-if="todaviaEnLlamada">
               ¡Únete a la llamada en curso!

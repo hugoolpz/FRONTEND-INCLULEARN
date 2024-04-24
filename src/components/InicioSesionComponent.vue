@@ -20,10 +20,10 @@
                        hide-bottom-space
                        outlined rounded style="width: 75%" type="password"/>
             </div>
-            <GoogleLogin :callback="callback">
+            <GoogleLogin :callback="callback" tabindex="0">
               <div align="center"
                    class="text-h6 text-azul-oscuro adventPro-regular cursor-pointer hover-underline-animation">
-                {{ $t('etqInicGoogle') }}
+                <span class="q-mr-sm">{{ $t('etqInicGoogle') }}</span>
                 <q-icon name="img:src\assets\icons\google.svg" size="25px"/>
               </div>
             </GoogleLogin>
@@ -33,8 +33,8 @@
                      style="width: 12em;letter-spacing: 0.10rem;" type="submit"/>
             </div>
             <div align="center" class="text-h6 text-azul-oscuro adventPro-regular">
-              {{ $t('etqHaciaReg') }}
-              <span class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirRegistro')">
+              <span class="q-mr-sm">{{ $t('etqHaciaReg') }}</span>
+              <span tabindex="0" class="cursor-pointer hover-underline-animation text-uppercase" @click="$emit('abrirRegistro')">
                     {{ $t('etqReg2') }}
                 </span>
             </div>

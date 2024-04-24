@@ -6,30 +6,30 @@
 
     <q-header class="bg-transparent">
       <q-toolbar class="q-pt-sm">
-        <img src="/logo-inclu.png" alt="logo-hacia-inicio" style="width: 5em" class="cursor-pointer shrink" @click="$router.push('/')">
+        <img src="/logo-inclu.png" alt="Ir hacia el inicio" tabindex="0" style="width: 5em" class="cursor-pointer shrink" @click="$router.push('/')">
         <q-toolbar-title></q-toolbar-title>
         <q-btn size="md" padding="5px" flat round color="naranja" icon="fas fa-universal-access"
-               @click="abrirMenuAccess()" class="boton-access" />
-        <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none" auto-close>
+               @click="abrirMenuAccess()" class="boton-access" aria-label="Accesibilidad"/>
+        <q-btn-dropdown v-model="idioma" flat color="naranja" dropdown-icon="none" aria-label="Selector de idiomas" auto-close>
           <template v-slot:label>
             <div class="row absolute-center">
-              <q-icon size="sm" name="fas fa-globe" class="boton-mundo"/>
+              <q-icon size="sm" name="fas fa-globe" class="boton-mundo" aria-label="Selector de idiomas"/>
             </div>
           </template>
           <q-list>
             <q-scroll-area style="width: 160px; height: 112px;">
               <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
-                                @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Español')" aria-label="Español"></list-item-idioma>
               <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
-                                @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Inglés')" aria-label="Inglés"></list-item-idioma>
               <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
-                                @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Francés')" aria-label="Francés"></list-item-idioma>
               <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
-                                @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Alemán')" aria-label="Alemán"></list-item-idioma>
               <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
-                                @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Italiano')" aria-label="Italiano"></list-item-idioma>
               <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
-                                @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
+                                @al-clickar="cambiarIdioma('Chino')" aria-label="Chino"></list-item-idioma>
             </q-scroll-area>
           </q-list>
         </q-btn-dropdown>
@@ -60,7 +60,7 @@
 <script setup>
 import ListItemAccess from 'src/components/ListItemAccessComponent.vue';
 import ListItemIdioma from 'src/components/ListItemIdiomaComponent.vue';
-import { ref, watch } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const idioma = ref(false)
@@ -68,11 +68,31 @@ const { locale } = useI18n()
 const menuIzq = ref(false)
 
 //Accesibilidad
-const modoDislexia = ref(false)
-const modoEpilepsia = ref(false)
-const modoTDAH = ref(false);
+const modoDislexia = ref(window.localStorage.getItem("dislexia"))
+const modoEpilepsia = ref(window.localStorage.getItem("epilepsia"))
+const modoTDAH = ref(window.localStorage.getItem("tdah"));
 
 //Funciones
+
+onMounted(() => {
+  comprobarAjustesActivos()
+})
+function comprobarAjustesActivos() {
+  let lS = window.localStorage
+
+  if (lS.getItem("dislexia")) {
+    ajusteDislexia()
+  }
+
+  if (lS.getItem("epilepsia")) {
+    ajusteEpilepsia()
+  }
+
+  if (lS.getItem("tdah")) {
+    modoTDAH.value = true
+  }
+}
+
 function cambiarIdioma(idioma) {
   locale.value = idioma
 }

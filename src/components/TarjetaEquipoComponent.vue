@@ -1,5 +1,5 @@
 <template>
-<q-card bordered class="tarjeta-equipo cursor-pointer">
+<q-card tabindex="0" bordered class="tarjeta-equipo cursor-pointer">
     <q-card-section class="row flex-center" @click="$emit('alClickar')">
       <q-avatar rounded size="70px" :style="{backgroundColor: color}" text-color="white" :icon="icono" />
     </q-card-section>

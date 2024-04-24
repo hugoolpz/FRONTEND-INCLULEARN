@@ -189,14 +189,34 @@ if (localStorage.infoUsuario) {
   infoUsuario = JSON.parse(localStorage.infoUsuario);
 }
 
+//Accesibilidad
+const modoDislexia = ref()
+const modoEpilepsia = ref()
+const modoTDAH = ref();
+
+//Funciones
+
 onMounted(() => {
   obtenerChats()
+  comprobarAjustesActivos()
 })
+function comprobarAjustesActivos() {
+  let lS = window.localStorage
 
-//Accesibilidad
-const modoDislexia = ref(false)
-const modoEpilepsia = ref(false)
-const modoTDAH = ref(false);
+  if (lS.getItem("dislexia")) {
+    ajusteDislexia()
+    modoDislexia.value = lS.getItem("dislexia")
+  }
+
+  if (lS.getItem("epilepsia")) {
+    ajusteEpilepsia()
+    modoEpilepsia.value = lS.getItem("epilepsia")
+  }
+
+  if (lS.getItem("tdah")) {
+    modoTDAH.value = true
+  }
+}
 function abrirMenuAccess() {
   menuIzq.value = !menuIzq.value
 }

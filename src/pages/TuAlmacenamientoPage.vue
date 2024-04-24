@@ -15,7 +15,7 @@
           <q-chip
             removable
             @remove="scope.removeAtIndex(scope.index)"
-            :tabindex="scope.tabindex"
+            tabindex="0"
             outline color="morado" text-color="white"
           >
             <q-avatar color="morado" text-color="white" :icon="scope.opt.icon" />
@@ -37,7 +37,7 @@
           <q-chip
             removable
             @remove="scope.removeAtIndex(scope.index)"
-            :tabindex="scope.tabindex"
+            tabindex="0"
             outline color="morado" text-color="white"
           >
             {{ scope.opt.label }}
@@ -60,27 +60,27 @@
 
         <template v-slot:header="scope">
           <div class="row no-wrap items-center q-pa-sm q-gutter-xs">
-            <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense flat >
-              <q-tooltip>{{$t('borraTodos')}}</q-tooltip>
+            <q-btn v-if="scope.queuedFiles.length > 0" icon="clear_all" @click="scope.removeQueuedFiles" round dense flat :aria-label="$t('borraTodos')">
+              <q-tooltip class="bg-naranja-claro">{{$t('borraTodos')}}</q-tooltip>
             </q-btn>
-            <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat >
-              <q-tooltip>{{$t('quitarSubidos')}}</q-tooltip>
+            <q-btn v-if="scope.uploadedFiles.length > 0" icon="done_all" @click="scope.removeUploadedFiles" round dense flat :aria-label="$t('quitarSubidos')">
+              <q-tooltip class="bg-naranja-claro">{{$t('quitarSubidos')}}</q-tooltip>
             </q-btn>
             <q-spinner v-if="scope.isUploading" class="q-uploader__spinner" />
             <div class="col">
               <div class="q-uploader__title">{{$t('subeArchivos')}}</div>
               <div class="q-uploader__subtitle">{{ scope.uploadSizeLabel }} / {{ scope.uploadProgressLabel }}</div>
             </div>
-            <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat>
+            <q-btn v-if="scope.canAddFiles" type="a" icon="add_box" @click="scope.pickFiles" round dense flat :aria-label="$t('elegirArchivos')">
               <q-uploader-add-trigger />
-              <q-tooltip>{{$t('elegirArchivos')}}</q-tooltip>
+              <q-tooltip class="bg-naranja-claro">{{$t('elegirArchivos')}}</q-tooltip>
             </q-btn>
-            <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="scope.upload" round dense flat >
-              <q-tooltip>{{$t('subirArchivos')}}</q-tooltip>
+            <q-btn v-if="scope.canUpload" icon="cloud_upload" @click="scope.upload" round dense flat :aria-label="$t('subirArchivos')">
+              <q-tooltip class="bg-naranja-claro">{{$t('subirArchivos')}}</q-tooltip>
             </q-btn>
 
-            <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat >
-              <q-tooltip>{{$t('cancelarSubida')}}</q-tooltip>
+            <q-btn v-if="scope.isUploading" icon="clear" @click="scope.abort" round dense flat :aria-label="$t('cancelarSubida')">
+              <q-tooltip class="bg-naranja-claro">{{$t('cancelarSubida')}}</q-tooltip>
             </q-btn>
           </div>
         </template>

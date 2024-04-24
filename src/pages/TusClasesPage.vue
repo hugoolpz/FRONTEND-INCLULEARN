@@ -53,8 +53,8 @@
             v-model="tabGrupo"
             class="text-naranja-claro"
             inline-label>
-            <q-tab :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-            <q-tab class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
+            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
           </q-tabs>
 
           <q-tab-panels v-model="tabGrupo" animated>
@@ -209,8 +209,8 @@
             v-model="tabGrupo"
             class="text-naranja-claro"
             inline-label>
-            <q-tab :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-            <q-tab class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
+            <q-tab tabindex="0"  class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
           </q-tabs>
 
           <q-tab-panels v-model="tabGrupo" animated>

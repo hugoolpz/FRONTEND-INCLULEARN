@@ -75,8 +75,8 @@
             <div class="col-xs-8 col-md-8">
               <q-file v-model="fotoPerfil" :label="$t('labFoto')" accept=".jpg,.png,.gif"
                       class="alumniSans-regular text-body1" color="morado"
-                      outlined rounded type="file"
-                      use-chips @rejected="alRechazar" @update:model-value="console.log(fotoPerfil)">
+                      outlined rounded type="file" aria-label="Foto de perfil"
+                      use-chips @rejected="alRechazar">
                 <template v-slot:append>
                   <q-icon class="cursor-pointer" name="fas fa-file-arrow-up"/>
                 </template>
@@ -84,9 +84,9 @@
             </div>
             <div class="col-auto">
               <div align="center" class="text-h6 text-azul-oscuro adventPro-regular q-mb-sm">
-                {{ $t('etqHaciaInic') }}
-                <span class="cursor-pointer hover-underline-animation text-uppercase"
-                      @click="$emit('abrirInicioSesion')">
+                <span class="q-mr-sm">{{ $t('etqHaciaInic') }}</span>
+                <span aria-label="Hacia inicio de sesión" class="cursor-pointer hover-underline-animation text-uppercase"
+                      @click="$emit('abrirInicioSesion')" tabindex="0">
                     {{ $t('etqInic2') }}
                 </span>
               </div>

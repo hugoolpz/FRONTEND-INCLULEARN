@@ -3,7 +3,7 @@
     <div class="column flex-center">
       <div class="row flex-center q-gutter-xl">
         <div class="col-auto col-md-auto col-sm-auto">
-          <q-card class="tarjeta-funcion-plat cursor-pointer bg-clases" v-ripple @click="$router.push({ path: '/tus-clases' })" flat>
+          <q-card class="tarjeta-funcion-plat cursor-pointer bg-clases" aria-label="Módulo de clases" tabindex="0" v-ripple @click="$router.push({ path: '/tus-clases' })" flat>
             <q-card-section>
 
             </q-card-section>
@@ -13,7 +13,7 @@
           </q-card>
         </div>
         <div class="col-auto col-md-auto col-sm-auto">
-          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-calendario" v-ripple @click="$router.push({ path: '/tu-calendario' })" flat>
+          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-calendario" aria-label="Módulo de calendario" tabindex="0" v-ripple @click="$router.push({ path: '/tu-calendario' })" flat>
             <q-card-section>
 
             </q-card-section>
@@ -23,7 +23,7 @@
           </q-card>
         </div>
         <div class="col-auto col-md-auto col-sm-auto">
-          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-archivos" v-ripple @click="$router.push({ path: '/tus-archivos' })" flat>
+          <q-card class="tarjeta-funcion-plat bg-image-logo cursor-pointer bg-archivos" aria-label="Módulo de archivos" tabindex="0" v-ripple @click="$router.push({ path: '/tus-archivos' })" flat>
             <q-card-section>
 
             </q-card-section>

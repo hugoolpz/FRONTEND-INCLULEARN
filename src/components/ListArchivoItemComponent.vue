@@ -20,13 +20,13 @@ function bytesToMB(bytes) {
     </q-item-section>
 
     <q-item-section side>
-      <q-btn flat round color="azul-oscuro" icon="fas fa-download" @click="$emit('descargar')" />
+      <q-btn flat round color="azul-oscuro" icon="fas fa-download" @click="$emit('descargar')" :aria-label="'Descargar' + nombre"/>
     </q-item-section>
     <q-item-section side>
-      <q-btn flat round color="morado" icon="fas fa-share-nodes" @click="$emit('compartir')"/>
+      <q-btn flat round color="morado" icon="fas fa-share-nodes" @click="$emit('compartir')" :aria-label="'Compartir' + nombre"/>
     </q-item-section>
     <q-item-section side>
-      <q-btn flat round color="negative" icon="fas fa-trash" @click="$emit('borrar')" />
+      <q-btn flat round color="negative" icon="fas fa-trash" @click="$emit('borrar')" :aria-label="'Borrar' + nombre"/>
     </q-item-section>
   </q-item>
   <q-separator></q-separator>
