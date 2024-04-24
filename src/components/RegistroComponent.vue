@@ -76,7 +76,7 @@
               <q-file v-model="fotoPerfil" :label="$t('labFoto')" accept=".jpg,.png,.gif"
                       class="alumniSans-regular text-body1" color="morado"
                       outlined rounded type="file" aria-label="Foto de perfil"
-                      use-chips @rejected="alRechazar">
+                      use-chips @rejected="alRechazar" @update:model-value="console.log(fotoPerfil)">
                 <template v-slot:append>
                   <q-icon class="cursor-pointer" name="fas fa-file-arrow-up"/>
                 </template>
@@ -132,8 +132,12 @@ const $q = useQuasar()
 const emits = defineEmits(['abrirInicioSesion'])
 
 //Funciones
-function registrarse() {
+async function registrarse() {
   cargando.value = true
+  const formData = new FormData()
+
+  formData.append('filename', fotoPerfil.value)
+
   fetch(`${urlApi}/usuarios`, {
     method: "POST",
     headers: {
@@ -144,8 +148,7 @@ function registrarse() {
       "apellidos": apellidos.value,
       "correo": correo.value,
       "contra": contra.value,
-      "rol": "Alumno",
-      "url_foto": "./"
+      "rol": "Alumno"
     })
   })
     .then(respuesta => respuesta.json())
@@ -161,16 +164,61 @@ function registrarse() {
         });
         cargando.value = false
       } else {
-        $q.notify({
-          message: "¡Te has registrado correctamente!",
-          color: "positive",
-          position: "top",
-          timeout: 500,
-          progress: true,
-          icon: "fas fa-circle-check",
-        });
-        cargando.value = false
-        emits('abrirInicioSesion')
+        let id = datos.datos._id
+        fetch(`${urlApi}/storage/perfiles`, {
+          method: "POST",
+          body: formData
+        })
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            let url = datos.downloadURL
+            if (datos.message !== 'Archivo subido correctamente') {
+              $q.notify({
+                message: "¡Hubo un error al intentar subir tu foto de perfil!",
+                color: "negative",
+                position: "top",
+                timeout: 500,
+                progress: true,
+                icon: "fas fa-circle-exclamation",
+              });
+              cargando.value = false
+            } else {
+              fetch(`${urlApi}/usuarios/${id}`, {
+                method: "PUT",
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  "url_foto": url
+                })
+              })
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                  if (!datos.exito) {
+                    $q.notify({
+                      message: "¡Hubo un error al intentar subir tu foto de perfil!",
+                      color: "negative",
+                      position: "top",
+                      timeout: 500,
+                      progress: true,
+                      icon: "fas fa-circle-exclamation",
+                    });
+                    cargando.value = false
+                  } else {
+                    $q.notify({
+                      message: "¡Te has registrado correctamente!",
+                      color: "positive",
+                      position: "top",
+                      timeout: 500,
+                      progress: true,
+                      icon: "fas fa-circle-check",
+                    });
+                    cargando.value = false
+                    emits('abrirInicioSesion')
+                  }
+                })
+            }
+          })
       }
     })
 }
