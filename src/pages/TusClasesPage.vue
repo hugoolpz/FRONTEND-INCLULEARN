@@ -18,7 +18,7 @@
       <q-dialog v-model="nuevoMiembro">
         <q-card style="width: 100%; max-width: 400px">
           <q-card-section>
-            <div class="text-h5 text-center adventPro-semiBold">Escribe el correo de la persona que deseas agregar:
+            <div class="text-h5 text-center adventPro-semiBold">{{$t('escribeCorreo')}}
             </div>
           </q-card-section>
 
@@ -33,11 +33,11 @@
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Correo del miembro"
+                :label="$t('correoMiembro')"
                 lazy-rules
               />
               <div align="right">
-                <q-btn class="adventPro-semiBold" color="naranja" label="Agregar" type="submit"/>
+                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit"/>
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
                        color="naranja-claro"
                        flat type="reset"/>
@@ -54,7 +54,7 @@
             class="text-naranja-claro"
             inline-label>
             <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" :label="$t('etiquetaUnirse')" name="unirse"/>
           </q-tabs>
 
           <q-tab-panels v-model="tabGrupo" animated>
@@ -64,14 +64,14 @@
                   class="q-gutter-lg"
                   @reset="onReset"
                   @submit="crearGrupo">
-                  <div class="text-h5 adventPro-semiBold">Crear un grupo:</div>
+                  <div class="text-h5 adventPro-semiBold">{{$t('crearUnGrupo')}}</div>
                   <q-input
                     v-model="nombreGrupo"
                     :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Nombre del grupo"
+                    :label="$t('nombreGrupo')"
                     lazy-rules
                   />
                   <q-input
@@ -81,7 +81,7 @@
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Descripción del grupo"
+                    :label="$t('descripcionGrupo')"
                     lazy-rules
                   />
                   <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
@@ -101,18 +101,18 @@
                   class="q-gutter-lg"
                   @reset="onReset"
                   @submit="unirsePorCodigo">
-                  <div class="text-h5 adventPro-semiBold">¡Introduce el código de un grupo y únete!</div>
+                  <div class="text-h5 adventPro-semiBold">{{$t('introUnion')}}</div>
                   <q-input
                     v-model="codigoGrupo"
                     :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Código del grupo"
+                    :label="$t('codigoGrupo')"
                     lazy-rules
                   />
                   <div align="right">
-                    <q-btn class="adventPro-semiBold" color="naranja" label="UNIRSE" type="submit"/>
+                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit"/>
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
                            color="naranja-claro"
                            flat type="reset"/>
@@ -131,14 +131,14 @@
               class="q-gutter-lg"
               @reset="onReset"
               @submit="crearCanal">
-              <div class="text-h5 adventPro-semiBold">Crear un canal:</div>
+              <div class="text-h5 adventPro-semiBold">{{$t('crearCanal')}}:</div>
               <q-input
                 v-model="nombreCanal"
                 :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Nombre del canal"
+                :label="$t('nombreCanal')"
                 lazy-rules
               />
               <q-input
@@ -148,7 +148,7 @@
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Descripción del canal"
+                :label="$t('descripcionCanal')"
                 lazy-rules
               />
               <div align="right">
@@ -189,11 +189,11 @@
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Correo del miembro"
+                :label="$t('correoMiembro')"
                 lazy-rules
               />
               <div align="right">
-                <q-btn class="adventPro-semiBold" color="naranja" label="Agregar" type="submit"/>
+                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit"/>
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
                        color="naranja-claro"
                        flat type="reset"/>
@@ -220,14 +220,14 @@
                   class="q-gutter-lg"
                   @reset="onReset"
                   @submit="crearGrupo">
-                  <div class="text-h5 adventPro-semiBold">Crear un grupo:</div>
+                  <div class="text-h5 adventPro-semiBold">{{$t('crearUnGrupo')}}</div>
                   <q-input
                     v-model="nombreGrupo"
                     :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Nombre del grupo"
+                    :label="$t('nombreGrupo')"
                     lazy-rules
                   />
                   <q-input
@@ -237,7 +237,7 @@
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Descripción del grupo"
+                    :label="$t('descripcionGrupo')"
                     lazy-rules
                   />
                   <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
@@ -257,18 +257,18 @@
                   class="q-gutter-lg"
                   @reset="onReset"
                   @submit="unirsePorCodigo">
-                  <div class="text-h5 adventPro-semiBold">¡Introduce el código de un grupo y únete!</div>
+                  <div class="text-h5 adventPro-semiBold">{{$t('introUnion')}}</div>
                   <q-input
                     v-model="codigoGrupo"
                     :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                     class="no-padding alumniSans-regular text-body1"
                     color="morado"
                     filled
-                    label="Código del grupo"
+                    :label="$t('codigoGrupo')"
                     lazy-rules
                   />
                   <div align="right">
-                    <q-btn class="adventPro-semiBold" color="naranja" label="UNIRSE" type="submit"/>
+                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit"/>
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
                            color="naranja-claro"
                            flat type="reset"/>
@@ -287,14 +287,14 @@
               class="q-gutter-lg"
               @reset="onReset"
               @submit="crearCanalDesdeGrupo">
-              <div class="text-h5 adventPro-semiBold">Crear un canal:</div>
+              <div class="text-h5 adventPro-semiBold">{{$t('crearCanal')}}:</div>
               <q-input
                 v-model="nombreCanal"
                 :rules="[ val => val && val.length > 0 || $t('campoReq')]"
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Nombre del canal"
+                :label="$t('nombreCanal')"
                 lazy-rules
               />
               <q-input
@@ -304,7 +304,7 @@
                 class="no-padding alumniSans-regular text-body1"
                 color="morado"
                 filled
-                label="Descripción del canal"
+                :label="$t('descripcionCanal')"
                 lazy-rules
               />
               <div align="right">

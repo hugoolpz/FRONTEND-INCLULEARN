@@ -53,13 +53,13 @@
           class="adventPro-regular"
           :definitions="{
                     subir: {
-                        icon: 'fas fa-paperclip',
-                        label: 'Subir archivo',
-                        //handler: uploadIt,
+              label: $t('subirArch'),
+              //handler: uploadIt,
+              disable: true
                     },
                     enviar: {
                         icon: 'far fa-paper-plane',
-                        label: 'Enviar mensaje',
+              label: $t('enviarMensaje'),
                         handler: enviarMensaje,
                         disable: !mensaje.trim(),
                         color: mensaje.trim() ? 'primario' : 'grey',
@@ -85,7 +85,7 @@
         ['subir', 'enviar', 'emoticonos'],
     ]"
           min-height="8rem"
-          placeholder="Escribe aquí tu mensaje..."
+          :placeholder="$t('escribeMensaje')"
           toolbar-bg="morado"
           toolbar-text-color="white"
           toolbar-toggle-color="naranja"
@@ -100,13 +100,13 @@
           class="adventPro-regular"
           :definitions="{
                     subir: {
-                        icon: 'fas fa-paperclip',
-                        label: 'Subir archivo',
-                        //handler: uploadIt,
+              label: $t('subirArch'),
+              //handler: uploadIt,
+              disable: true
                     },
                     enviar: {
                         icon: 'far fa-paper-plane',
-                        label: 'Editar mensaje',
+                                      label: $t('editarMensaje'),
                         handler: editarMensaje,
                         disable: !mensaje.trim(),
                         color: mensaje.trim() ? 'primario' : 'grey',
@@ -131,7 +131,7 @@
         ['subir', 'enviar', 'emoticonos'],
     ]"
           min-height="8rem"
-          placeholder="Escribe aquí tu mensaje..."
+          :placeholder="$t('escribeMensaje')"
           toolbar-bg="morado"
           toolbar-text-color="white"
           toolbar-toggle-color="naranja"
@@ -149,7 +149,7 @@
         />
 
         <div class="text-h5 text-morado adventPro-semiBold" style="opacity:.5;">
-          ¡Elige un chat y empieza a conversar!
+          {{$t('eligeChat')}}
         </div>
       </div>
     </div>

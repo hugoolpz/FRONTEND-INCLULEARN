@@ -131,6 +131,9 @@ import {QSpinnerHourglass, useQuasar} from "quasar";
 import api from "boot/httpSingleton";
 import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
 import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n()
 
 const localStorage = window.localStorage
 let infoUsuario = null
@@ -147,15 +150,15 @@ const $q = useQuasar()
 
 const tipos = [
   {
-    label: "Documentos",
+    label: t('doc'),
     icon: "fas fa-file-lines"
   },
   {
-    label: "Archivos multimedia",
+    label: t('mult'),
     icon: "fas fa-file-image"
   },
   {
-    label: "Archivos comprimidos",
+    label: t('comp'),
     icon: "fas fa-file-zipper"
   }
 ]
@@ -163,16 +166,16 @@ const tipoElegido = ref(null)
 
 const fechasMod = [
   {
-    label: "Hoy",
+    label: t('hoy'),
   },
   {
-    label: "Últimos 7 días",
+    label: t('ult7'),
   },
   {
-    label: "Últimos 30 días",
+    label: t('ult30'),
   },
   {
-    label: "Este año (" + new Date(today()).getFullYear() + ")",
+    label: t('esteAnio') + " (" + new Date(today()).getFullYear() + ")",
   },
 ]
 const fechaElegida = ref(null)

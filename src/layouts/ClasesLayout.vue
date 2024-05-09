@@ -16,7 +16,7 @@
           @click="$route.params.grupo ? $router.push('/tus-clases') : $router.push('/plataforma-educativa')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          TUS CLASES
+          {{$t('tusClases')}}
         </q-toolbar-title>
         <q-btn-group class="bg-naranja text-white" flat>
           <q-btn v-show="$route.params.grupo === ''" aria-label="Crear o unirse a un grupo" class="bg-white text-naranja" flat
@@ -128,7 +128,7 @@ function abrirMenuAccess() {
 function ajusteDislexia() {
   modoDislexia.value = !modoDislexia.value;
 
-  const elementosTexto = document.querySelectorAll('body *');
+  const elementosTexto = document.querySelectorAll('body :not(i)');
 
   if (modoDislexia.value) {
     elementosTexto.forEach(elemento => {
@@ -139,9 +139,8 @@ function ajusteDislexia() {
       elemento.classList.remove('openDyslexic-regular');
     });
   }
-
-  window.localStorage.setItem("dislexia", modoDislexia.value)
 }
+
 
 function ajusteEpilepsia() {
   modoEpilepsia.value = !modoEpilepsia.value;
@@ -151,15 +150,12 @@ function ajusteEpilepsia() {
   } else {
     document.querySelector('html').classList.remove('filtro-epilepsia');
   }
-
-  window.localStorage.setItem("epilepsia", modoEpilepsia.value)
 }
 
 watch(modoTDAH, (nuevoValor) => {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.display = nuevoValor ? 'block' : 'none';
   document.addEventListener('mousemove', moverEnfoque);
-  window.localStorage.setItem("tdah", nuevoValor)
 });
 
 function moverEnfoque(event) {

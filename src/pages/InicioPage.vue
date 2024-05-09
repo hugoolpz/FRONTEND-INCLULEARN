@@ -1,7 +1,7 @@
 <template>
   <q-page :class="!formAbierto ? 'bg-image-logo' : 'bg-image-forms'" padding>
     <!--Inicio logo-->
-    <div class="row flex-center fullscreen" v-if="!formAbierto" style="z-index: 1;">
+    <div class="row flex-center" v-if="!formAbierto" style="z-index: 1;">
       <div class="column contenedor">
         <div class="col-md-12 col-sm-6">
           <div class="column flex-center">
@@ -22,7 +22,7 @@
         </div>
 
         <div class="col-md-12 col-sm-6">
-          <div class="text-azul-oscuro text-justify alumniSans-regular texto-sub2">
+          <div class="text-azul-oscuro text-center alumniSans-regular texto-sub2">
             {{ $t('resInicio') }}
           </div>
         </div>

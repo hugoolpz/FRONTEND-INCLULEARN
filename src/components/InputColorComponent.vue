@@ -1,5 +1,5 @@
 <template>
-  <q-input v-model="hex" class="alumniSans-regular text-body1" label="Color del grupo" color="naranja-claro" filled>
+  <q-input v-model="hex" class="alumniSans-regular text-body1" :label="$t('colorGrupo')" color="naranja-claro" filled>
     <template v-slot:prepend v-if="hex !== ''">
       <q-icon name="fas fa-splotch" :style="{color: hex}"></q-icon>
     </template>

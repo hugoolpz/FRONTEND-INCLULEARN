@@ -88,26 +88,6 @@ const modoTDAH = ref();
 
 //Funciones
 
-onMounted(() => {
-  comprobarAjustesActivos()
-})
-function comprobarAjustesActivos() {
-  let lS = window.localStorage
-
-  if (lS.getItem("dislexia")) {
-    ajusteDislexia()
-    modoDislexia.value = lS.getItem("dislexia")
-  }
-
-  if (lS.getItem("epilepsia")) {
-    ajusteEpilepsia()
-    modoEpilepsia.value = lS.getItem("epilepsia")
-  }
-
-  if (lS.getItem("tdah")) {
-    modoTDAH.value = true
-  }
-}
 function abrirMenuAccess() {
   menuIzq.value = !menuIzq.value
   console.log(menuIzq.value)
@@ -116,7 +96,7 @@ function abrirMenuAccess() {
 function ajusteDislexia() {
   modoDislexia.value = !modoDislexia.value;
 
-  const elementosTexto = document.querySelectorAll('body *');
+  const elementosTexto = document.querySelectorAll('body :not(i)');
 
   if (modoDislexia.value) {
     elementosTexto.forEach(elemento => {
@@ -127,9 +107,8 @@ function ajusteDislexia() {
       elemento.classList.remove('openDyslexic-regular');
     });
   }
-
-  window.localStorage.setItem("dislexia", modoDislexia.value)
 }
+
 
 function ajusteEpilepsia() {
   modoEpilepsia.value = !modoEpilepsia.value;
@@ -139,15 +118,12 @@ function ajusteEpilepsia() {
   } else {
     document.querySelector('html').classList.remove('filtro-epilepsia');
   }
-
-  window.localStorage.setItem("epilepsia", modoEpilepsia.value)
 }
 
 watch(modoTDAH, (nuevoValor) => {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.display = nuevoValor ? 'block' : 'none';
   document.addEventListener('mousemove', moverEnfoque);
-  window.localStorage.setItem("tdah", nuevoValor)
 });
 
 function moverEnfoque(event) {

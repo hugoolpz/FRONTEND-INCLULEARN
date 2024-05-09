@@ -15,7 +15,7 @@
           @click="$router.push('/tus-clases')"
         />
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
-          TUS CHATS PRIVADOS
+          {{$t('tusChatsPriv')}}
         </q-toolbar-title>
         <q-btn-group flat class="bg-naranja text-white">
           <q-btn flat icon="fas fa-universal-access"
@@ -74,10 +74,10 @@
       :width="320"
       :breakpoint="500"
     >
-      <q-toolbar class="bg-naranja-claro text-white shadow-2 row justify-between">
+      <q-toolbar class="bg-naranja-claro text-white shadow-2 row justify-between" v-show="chatActual">
         <q-btn color="white"
                icon="fas fa-plus"
-               label="Nuevo Chat"
+               :label="$t('nuevoChat')"
                size="md"
                rounded
                text-color="naranja-claro"
@@ -123,7 +123,7 @@
     <q-dialog v-model="nuevoChat">
       <q-card style="width: 100%; max-width: 400px">
         <q-card-section>
-          <div class="text-h5 text-center adventPro-semiBold">Escribe el correo de la persona que deseas escribir:
+          <div class="text-h5 text-center adventPro-semiBold">{{$t('correoContacto')}}:
           </div>
         </q-card-section>
 
@@ -138,11 +138,11 @@
               class="no-padding alumniSans-regular text-body1"
               color="morado"
               filled
-              label="Correo de la persona"
+              :label="$t('correoPersona')"
               lazy-rules
             />
             <div align="right">
-              <q-btn class="adventPro-semiBold" color="naranja" label="Agregar" type="submit"/>
+              <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit"/>
               <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
                      color="naranja-claro"
                      flat type="reset"/>
@@ -198,25 +198,7 @@ const modoTDAH = ref();
 
 onMounted(() => {
   obtenerChats()
-  comprobarAjustesActivos()
 })
-function comprobarAjustesActivos() {
-  let lS = window.localStorage
-
-  if (lS.getItem("dislexia")) {
-    ajusteDislexia()
-    modoDislexia.value = lS.getItem("dislexia")
-  }
-
-  if (lS.getItem("epilepsia")) {
-    ajusteEpilepsia()
-    modoEpilepsia.value = lS.getItem("epilepsia")
-  }
-
-  if (lS.getItem("tdah")) {
-    modoTDAH.value = true
-  }
-}
 function abrirMenuAccess() {
   menuIzq.value = !menuIzq.value
 }
@@ -224,7 +206,7 @@ function abrirMenuAccess() {
 function ajusteDislexia() {
   modoDislexia.value = !modoDislexia.value;
 
-  const elementosTexto = document.querySelectorAll('body *');
+  const elementosTexto = document.querySelectorAll('body :not(i)');
 
   if (modoDislexia.value) {
     elementosTexto.forEach(elemento => {
@@ -235,9 +217,8 @@ function ajusteDislexia() {
       elemento.classList.remove('openDyslexic-regular');
     });
   }
-
-  window.localStorage.setItem("dislexia", modoDislexia.value)
 }
+
 
 function ajusteEpilepsia() {
   modoEpilepsia.value = !modoEpilepsia.value;
@@ -247,15 +228,12 @@ function ajusteEpilepsia() {
   } else {
     document.querySelector('html').classList.remove('filtro-epilepsia');
   }
-
-  window.localStorage.setItem("epilepsia", modoEpilepsia.value)
 }
 
 watch(modoTDAH, (nuevoValor) => {
   const enfoqueElemento = document.getElementById('enfoque');
   enfoqueElemento.style.display = nuevoValor ? 'block' : 'none';
   document.addEventListener('mousemove', moverEnfoque);
-  window.localStorage.setItem("tdah", nuevoValor)
 });
 
 function moverEnfoque(event) {

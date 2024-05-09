@@ -7,7 +7,7 @@
         <q-item-label overline class="text-morado">{{bytesToMB(size)}}</q-item-label>
         <q-item-label class="text-weight-bold">{{acortarNombre()}}</q-item-label>
         <q-item-label caption>
-          Últ. actualización: {{ultAct}}
+          {{$t('ultAct')}}: {{ultAct}}
         </q-item-label>
       </q-item-section>
     </q-item>
