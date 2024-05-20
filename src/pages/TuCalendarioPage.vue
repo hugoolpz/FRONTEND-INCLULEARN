@@ -1,93 +1,69 @@
 <template>
   <q-page>
-    <Qalendar
-      :key="componentKey"
-      :config="config"
-      :events="eventos"
-      :selected-date="new Date(today())"
-      class="cursor-pointer adventPro-semiBold"
-      @event-was-dragged="moverEventoManualmente"
-      @event-was-resized="moverEventoManualmente"
-      @datetime-was-clicked="alClickarIntervalo"
-      @date-was-clicked="alClickarIntervalo"
-      @edit-event="editarEvento"
-      @delete-event="eliminarEvento"
-    />
+    <Qalendar :key="componentKey" :config="config" :events="eventos" :selected-date="new Date(today())"
+      class="cursor-pointer adventPro-semiBold" @event-was-dragged="moverEventoManualmente"
+      @event-was-resized="moverEventoManualmente" @datetime-was-clicked="alClickarIntervalo"
+      @date-was-clicked="alClickarIntervalo" @edit-event="editarEvento" @delete-event="eliminarEvento">
+    </Qalendar>
     <q-dialog v-model="crearMarca">
       <q-card style="max-width: 400px; width: 100%">
         <q-toolbar class="bg-naranja">
           <q-toolbar-title class="text-white adventPro-semiBold">{{ $t('tituloAnadirEvento') }}</q-toolbar-title>
-          <q-btn v-close-popup color="white" dense flat icon="fas fa-xmark" round/>
+          <q-btn v-close-popup color="white" dense flat icon="fas fa-xmark" round aria-description="Cerrar" />
         </q-toolbar>
 
         <q-card-section>
-          <q-form
-            class="q-gutter-lg"
-            @reset="onReset"
-            @submit="crearEvento"
-          >
-            <q-input
-              v-model="titulo"
-              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-              class="no-padding alumniSans-regular text-body1"
-              color="naranja-claro"
-              filled
-              :label="$t('etiquetaTitulo')"
-              lazy-rules
-            />
-            <q-input
-              v-model="detalles"
-              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-              autogrow
-              class="no-padding alumniSans-regular text-body1"
-              color="naranja-claro"
-              filled
-              :label="$t('etiquetaDetalles')"
-              lazy-rules
-            />
+          <q-form class="q-gutter-lg" @reset="onReset" @submit="crearEvento">
+            <q-input v-model="titulo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+              class="no-padding alumniSans-regular text-body1" color="naranja-claro" filled
+              :label="$t('etiquetaTitulo')" lazy-rules />
+            <q-input v-model="detalles" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+              class="no-padding alumniSans-regular text-body1" color="naranja-claro" filled
+              :label="$t('etiquetaDetalles')" lazy-rules />
             <input-fecha-hora-component v-model="fechaInicio"
-                                        :label="$t('etiquetaFechaInicio')"></input-fecha-hora-component>
+              :label="$t('etiquetaFechaInicio')"></input-fecha-hora-component>
             <input-fecha-hora-component v-model="fechaFin" :label="$t('etiquetaFechaFin')"></input-fecha-hora-component>
             <div class="text-body1 adventPro-semiBold">{{ $t('tituloEligeColorEvento') }}</div>
             <div class="row flex-center">
               <div class="row flex-center" style="width: 85%">
                 <div class="col-auto">
                   <chip-calendario-component color="azul-cal" contenido="Azul"
-                                             @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="amarillo-cal" contenido="Amarillo"
-                                             @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="verde-cal" contenido="Verde"
-                                             @al-clickar="cambiarColorEvento('green')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('green')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="rojo-cal" contenido="Rojo"
-                                             @al-clickar="cambiarColorEvento('red')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('red')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="rosa-cal" contenido="Rosa"
-                                             @al-clickar="cambiarColorEvento('pink')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('pink')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="purpura-cal" contenido="Púrpura"
-                                             @al-clickar="cambiarColorEvento('purple')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('purple')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="turquesa-cal" contenido="Turquesa"
-                                             @al-clickar="cambiarColorEvento('turquoise')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('turquoise')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="cafe-cal" contenido="Café"
-                                             @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component>
                 </div>
               </div>
             </div>
             <div align="right">
-              <q-btn :label="$t('etiquetaCrear')" type="submit" color="naranja" class="adventPro-semiBold"/>
-              <q-btn :label="$t('etiquetaCancelar')" type="reset" color="naranja-claro" flat class="q-ml-sm adventPro-semiBold" v-close-popup/>
+              <q-btn :label="$t('etiquetaCrear')" type="submit" color="naranja" class="adventPro-semiBold" />
+              <q-btn :label="$t('etiquetaCancelar')" type="reset" color="naranja-claro" flat
+                class="q-ml-sm adventPro-semiBold" v-close-popup />
             </div>
           </q-form>
         </q-card-section>
@@ -98,82 +74,62 @@
       <q-card style="max-width: 400px; width: 100%">
         <q-toolbar class="bg-naranja">
           <q-toolbar-title class="text-white">{{ $t('tituloActualizarEvento') }}</q-toolbar-title>
-          <q-btn v-close-popup color="white" dense flat icon="fas fa-xmark" round/>
+          <q-btn v-close-popup color="white" dense flat icon="fas fa-xmark" round aria-description="cerrar" />
         </q-toolbar>
 
         <q-card-section>
-          <q-form
-            class="q-gutter-md"
-            @reset="onReset"
-            @submit="actualizarEventoElegido"
-          >
-            <q-input
-              v-model="idEvento"
-              class="no-padding hidden alumniSans-regular text-body1"
-              filled
-            />
-            <q-input
-              v-model="titulo"
-              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-              class="no-padding alumniSans-regular text-body1"
-              color="naranja-claro"
-              filled
-              :label="$t('etiquetaTitulo')"
-              lazy-rules
-            />
-            <q-input
-              v-model="detalles"
-              :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-              autogrow
-              class="no-padding alumniSans-regular text-body1"
-              color="naranja-claro"
-              filled
-              :label="$t('etiquetaDetalles')"
-              lazy-rules
-            />
+          <q-form class="q-gutter-md" @reset="onReset" @submit="actualizarEventoElegido">
+            <q-input v-model="idEvento" class="no-padding hidden alumniSans-regular text-body1" filled />
+            <q-input v-model="titulo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+              class="no-padding alumniSans-regular text-body1" color="naranja-claro" filled
+              :label="$t('etiquetaTitulo')" lazy-rules />
+            <q-input v-model="detalles" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+              class="no-padding alumniSans-regular text-body1" color="naranja-claro" filled
+              :label="$t('etiquetaDetalles')" lazy-rules />
             <input-fecha-hora-component v-model="fechaInicio"
-                                        :label="$t('etiquetaFechaInicio')"></input-fecha-hora-component>
+              :label="$t('etiquetaFechaInicio')"></input-fecha-hora-component>
             <input-fecha-hora-component v-model="fechaFin" :label="$t('etiquetaFechaFin')"></input-fecha-hora-component>
             <div class="text-body1 adventPro-semiBold">{{ $t('tituloEligeColorEvento') }}</div>
             <div class="row flex-center">
               <div class="row flex-center" style="width: 85%">
                 <div class="col-auto">
                   <chip-calendario-component color="azul-cal" contenido="Azul"
-                                             @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('blue')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="amarillo-cal" contenido="Amarillo"
-                                             @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('yellow')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="verde-cal" contenido="Verde"
-                                             @al-clickar="cambiarColorEvento('green')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('green')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="rojo-cal" contenido="Rojo"
-                                             @al-clickar="cambiarColorEvento('red')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('red')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="rosa-cal" contenido="Rosa"
-                                             @al-clickar="cambiarColorEvento('pink')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('pink')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="purpura-cal" contenido="Púrpura"
-                                             @al-clickar="cambiarColorEvento('purple')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('purple')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="turquesa-cal" contenido="Turquesa"
-                                             @al-clickar="cambiarColorEvento('turquoise')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('turquoise')"></chip-calendario-component>
                 </div>
                 <div class="col-auto">
                   <chip-calendario-component color="cafe-cal" contenido="Café"
-                                             @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component>
+                    @al-clickar="cambiarColorEvento('brown')"></chip-calendario-component>
                 </div>
               </div>
             </div>
             <div align="right">
-              <q-btn :label="$t('etiquetaActualizar')" type="submit" color="naranja" class="adventPro-semiBold"/>
-              <q-btn :label="$t('etiquetaCancelar')" type="reset" color="naranja-claro" flat class="q-ml-sm adventPro-semiBold" v-close-popup/>
+              <q-btn :label="$t('etiquetaActualizar')" type="submit" color="naranja" class="adventPro-semiBold" />
+              <q-btn :label="$t('etiquetaCancelar')" type="reset" color="naranja-claro" flat
+                class="q-ml-sm adventPro-semiBold" v-close-popup />
             </div>
           </q-form>
         </q-card-section>
@@ -187,18 +143,18 @@
 </style>
 
 <script setup>
-import {Qalendar} from "qalendar";
-import {today} from "@quasar/quasar-ui-qcalendar";
-import {onMounted, reactive, ref} from "vue";
+import { Qalendar } from "qalendar";
+import { today } from "@quasar/quasar-ui-qcalendar";
+import { onMounted, reactive, ref } from "vue";
 import InputIconosComponent from "components/InputIconosComponent.vue";
 import InputFechaHoraComponent from "components/InputFechaHoraComponent.vue";
 import InputColorComponent from "components/InputColorComponent.vue";
 import ChipCalendarioComponent from "components/ChipCalendarioComponent.vue";
-import {QSpinnerGears, QSpinnerHourglass, useQuasar} from "quasar";
+import { QSpinnerGears, QSpinnerHourglass, useQuasar } from "quasar";
 import api from "boot/httpSingleton";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 
-const crearMarca = ref(false)
+const crearMarca = defineModel()
 const actMarca = ref(false)
 const $q = useQuasar()
 const titulo = ref("")
@@ -214,7 +170,7 @@ const localStorage = window.localStorage
 let infoUsuario = null
 const router = useRouter()
 
-if (localStorage.infoUsuario){
+if (localStorage.infoUsuario) {
   infoUsuario = JSON.parse(localStorage.infoUsuario)
 }
 
@@ -226,7 +182,7 @@ onMounted(() => {
 })
 
 async function comprobarSesion() {
-  if (localStorage.infoUsuario){
+  if (localStorage.infoUsuario) {
     await fetch(`${urlApi}/usuarios/${infoUsuario._id}`, {
       method: "GET",
       headers: {
@@ -244,7 +200,7 @@ async function comprobarSesion() {
             progress: true,
             icon: "fas fa-xmark"
           });
-          router.push({path: "/"})
+          router.push({ path: "/" })
         } else {
           actualizarEventos()
         }
@@ -258,7 +214,7 @@ async function comprobarSesion() {
       progress: true,
       icon: "fas fa-xmark"
     });
-    router.push({path: "/"})
+    router.push({ path: "/" })
   }
 }
 
@@ -342,7 +298,6 @@ async function crearEvento() {
                   progress: true,
                   icon: "fas fa-circle-exclamation",
                 });
-                //TODO: Borrar el evento previamente creado
               } else {
                 $q.notify({
                   message: "¡Evento guardado con éxito!",
@@ -397,7 +352,14 @@ async function actualizarEventoElegido() {
   let fechaFinComp = new Date(fechaFin.value).getTime()
 
   if (fechaInicioComp - fechaFinComp > 0) {
-
+    $q.notify({
+      message: "¡El evento no puede tener una marca de tiempo imposible!",
+      color: "negative",
+      position: "top",
+      timeout: 1000,
+      progress: true,
+      icon: "fas fa-circle-exclamation",
+    });
   } else {
     await fetch(`${urlApi}/marcasTiempo/${idEvento.value}`, {
       method: "PUT",

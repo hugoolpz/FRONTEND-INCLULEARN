@@ -18,31 +18,36 @@
         <q-toolbar-title class="adventPro-semiBold text-uppercase">
           {{$t('tuCalendario')}}
         </q-toolbar-title>
-        <q-btn flat round icon="fas fa-universal-access"
-               @click="abrirMenuAccess()" aria-label="Accesibilidad"/>
-        <q-btn-dropdown v-model="idioma" flat dropdown-icon="none" aria-label="Selector de idiomas" auto-close>
-          <template v-slot:label>
-            <div class="row absolute-center">
-              <q-icon size="sm" name="fas fa-globe" class="boton-mundo" aria-label="Selector de idiomas"/>
-            </div>
-          </template>
-          <q-list>
-            <q-scroll-area style="width: 160px; height: 112px;">
-              <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
-                                @al-clickar="cambiarIdioma('Español')" aria-label="Español"></list-item-idioma>
-              <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
-                                @al-clickar="cambiarIdioma('Inglés')" aria-label="Inglés"></list-item-idioma>
-              <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
-                                @al-clickar="cambiarIdioma('Francés')" aria-label="Francés"></list-item-idioma>
-              <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
-                                @al-clickar="cambiarIdioma('Alemán')" aria-label="Alemán"></list-item-idioma>
-              <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
-                                @al-clickar="cambiarIdioma('Italiano')" aria-label="Italiano"></list-item-idioma>
-              <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
-                                @al-clickar="cambiarIdioma('Chino')" aria-label="Chino"></list-item-idioma>
-            </q-scroll-area>
-          </q-list>
-        </q-btn-dropdown>
+        <q-btn-group class="bg-naranja text-white" flat>
+          <q-btn aria-label="Crear un evento" class="bg-white text-naranja" flat
+                 icon="fas fa-plus" @click="crearMarca = true"/>
+          <q-btn aria-label="Accesibilidad" flat
+                 icon="fas fa-universal-access" @click="abrirMenuAccess()"/>
+          <q-btn-dropdown v-model="idioma" aria-label="Selector de idiomas" auto-close color="white" dropdown-icon="none"
+                          flat>
+            <template v-slot:label>
+              <div class="row absolute-center">
+                <q-icon class="boton-mundo" name="fas fa-globe" size="sm"/>
+              </div>
+            </template>
+            <q-list>
+              <q-scroll-area style="width: 160px; height: 112px;">
+                <list-item-idioma :cod-idioma="locale" aria-label="Español" cod-bandera='es-ESP' idioma="Español"
+                                  titulo='Español' @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
+                <list-item-idioma :cod-idioma="locale" aria-label="Inglés" cod-bandera='en-US' idioma="Inglés"
+                                  titulo='English' @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
+                <list-item-idioma :cod-idioma="locale" aria-label="Francés" cod-bandera='fr-FR' idioma="Francés"
+                                  titulo='Français' @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
+                <list-item-idioma :cod-idioma="locale" aria-label="Alemán" cod-bandera='de-DE' idioma="Alemán"
+                                  titulo='Deutsch' @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
+                <list-item-idioma :cod-idioma="locale" aria-label="Italiano" cod-bandera='it-IT' idioma="Italiano"
+                                  titulo='Italiano' @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
+                <list-item-idioma :cod-idioma="locale" aria-label="Chino" cod-bandera='zh-CN' idioma="Chino"
+                                  titulo='中文' @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
+              </q-scroll-area>
+            </q-list>
+          </q-btn-dropdown>
+        </q-btn-group>
       </q-toolbar>
     </q-header>
 
@@ -61,7 +66,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view v-model="crearMarca"/>
     </q-page-container>
   </q-layout>
 </template>
@@ -79,6 +84,7 @@ import ListItemAccess from "components/ListItemAccessComponent.vue";
 document.body.style.overflow = "scroll"
 const idioma = ref(false)
 const menuIzq = ref(false)
+const crearMarca = ref(false)
 const { locale } = useI18n()
 
 //Accesibilidad

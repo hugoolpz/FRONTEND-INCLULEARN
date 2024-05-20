@@ -6,7 +6,7 @@ const app = createApp(App);
 
 app.use(vue3GoogleLogin, {
   clientId:
-    "776312296030-g4okpflkmehbbjfa2ujrjp0ib8n3i1s9.apps.googleusercontent.com",
+    "776312296030-vluputf1kp5viclhfp13plpesk8n22hq.apps.googleusercontent.com",
 });
 
 app.mount("#app");

@@ -11,7 +11,8 @@
 
         <q-scroll-area style="height: 422px;">
           <div>
-            <q-chat-message v-for="(chat, index) in  chats"
+            <q-chat-message tabindex="0"
+                            v-for="(chat, index) in  chats"
                             :avatar="chat.emisor.url_foto !== './' ? chat.emisor.url_foto : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'"
                             :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'" :sent="chat.emisor._id === infoUsuario._id"
                             :stamp="chat.marcaTiempo"
@@ -27,6 +28,8 @@
                     name="fas fa-pen"
                     size="15px"
                     @click="activarModoEdicion(chat)"
+                    tabindex="0"
+                    aria-label="editar mensaje"
                   />
                   <q-icon
                     class="cursor-pointer"
@@ -34,6 +37,8 @@
                     name="fas fa-trash"
                     size="15px"
                     @click="borrarMensaje(chat.idMensaje)"
+                    tabindex="0"
+                    aria-label="eliminar mensaje"
                   />
                   <div class="col self-end">Tú</div>
                 </div>

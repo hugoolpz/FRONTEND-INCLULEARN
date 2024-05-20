@@ -46,11 +46,11 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {onMounted, ref} from 'vue';
 import api from 'src/boot/httpSingleton';
 import {useRouter} from 'vue-router';
 import {useQuasar, QSpinnerGears} from 'quasar'
-import {GoogleLogin, decodeCredential} from "vue3-google-login";
+import {GoogleLogin, decodeCredential, googleLogout} from "vue3-google-login";
 import { useI18n } from "vue-i18n"
 const { t } = useI18n()
 

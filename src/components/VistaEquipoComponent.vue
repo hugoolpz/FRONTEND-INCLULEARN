@@ -123,7 +123,7 @@
           <q-btn v-else :disable="llamadaEnCurso" color="white" flat icon="fas fa-headset"
             @click="entrarEnLlamada(grupoActual._id)" aria-label="Entrar en llamada en curso">
             <q-tooltip v-if="todaviaEnLlamada">
-              {{$t('uneteLlamada')}}
+              {{ $t('uneteLlamada') }}
             </q-tooltip>
           </q-btn>
           <q-separator class="q-mx-sm" color="white" inset vertical />
@@ -134,11 +134,9 @@
       </q-toolbar>
       <q-tab-panels v-model="tabCanal" animated>
         <q-tab-panel class="no-padding" name="chat">
-          <q-scroll-area style="height: 375px; max-width: 950px;">
+          <q-scroll-area style="height: 375px;">
             <div>
-              <q-chat-message tabindex="0"
-                :aria-label="chat.emisor.nombre + chat.emisor.apellidos + ' dice ' + chat.contenido"
-                v-for="(chat, index) in chats"
+              <q-chat-message tabindex="0" v-for="(chat, index) in chats"
                 :avatar="chat.emisor.url_foto !== './' ? chat.emisor.url_foto : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'"
                 :bg-color="chat.emisor._id === infoUsuario._id ? 'morado' : 'naranja-claro'"
                 :sent="chat.emisor._id === infoUsuario._id" :stamp="chat.marcaTiempo" :text="[chat.contenido]"
@@ -198,10 +196,9 @@
               ],
               ['unordered', 'ordered'],
               ['subir', 'enviar', 'emoticonos'],
-            ]" min-height="8rem" :placeholder="$t('escribeMensaje')" toolbar-bg="morado"
-            toolbar-text-color="white" toolbar-toggle-color="naranja"
-            @focus="estaEscribiendo(infoUsuario, canalActual._id)" @blur="dejoDeEscribir(infoUsuario, canalActual._id)"
-            @keydown.enter="intentarEnviarMensaje" />
+            ]" min-height="8rem" :placeholder="$t('escribeMensaje')" toolbar-bg="morado" toolbar-text-color="white"
+            toolbar-toggle-color="naranja" @focus="estaEscribiendo(infoUsuario, canalActual._id)"
+            @blur="dejoDeEscribir(infoUsuario, canalActual._id)" @keydown.enter="intentarEnviarMensaje" />
 
           <q-editor v-else v-model="mensaje" class="adventPro-regular" :definitions="{
             subir: {
@@ -235,10 +232,9 @@
               ],
               ['unordered', 'ordered'],
               ['subir', 'enviar', 'emoticonos'],
-            ]" min-height="8rem" :placeholder="$t('escribeMensaje')" toolbar-bg="morado"
-            toolbar-text-color="white" toolbar-toggle-color="naranja"
-            @focus="estaEscribiendo(infoUsuario, canalActual._id)" @blur="dejoDeEscribir(infoUsuario, canalActual._id)"
-            @keydown.enter="intentarEditarMensaje" />
+            ]" min-height="8rem" :placeholder="$t('escribeMensaje')" toolbar-bg="morado" toolbar-text-color="white"
+            toolbar-toggle-color="naranja" @focus="estaEscribiendo(infoUsuario, canalActual._id)"
+            @blur="dejoDeEscribir(infoUsuario, canalActual._id)" @keydown.enter="intentarEditarMensaje" />
         </q-tab-panel>
         <q-tab-panel class="no-padding" name="archivos">
           <q-toolbar class="q-pa-sm bg-azul-oscuro">
@@ -317,7 +313,7 @@
               style="width: 25rem;" />
 
             <div class="text-h4 text-naranja q-mt-md adventPro-semiBold" style="opacity:.5;">
-              {{$t('proxTareas')}}
+              {{ $t('proxTareas') }}
             </div>
           </div>
         </q-tab-panel>
@@ -327,7 +323,7 @@
       <q-img spinner-color="primary" spinner-size="82px" src="/Conversation-pana.svg" style="width: 45rem;" />
 
       <div class="text-h5 text-morado adventPro-semiBold" style="opacity:.5;">
-        {{$t('eligeCanal')}}
+        {{ $t('eligeCanal') }}
       </div>
     </div>
   </div>
@@ -413,9 +409,6 @@ function intentarEditarMensaje(event) {
 
 function limpiarContenidoMensaje(contenido) {
   const contenidoLimpio = DOMPurify.sanitize(contenido);
-  if (contenido !== contenidoLimpio) {
-    console.log("DOMPurify ha encontrado y eliminado contenido malicioso.");
-  }
   return contenidoLimpio;
 }
 
@@ -470,7 +463,6 @@ async function enviarMensaje() {
                   progress: true,
                   icon: "fas fa-circle-exclamation",
                 });
-                //TODO: Borrar el mensaje previamente creado
               } else {
                 socket.emit("mensaje", idMensaje, infoUsuario._id, contenidoLimpio, obtenerMarcaTiempo());
               }

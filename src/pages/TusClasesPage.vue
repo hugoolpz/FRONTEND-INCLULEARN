@@ -4,43 +4,29 @@
       <div class="q-gutter-lg row q-my-md flex-center">
         <div v-for="grupo in grupos">
           <tarjeta-equipo :color="grupo.color" :es-creador="grupo.creador === infoUsuario._id" :icono="grupo.icono"
-                          :nombre="grupo.nombre"
-                          @al-clickar="entrarEnGrupo(grupo.codigo_acceso)"
-                          @agregar-miembro="abrirDialogoMiembro(grupo._id)"
-                          @agregar-canal="abrirDialogoCanal(grupo._id)"
-                          @abandonar-grupo="abandonarGrupo(grupo._id)"
-                          @eliminar-grupo="eliminarGrupo(grupo._id)"
-                          @copiar-codigo="copiarCodigo(grupo.codigo_acceso)"
-          ></tarjeta-equipo>
+            :nombre="grupo.nombre" @al-clickar="entrarEnGrupo(grupo.codigo_acceso)"
+            @agregar-miembro="abrirDialogoMiembro(grupo._id)" @agregar-canal="abrirDialogoCanal(grupo._id)"
+            @abandonar-grupo="abandonarGrupo(grupo._id)" @eliminar-grupo="eliminarGrupo(grupo._id)"
+            @copiar-codigo="copiarCodigo(grupo.codigo_acceso)"></tarjeta-equipo>
         </div>
       </div>
 
       <q-dialog v-model="nuevoMiembro">
         <q-card style="width: 100%; max-width: 400px">
           <q-card-section>
-            <div class="text-h5 text-center adventPro-semiBold">{{$t('escribeCorreo')}}
+            <div class="text-h5 text-center adventPro-semiBold">{{ $t('escribeCorreo') }}
             </div>
           </q-card-section>
 
           <q-card-section>
-            <q-form
-              class="q-gutter-lg"
-              @reset="onReset"
-              @submit="agregarMiembro">
-              <q-input
-                v-model="correoMiembro"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('correoMiembro')"
-                lazy-rules
-              />
+            <q-form class="q-gutter-lg" @reset="onReset" @submit="agregarMiembro">
+              <q-input v-model="correoMiembro" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('correoMiembro')"
+                lazy-rules />
               <div align="right">
-                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit"/>
+                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit" />
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                       color="naranja-claro"
-                       flat type="reset"/>
+                  color="naranja-claro" flat type="reset" />
               </div>
             </q-form>
           </q-card-section>
@@ -49,73 +35,45 @@
 
       <q-dialog v-model="nuevoGrupo">
         <q-card style="width: 100%; max-width: 450px">
-          <q-tabs
-            v-model="tabGrupo"
-            class="text-naranja-claro"
-            inline-label>
-            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" :label="$t('etiquetaUnirse')" name="unirse"/>
+          <q-tabs v-model="tabGrupo" class="text-naranja-claro" inline-label>
+            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus"
+              name="crear" />
+            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" :label="$t('etiquetaUnirse')"
+              name="unirse" />
           </q-tabs>
 
           <q-tab-panels v-model="tabGrupo" animated>
             <q-tab-panel name="crear">
               <q-card-section>
-                <q-form
-                  class="q-gutter-lg"
-                  @reset="onReset"
-                  @submit="crearGrupo">
-                  <div class="text-h5 adventPro-semiBold">{{$t('crearUnGrupo')}}</div>
-                  <q-input
-                    v-model="nombreGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('nombreGrupo')"
-                    lazy-rules
-                  />
-                  <q-input
-                    v-model="descripcionGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    autogrow
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('descripcionGrupo')"
-                    lazy-rules
-                  />
+                <q-form class="q-gutter-lg" @reset="onReset" @submit="crearGrupo">
+                  <div class="text-h5 adventPro-semiBold">{{ $t('crearUnGrupo') }}</div>
+                  <q-input v-model="nombreGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('nombreGrupo')"
+                    lazy-rules />
+                  <q-input v-model="descripcionGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled
+                    :label="$t('descripcionGrupo')" lazy-rules />
                   <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
                   <input-color-component v-model="colorGrupo"></input-color-component>
                   <div align="right">
-                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit" />
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                           color="naranja-claro"
-                           flat type="reset"/>
+                      color="naranja-claro" flat type="reset" />
                   </div>
                 </q-form>
               </q-card-section>
             </q-tab-panel>
             <q-tab-panel name="unirse">
               <q-card-section>
-                <q-form
-                  class="q-gutter-lg"
-                  @reset="onReset"
-                  @submit="unirsePorCodigo">
-                  <div class="text-h5 adventPro-semiBold">{{$t('introUnion')}}</div>
-                  <q-input
-                    v-model="codigoGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('codigoGrupo')"
-                    lazy-rules
-                  />
+                <q-form class="q-gutter-lg" @reset="onReset" @submit="unirsePorCodigo">
+                  <div class="text-h5 adventPro-semiBold">{{ $t('introUnion') }}</div>
+                  <q-input v-model="codigoGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('codigoGrupo')"
+                    lazy-rules />
                   <div align="right">
-                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit"/>
+                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit" />
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                           color="naranja-claro"
-                           flat type="reset"/>
+                      color="naranja-claro" flat type="reset" />
                   </div>
                 </q-form>
               </q-card-section>
@@ -127,35 +85,18 @@
       <q-dialog v-model="nuevoCanal">
         <q-card style="width: 100%; max-width: 450px">
           <q-card-section>
-            <q-form
-              class="q-gutter-lg"
-              @reset="onReset"
-              @submit="crearCanal">
-              <div class="text-h5 adventPro-semiBold">{{$t('crearCanal')}}:</div>
-              <q-input
-                v-model="nombreCanal"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('nombreCanal')"
-                lazy-rules
-              />
-              <q-input
-                v-model="descripcionCanal"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                autogrow
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('descripcionCanal')"
-                lazy-rules
-              />
+            <q-form class="q-gutter-lg" @reset="onReset" @submit="crearCanal">
+              <div class="text-h5 adventPro-semiBold">{{ $t('crearCanal') }}:</div>
+              <q-input v-model="nombreCanal" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('nombreCanal')"
+                lazy-rules />
+              <q-input v-model="descripcionCanal" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('descripcionCanal')"
+                lazy-rules />
               <div align="right">
-                <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit" />
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                       color="naranja-claro"
-                       flat type="reset"/>
+                  color="naranja-claro" flat type="reset" />
               </div>
             </q-form>
           </q-card-section>
@@ -163,12 +104,11 @@
       </q-dialog>
     </div>
     <div v-else>
-      <vista-equipo-component :grupo-actual="grupoActual" :ver-canales="verCanales" :key="componentKey" :es-creador="grupoActual.creador._id === infoUsuario._id"
-                              @agregar-miembro="abrirDialogoMiembro(grupoActual._id)"
-                              @agregar-canal="abrirDialogoCanal(grupoActual._id)"
-                              @abandonar-grupo="abandonarGrupo(grupoActual._id)"
-                              @eliminar-grupo="eliminarGrupo(grupoActual._id)"
-                              @copiar-codigo="copiarCodigo(grupoActual.codigo_acceso)">
+      <vista-equipo-component :grupo-actual="grupoActual" :ver-canales="verCanales" :key="componentKey"
+        :es-creador="grupoActual.creador._id === infoUsuario._id"
+        @agregar-miembro="abrirDialogoMiembro(grupoActual._id)" @agregar-canal="abrirDialogoCanal(grupoActual._id)"
+        @abandonar-grupo="abandonarGrupo(grupoActual._id)" @eliminar-grupo="eliminarGrupo(grupoActual._id)"
+        @copiar-codigo="copiarCodigo(grupoActual.codigo_acceso)">
       </vista-equipo-component>
 
       <q-dialog v-model="nuevoMiembro">
@@ -179,24 +119,14 @@
           </q-card-section>
 
           <q-card-section>
-            <q-form
-              class="q-gutter-lg"
-              @reset="onReset"
-              @submit="agregarMiembroDesdeGrupo">
-              <q-input
-                v-model="correoMiembro"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('correoMiembro')"
-                lazy-rules
-              />
+            <q-form class="q-gutter-lg" @reset="onReset" @submit="agregarMiembroDesdeGrupo">
+              <q-input v-model="correoMiembro" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('correoMiembro')"
+                lazy-rules />
               <div align="right">
-                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit"/>
+                <q-btn class="adventPro-semiBold" color="naranja" :label="$t('agregar')" type="submit" />
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                       color="naranja-claro"
-                       flat type="reset"/>
+                  color="naranja-claro" flat type="reset" />
               </div>
             </q-form>
           </q-card-section>
@@ -205,73 +135,44 @@
 
       <q-dialog v-model="nuevoGrupo">
         <q-card style="width: 100%; max-width: 450px">
-          <q-tabs
-            v-model="tabGrupo"
-            class="text-naranja-claro"
-            inline-label>
-            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus" name="crear"/>
-            <q-tab tabindex="0"  class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse"/>
+          <q-tabs v-model="tabGrupo" class="text-naranja-claro" inline-label>
+            <q-tab tabindex="0" :label="$t('etiquetaCrear')" class="adventPro-semiBold" icon="fas fa-plus"
+              name="crear" />
+            <q-tab tabindex="0" class="adventPro-semiBold" icon="fa fa-user-plus" label="UNIRSE" name="unirse" />
           </q-tabs>
 
           <q-tab-panels v-model="tabGrupo" animated>
             <q-tab-panel name="crear">
               <q-card-section>
-                <q-form
-                  class="q-gutter-lg"
-                  @reset="onReset"
-                  @submit="crearGrupo">
-                  <div class="text-h5 adventPro-semiBold">{{$t('crearUnGrupo')}}</div>
-                  <q-input
-                    v-model="nombreGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('nombreGrupo')"
-                    lazy-rules
-                  />
-                  <q-input
-                    v-model="descripcionGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    autogrow
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('descripcionGrupo')"
-                    lazy-rules
-                  />
+                <q-form class="q-gutter-lg" @reset="onReset" @submit="crearGrupo">
+                  <div class="text-h5 adventPro-semiBold">{{ $t('crearUnGrupo') }}</div>
+                  <q-input v-model="nombreGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('nombreGrupo')"
+                    lazy-rules />
+                  <q-input v-model="descripcionGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled
+                    :label="$t('descripcionGrupo')" lazy-rules />
                   <input-iconos-component v-model="iconoGrupo"></input-iconos-component>
                   <input-color-component v-model="colorGrupo"></input-color-component>
                   <div align="right">
-                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                    <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit" />
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                           color="naranja-claro"
-                           flat type="reset"/>
+                      color="naranja-claro" flat type="reset" />
                   </div>
                 </q-form>
               </q-card-section>
             </q-tab-panel>
             <q-tab-panel name="unirse">
               <q-card-section>
-                <q-form
-                  class="q-gutter-lg"
-                  @reset="onReset"
-                  @submit="unirsePorCodigo">
-                  <div class="text-h5 adventPro-semiBold">{{$t('introUnion')}}</div>
-                  <q-input
-                    v-model="codigoGrupo"
-                    :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                    class="no-padding alumniSans-regular text-body1"
-                    color="morado"
-                    filled
-                    :label="$t('codigoGrupo')"
-                    lazy-rules
-                  />
+                <q-form class="q-gutter-lg" @reset="onReset" @submit="unirsePorCodigo">
+                  <div class="text-h5 adventPro-semiBold">{{ $t('introUnion') }}</div>
+                  <q-input v-model="codigoGrupo" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                    class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('codigoGrupo')"
+                    lazy-rules />
                   <div align="right">
-                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit"/>
+                    <q-btn class="adventPro-semiBold" color="naranja" :label="$t('etiquetaUnirse')" type="submit" />
                     <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                           color="naranja-claro"
-                           flat type="reset"/>
+                      color="naranja-claro" flat type="reset" />
                   </div>
                 </q-form>
               </q-card-section>
@@ -283,35 +184,18 @@
       <q-dialog v-model="nuevoCanal">
         <q-card style="width: 100%; max-width: 450px">
           <q-card-section>
-            <q-form
-              class="q-gutter-lg"
-              @reset="onReset"
-              @submit="crearCanalDesdeGrupo">
-              <div class="text-h5 adventPro-semiBold">{{$t('crearCanal')}}:</div>
-              <q-input
-                v-model="nombreCanal"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('nombreCanal')"
-                lazy-rules
-              />
-              <q-input
-                v-model="descripcionCanal"
-                :rules="[ val => val && val.length > 0 || $t('campoReq')]"
-                autogrow
-                class="no-padding alumniSans-regular text-body1"
-                color="morado"
-                filled
-                :label="$t('descripcionCanal')"
-                lazy-rules
-              />
+            <q-form class="q-gutter-lg" @reset="onReset" @submit="crearCanalDesdeGrupo">
+              <div class="text-h5 adventPro-semiBold">{{ $t('crearCanal') }}:</div>
+              <q-input v-model="nombreCanal" :rules="[val => val && val.length > 0 || $t('campoReq')]"
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('nombreCanal')"
+                lazy-rules />
+              <q-input v-model="descripcionCanal" :rules="[val => val && val.length > 0 || $t('campoReq')]" autogrow
+                class="no-padding alumniSans-regular text-body1" color="morado" filled :label="$t('descripcionCanal')"
+                lazy-rules />
               <div align="right">
-                <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit"/>
+                <q-btn :label="$t('etiquetaCrear')" class="adventPro-semiBold" color="naranja" type="submit" />
                 <q-btn v-close-popup :label="$t('etiquetaCancelar')" class="q-ml-sm adventPro-semiBold"
-                       color="naranja-claro"
-                       flat type="reset"/>
+                  color="naranja-claro" flat type="reset" />
               </div>
             </q-form>
           </q-card-section>
@@ -324,10 +208,10 @@
 <script setup>
 import TarjetaArchivoComponent from "components/TarjetaArchivoComponent.vue";
 import TarjetaEquipo from "components/TarjetaEquipoComponent.vue";
-import {QSpinnerHourglass, useQuasar} from "quasar";
+import { QSpinnerHourglass, useQuasar } from "quasar";
 import api from "boot/httpSingleton";
-import {onMounted, onUpdated, ref, watch} from "vue";
-import {useRouter, useRoute, onBeforeRouteUpdate} from "vue-router";
+import { onMounted, onUpdated, ref, watch } from "vue";
+import { useRouter, useRoute, onBeforeRouteUpdate } from "vue-router";
 import InputIconosComponent from "components/InputIconosComponent.vue";
 import InputColorComponent from "components/InputColorComponent.vue";
 import VistaEquipoComponent from "components/VistaEquipoComponent.vue";
@@ -397,9 +281,9 @@ async function comprobarSesion() {
             progress: true,
             icon: "fas fa-xmark"
           });
-          router.push({path: "/"})
+          router.push({ path: "/" })
         } else {
-          if (route.params.grupo === ''){
+          if (route.params.grupo === '') {
             obtenerGrupos()
           }
         }
@@ -413,7 +297,7 @@ async function comprobarSesion() {
       progress: true,
       icon: "fas fa-xmark"
     });
-    await router.push({path: "/"})
+    await router.push({ path: "/" })
   }
 }
 
@@ -1095,7 +979,7 @@ async function eliminarGrupo(id) {
   $q.loading.hide()
 }
 
-function copiarCodigo(cod){
+function copiarCodigo(cod) {
   navigator.clipboard.writeText(cod)
 
   $q.notify({
@@ -1111,7 +995,7 @@ function copiarCodigo(cod){
 function entrarEnGrupo(id) {
   router.push({
     name: 'TusClases',
-    params: {grupo: id},
+    params: { grupo: id },
   })
   localStorage.setItem('ultimoGrupo', id)
 }
