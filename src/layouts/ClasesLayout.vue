@@ -24,27 +24,26 @@
           <q-btn aria-label="Tus chats" flat icon="fas fa-comments" @click="$router.push('/tus-chats')"/>
           <q-btn aria-label="Accesibilidad" flat
                  icon="fas fa-universal-access" @click="abrirMenuAccess()"/>
-          <q-btn-dropdown v-model="idioma" aria-label="Selector de idiomas" auto-close color="white" dropdown-icon="none"
-                          flat>
+          <q-btn-dropdown v-model="idioma" flat color="white" dropdown-icon="none" aria-label="Selector de idiomas" auto-close>
             <template v-slot:label>
               <div class="row absolute-center">
-                <q-icon class="boton-mundo" name="fas fa-globe" size="sm"/>
+                <q-icon size="sm" name="fas fa-globe" class="boton-mundo" aria-label="Selector de idiomas"/>
               </div>
             </template>
             <q-list>
               <q-scroll-area style="width: 160px; height: 112px;">
-                <list-item-idioma :cod-idioma="locale" aria-label="Español" cod-bandera='es-ESP' idioma="Español"
-                                  titulo='Español' @al-clickar="cambiarIdioma('Español')"></list-item-idioma>
-                <list-item-idioma :cod-idioma="locale" aria-label="Inglés" cod-bandera='en-US' idioma="Inglés"
-                                  titulo='English' @al-clickar="cambiarIdioma('Inglés')"></list-item-idioma>
-                <list-item-idioma :cod-idioma="locale" aria-label="Francés" cod-bandera='fr-FR' idioma="Francés"
-                                  titulo='Français' @al-clickar="cambiarIdioma('Francés')"></list-item-idioma>
-                <list-item-idioma :cod-idioma="locale" aria-label="Alemán" cod-bandera='de-DE' idioma="Alemán"
-                                  titulo='Deutsch' @al-clickar="cambiarIdioma('Alemán')"></list-item-idioma>
-                <list-item-idioma :cod-idioma="locale" aria-label="Italiano" cod-bandera='it-IT' idioma="Italiano"
-                                  titulo='Italiano' @al-clickar="cambiarIdioma('Italiano')"></list-item-idioma>
-                <list-item-idioma :cod-idioma="locale" aria-label="Chino" cod-bandera='zh-CN' idioma="Chino"
-                                  titulo='中文' @al-clickar="cambiarIdioma('Chino')"></list-item-idioma>
+                <list-item-idioma titulo='Español' idioma="Español" :cod-idioma="locale" cod-bandera='es-ESP'
+                                  @al-clickar="cambiarIdioma('Español')" aria-label="Español"></list-item-idioma>
+                <list-item-idioma titulo='English' idioma="Inglés" :cod-idioma="locale" cod-bandera='en-US'
+                                  @al-clickar="cambiarIdioma('Inglés')" aria-label="Inglés"></list-item-idioma>
+                <list-item-idioma titulo='Français' idioma="Francés" :cod-idioma="locale" cod-bandera='fr-FR'
+                                  @al-clickar="cambiarIdioma('Francés')" aria-label="Francés"></list-item-idioma>
+                <list-item-idioma titulo='Deutsch' idioma="Alemán" :cod-idioma="locale" cod-bandera='de-DE'
+                                  @al-clickar="cambiarIdioma('Alemán')" aria-label="Alemán"></list-item-idioma>
+                <list-item-idioma titulo='Italiano' idioma="Italiano" :cod-idioma="locale" cod-bandera='it-IT'
+                                  @al-clickar="cambiarIdioma('Italiano')" aria-label="Italiano"></list-item-idioma>
+                <list-item-idioma titulo='中文' idioma="Chino" :cod-idioma="locale" cod-bandera='zh-CN'
+                                  @al-clickar="cambiarIdioma('Chino')" aria-label="Chino"></list-item-idioma>
               </q-scroll-area>
             </q-list>
           </q-btn-dropdown>
@@ -54,7 +53,7 @@
 
     <q-drawer v-model="menuIzq" :breakpoint="500" :width="400" behavior="mobile">
       <q-scroll-area class="fit">
-        <div class="bg-morado text-h3 text-white flex flex-center alumniSans-regular" style="height: 80px;">
+        <div class="bg-morado text-h4 text-white flex flex-center alumniSans-regular text-center" style="height: 80px;">
           {{ $t('titAccess') }}
         </div>
         <q-list class="q-mt-sm" separator="">

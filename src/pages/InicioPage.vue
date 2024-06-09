@@ -1,7 +1,7 @@
 <template>
   <q-page :class="!formAbierto ? 'bg-image-logo' : 'bg-image-forms'" padding>
     <!--Inicio logo-->
-    <div class="row flex-center" v-if="!formAbierto" style="z-index: 1;">
+    <div class="row flex-center layout" v-if="!formAbierto" style="z-index: 1;">
       <div class="column contenedor">
         <div class="col-md-12 col-sm-6">
           <div class="column flex-center">
@@ -31,14 +31,10 @@
 
         <div class="col-auto">
           <div class="row flex-center q-gutter-lg">
-            <div class="col-auto">
-              <q-btn :label="$t('etqReg1')" class="adventPro-regular" color="naranja-claro" icon="fas fa-plus"
-                     rounded @click="abrirRegistro" size="lg"/>
-            </div>
-            <div class="col-auto">
-              <q-btn :label="$t('etqInic1')" class="adventPro-regular" color="naranja-claro" icon="fas fa-right-to-bracket"
-                     rounded @click="abrirInicioSesion" size="lg"/>
-            </div>
+            <q-btn :label="$t('etqReg1')" class="adventPro-regular" color="naranja-claro" icon="fas fa-plus"
+                   rounded @click="abrirRegistro" size="lg"/>
+            <q-btn :label="$t('etqInic1')" class="adventPro-regular" color="naranja-claro" icon="fas fa-right-to-bracket"
+                   rounded @click="abrirInicioSesion" size="lg"/>
           </div>
         </div>
       </div>
@@ -74,7 +70,11 @@ function abrirInicioSesion() {
 </script>
 
 <style scoped>
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 911px) {
+ .layout {
+   margin-top: 6rem;
+ }
+
   .texto-inclu {
     font-size: 2.85rem;
   }
@@ -100,7 +100,11 @@ function abrirInicioSesion() {
 }
 
 /* Estilos para pantallas medianas y grandes */
-@media screen and (min-width: 577px) {
+@media screen and (min-width: 911px) {
+  .layout {
+    margin-top: 0;
+  }
+
   .texto-inclu {
     font-size: 6rem;
   }

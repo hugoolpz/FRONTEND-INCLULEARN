@@ -49,7 +49,7 @@
 
     <q-drawer v-model="menuIzq" :width="320" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <q-toolbar class="bg-morado text-h3 text-white text-center alumniSans-regular">
+        <q-toolbar class="bg-morado text-h3 text-white text-center alumniSans-regular text-center">
           <q-toolbar-title>
             {{$t('titAccess')}}
           </q-toolbar-title>

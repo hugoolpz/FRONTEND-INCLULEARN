@@ -12,7 +12,7 @@
         </template>
       </q-select>
 
-      <q-select :label="$t('modificadoEtiqueta')" outlined color="morado" v-model="fechaElegida" use-chips
+      <!--<q-select :label="$t('modificadoEtiqueta')" outlined color="morado" v-model="fechaElegida" use-chips
         :options="fechasMod" style="width: 18rem">
         <template v-slot:selected-item="scope">
           <q-chip removable @remove="scope.removeAtIndex(scope.index)" tabindex="0" outline color="morado"
@@ -20,7 +20,7 @@
             {{ scope.opt.label }}
           </q-chip>
         </template>
-      </q-select>
+      </q-select>-->
 
       <q-uploader ref="archivo" :factory="factoryFn" field-name="filename" label="{{$t('subeArchivos')}}" color="morado"
         accept=".pdf, .docx, .csv, .ppt, image/*, .zip, .csb, video/*, audio/*" max-file-size="25000000"

@@ -34,7 +34,7 @@
 
     <q-drawer v-model="menuIzq" :width="400" :breakpoint="500" behavior="mobile">
       <q-scroll-area class="fit">
-        <div style="height: 80px;" class="bg-morado text-h4 text-white flex flex-center alumniSans-regular">{{$t('titAccess')}}</div>
+        <div style="height: 80px;" class="bg-morado text-h4 text-white flex flex-center alumniSans-regular text-center">{{$t('titAccess')}}</div>
         <q-list class="q-mt-sm" separator="">
           <list-item-access :titulo-ajuste="$t('titAjDislexia')" :subt-ajuste="$t('subtAjDislexia')" icono="fas fa-font"
                             @al-activar="ajusteDislexia()"></list-item-access>
@@ -130,6 +130,7 @@ function moverEnfoque(event) {
   }
 
   .boton-mundo {
+    color: white;
   }
 }
 
