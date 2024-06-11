@@ -71,7 +71,7 @@
 
     <q-dialog v-model="confirmarElim" persistent>
       <q-card>
-        <q-toolbar class="bg-warning text-white">
+        <q-toolbar class="bg-morado text-white">
           <q-avatar>
             <q-icon name="fas fa-warning"></q-icon>
           </q-avatar>
@@ -84,8 +84,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn v-close-popup color="positive" flat :label="$t('siEliminar')" @click="eliminarElegido()" />
-          <q-btn v-close-popup color="negative" flat :label="$t('noConservar')" />
+          <q-btn v-close-popup color="negative" flat :label="$t('siEliminar')" @click="eliminarElegido()" />
+          <q-btn v-close-popup color="positive" flat :label="$t('noConservar')" />
         </q-card-actions>
       </q-card>
     </q-dialog>
